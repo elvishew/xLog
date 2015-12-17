@@ -31,7 +31,7 @@ import javax.xml.transform.stream.StreamSource;
 
 /**
  * Simply format the XML with a indent of {@value XML_INDENT}.
- * <br/>TODO: Make indent size and enable/disable state configurable.
+ * <br>TODO: Make indent size and enable/disable state configurable.
  */
 public class DefaultXmlFormatter implements XmlFormatter {
 

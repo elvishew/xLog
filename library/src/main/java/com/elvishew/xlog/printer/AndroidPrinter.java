@@ -25,7 +25,7 @@ public class AndroidPrinter extends MessageBorderedPrinter {
 
     /**
      * Constructor.
-     * <p/>
+     * <p>
      * Border is disabled by default.
      */
     public AndroidPrinter() {

@@ -133,7 +133,7 @@ public class FastPrintWriter extends PrintWriter {
      * Constructs a new {@code PrintWriter} with {@code wr} as its target
      * writer. By default, the new print writer does not automatically flush its
      * contents to the target writer when a newline is encountered.
-     * <p/>
+     * <p>
      * <p>NOTE: Unlike PrintWriter, this version will still do buffering inside of
      * FastPrintWriter before sending data to the Writer.  This means you must call
      * flush() before retrieving any data from the Writer.</p>
@@ -449,7 +449,7 @@ public class FastPrintWriter extends PrintWriter {
      * Prints a string to the target. The string is converted to an array of
      * bytes using the encoding chosen during the construction of this writer.
      * The bytes are then written to the target with {@code write(int)}.
-     * <p/>
+     * <p>
      * If an I/O error occurs, this writer's error flag is set to {@code true}.
      *
      * @param str the string to print to the target.
@@ -541,7 +541,7 @@ public class FastPrintWriter extends PrintWriter {
     /**
      * Writes {@code count} characters from {@code buffer} starting at {@code
      * offset} to the target.
-     * <p/>
+     * <p>
      * This writer's error flag is set to {@code true} if this writer is closed
      * or an I/O error occurs.
      *
@@ -564,7 +564,7 @@ public class FastPrintWriter extends PrintWriter {
     /**
      * Writes one character to the target. Only the two least significant bytes
      * of the integer {@code oneChar} are written.
-     * <p/>
+     * <p>
      * This writer's error flag is set to {@code true} if this writer is closed
      * or an I/O error occurs.
      *

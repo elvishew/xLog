@@ -35,70 +35,70 @@ import java.util.List;
  * logs to multiple place in the same time, such as android shell, terminal and file system, you can
  * even print the log to the remote server if you want, all of these can be done just within one
  * calling.
- * <p/>
+ * <p>
  * <b>How to use in a general way:</b>
- * <p/>
+ * <p>
  * <b>1. Initial the log system.</b>
- * <br/>Using one of {@link XLog#init(int)}, {@link XLog#init(int, LogConfiguration)} and
+ * <br>Using one of {@link XLog#init(int)}, {@link XLog#init(int, LogConfiguration)} and
  * {@link XLog#init(int, LogConfiguration, Printer...)}, that will setup a {@link LogConfiguration}
  * for a global usage.
  * If you want to use a customized configuration instead of the global one to log something, you can
  * start a customization logging.
- * <p/>
- * <br/>For android, a best place to do the initialization is {@link Application#onCreate()}.
- * <p/>
+ * <p>
+ * <br>For android, a best place to do the initialization is {@link Application#onCreate()}.
+ * <p>
  * <b>2. Start to log.</b>
- * <br/>{@link #v(String, Object...)}, {@link #v(String)} and {@link #v(String, Throwable)} are for
+ * <br>{@link #v(String, Object...)}, {@link #v(String)} and {@link #v(String, Throwable)} are for
  * logging a {@link LogLevel#INFO} log.
- * <br/>{@link #d(String, Object...)}, {@link #d(String)} and {@link #d(String, Throwable)} are for
+ * <br>{@link #d(String, Object...)}, {@link #d(String)} and {@link #d(String, Throwable)} are for
  * logging a {@link LogLevel#DEBUG} log.
- * <br/>{@link #i(String, Object...)}, {@link #i(String)} and {@link #i(String, Throwable)} are for
+ * <br>{@link #i(String, Object...)}, {@link #i(String)} and {@link #i(String, Throwable)} are for
  * logging a {@link LogLevel#INFO} log.
- * <br/>{@link #w(String, Object...)}, {@link #w(String)} and {@link #w(String, Throwable)} are for
+ * <br>{@link #w(String, Object...)}, {@link #w(String)} and {@link #w(String, Throwable)} are for
  * logging a {@link LogLevel#WARN} log.
- * <br/>{@link #e(String, Object...)}, {@link #e(String)} and {@link #e(String, Throwable)} are for
+ * <br>{@link #e(String, Object...)}, {@link #e(String)} and {@link #e(String, Throwable)} are for
  * logging a {@link LogLevel#ERROR} log.
- * <br/>{@link #json(String)} is for logging a {@link LogLevel#JSON} log.
- * <br/>{@link #xml(String)} is for logging a {@link LogLevel#XML} log.
- * <br/>{@link #method(Object...)} is for logging a {@link LogLevel#METHOD} log.
- * <br/>{@link #stack()}, {@link #stack(String, Object...)} and {@link #stack(String)} are for
+ * <br>{@link #json(String)} is for logging a {@link LogLevel#JSON} log.
+ * <br>{@link #xml(String)} is for logging a {@link LogLevel#XML} log.
+ * <br>{@link #method(Object...)} is for logging a {@link LogLevel#METHOD} log.
+ * <br>{@link #stack()}, {@link #stack(String, Object...)} and {@link #stack(String)} are for
  * logging a calling stack.
- * <p/>
+ * <p>
  * <b>How to use in a dynamically customizing way after initializing the log system:</b>
- * <p/>
+ * <p>
  * <b>1. Start a customization.</b>
- * <br/>Call any of {@link #tag(String)}, {@link #jsonFormatter(JsonFormatter)},
+ * <br>Call any of {@link #tag(String)}, {@link #jsonFormatter(JsonFormatter)},
  * {@link #xmlFormatter(XmlFormatter)}, {@link #methodFormatter(MethodFormatter)},
  * {@link #throwableFormatter(ThrowableFormatter)} and {@link #printers(Printer...)}, it will return
  * a {@link Logger.Builder} object.
- * <p/>
+ * <p>
  * <b>2. Finish the customization.</b>
- * <br/>Continue to setup other fields of the returned {@link Logger.Builder}.
- * <p/>
+ * <br>Continue to setup other fields of the returned {@link Logger.Builder}.
+ * <p>
  * <b>3. Build a dynamically generated {@link Logger}.</b>
- * <br/>Call the {@link Logger.Builder#build()} of the returned {@link Logger.Builder}.
- * <p/>
+ * <br>Call the {@link Logger.Builder#build()} of the returned {@link Logger.Builder}.
+ * <p>
  * <b>4. Start to log.</b>
- * <br/>The logging methods of a {@link Logger} is completely same as that ones in {@link XLog}.
- * <br/>As a convenience, you can ignore the step 3, just call the logging methods of
+ * <br>The logging methods of a {@link Logger} is completely same as that ones in {@link XLog}.
+ * <br>As a convenience, you can ignore the step 3, just call the logging methods of
  * {@link Logger.Builder#build()}, it will automatically build a {@link Logger} and call the target
  * logging method.
- * <p/>
+ * <p>
  * <b>Compatibility:</b>
- * <p/>
+ * <p>
  * In order to be compatible with {@link android.util.Log}, all the methods of
  * {@link android.util.Log} are supported here.
  * See:
- * <br/>{@link Log#v(String, String)}, {@link Log#v(String, String, Throwable)}
- * <br/>{@link Log#d(String, String)}, {@link Log#d(String, String, Throwable)}
- * <br/>{@link Log#i(String, String)}, {@link Log#i(String, String, Throwable)}
- * <br/>{@link Log#w(String, String)}, {@link Log#w(String, String, Throwable)}
- * <br/>{@link Log#wtf(String, String)}, {@link Log#wtf(String, String, Throwable)}
- * <br/>{@link Log#e(String, String)}, {@link Log#e(String, String, Throwable)}
- * <br/>{@link Log#println(int, String, String)}
- * <br/>{@link Log#isLoggable(String, int)}
- * <br/>{@link Log#getStackTraceString(Throwable)}
- * <p/>
+ * <br>{@link Log#v(String, String)}, {@link Log#v(String, String, Throwable)}
+ * <br>{@link Log#d(String, String)}, {@link Log#d(String, String, Throwable)}
+ * <br>{@link Log#i(String, String)}, {@link Log#i(String, String, Throwable)}
+ * <br>{@link Log#w(String, String)}, {@link Log#w(String, String, Throwable)}
+ * <br>{@link Log#wtf(String, String)}, {@link Log#wtf(String, String, Throwable)}
+ * <br>{@link Log#e(String, String)}, {@link Log#e(String, String, Throwable)}
+ * <br>{@link Log#println(int, String, String)}
+ * <br>{@link Log#isLoggable(String, int)}
+ * <br>{@link Log#getStackTraceString(Throwable)}
+ * <p>
  */
 public class XLog {
 

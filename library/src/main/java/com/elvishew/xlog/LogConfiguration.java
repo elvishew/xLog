@@ -26,7 +26,7 @@ import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
  * The configuration used for logging, will be passed to every {@link com.elvishew.xlog.printer.Printer}
  * when trying to print any log, the {@link com.elvishew.xlog.printer.Printer} should respect the
  * configuration when printing the log.
- * <p/>
+ * <p>
  * Use the {@link Builder} to construct a {@link LogConfiguration} object.
  */
 public class LogConfiguration {

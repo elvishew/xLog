@@ -34,7 +34,7 @@ import java.io.OutputStreamWriter;
 
 /**
  * {@link Printer} using file system. When print a log, it will print it to the specified file.
- * <p/>
+ * <p>
  * Use the {@link Builder} to construct a {@link FilePrinter} object.
  */
 public class FilePrinter extends MessageFormattedPrinter {

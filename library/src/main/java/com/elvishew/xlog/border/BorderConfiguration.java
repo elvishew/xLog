@@ -18,7 +18,7 @@ package com.elvishew.xlog.border;
 
 /**
  * The border can surround the log for a better looking.
- * <p/>
+ * <p>
  * Use the {@link Builder} to construct a {@link BorderConfiguration} object.
  */
 public class BorderConfiguration {

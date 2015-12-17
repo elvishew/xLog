@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * A logger is used to do the real logging work, can use multiple log printers to print the log.
- * <p/>
+ * <p>
  * A {@link Logger} is always generated and mostly accessed by {@link XLog}, but for customization purpose,
  * you can configure a {@link Logger} via the {@link Builder} which is returned by {@link XLog}
  * when you trying to start a customization using {@link XLog#tag(String)} or other configuration method,

@@ -41,7 +41,7 @@ public class FormatException extends RuntimeException {
     /**
      * Constructs a new exception with the specified detail message and
      * cause.
-     * <p/>
+     * <p>
      * <p>Note that the detail message associated with <code>cause</code> is
      * <i>not</i> automatically incorporated in this exception's detail
      * message.

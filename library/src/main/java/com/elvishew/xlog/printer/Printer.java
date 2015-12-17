@@ -22,7 +22,7 @@ import com.elvishew.xlog.formatter.message.method.MethodInfo;
 
 /**
  * A printer is used for printing the log to somewhere, like android shell, terminal or file system.
- * <p/>
+ * <p>
  * Generally, you don't need to implement this interface directly, {@link MessageFormattedPrinter}
  * is better for you because all the log messages are automatically formatted using the
  * {@link MessageFormatter} which are all configured in {@link LogConfiguration}.
