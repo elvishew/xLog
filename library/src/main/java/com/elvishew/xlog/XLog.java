@@ -24,11 +24,8 @@ import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
+import com.elvishew.xlog.printer.PrinterSet;
 import com.elvishew.xlog.util.StackTraceUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A log tool which can be used in android or java, the most important feature is it can print the
@@ -103,30 +100,24 @@ import java.util.List;
 public class XLog {
 
     /**
+     * Global logger for all direct logging via {@link XLog}.
+     */
+    private static Logger sLogger;
+
+    /**
      * Global log configuration.
      */
     static LogConfiguration sLogConfiguration;
 
     /**
-     * Global log printers.
+     * Global log printer.
      */
-    static List<Printer> sPrinters = new ArrayList<Printer>();
+    static Printer sPrinter;
 
     /**
      * Global log level, below of which would not be log.
      */
     static int sLogLevel = LogLevel.ALL;
-
-    /**
-     * Thread safe logger array.
-     */
-    private static ThreadLocal<Logger> sLocalLogger = new ThreadLocal<Logger>() {
-
-        @Override
-        protected Logger initialValue() {
-            return new Logger(sLogConfiguration, sPrinters);
-        }
-    };
 
     private static boolean sIsInitialized;
 
@@ -171,7 +162,9 @@ public class XLog {
         }
         sLogLevel = logLevel;
         sLogConfiguration = logConfiguration;
-        sPrinters.addAll(Arrays.asList(printers));
+        sPrinter = new PrinterSet(printers);
+
+        sLogger = new Logger(sLogConfiguration, sPrinter);
     }
 
     /**
@@ -241,7 +234,7 @@ public class XLog {
      * @param args   the arguments of the message to log
      */
     public static void v(String format, Object... args) {
-        getLogger().v(format, args);
+        sLogger.v(format, args);
     }
 
     /**
@@ -250,7 +243,7 @@ public class XLog {
      * @param msg the message to log
      */
     public static void v(String msg) {
-        getLogger().v(msg);
+        sLogger.v(msg);
     }
 
     /**
@@ -260,7 +253,7 @@ public class XLog {
      * @param tr  the throwable to be log
      */
     public static void v(String msg, Throwable tr) {
-        getLogger().v(msg, tr);
+        sLogger.v(msg, tr);
     }
 
     /**
@@ -270,7 +263,7 @@ public class XLog {
      * @param args   the arguments of the message to log
      */
     public static void d(String format, Object... args) {
-        getLogger().d(format, args);
+        sLogger.d(format, args);
     }
 
     /**
@@ -279,7 +272,7 @@ public class XLog {
      * @param msg the message to log
      */
     public static void d(String msg) {
-        getLogger().d(msg);
+        sLogger.d(msg);
     }
 
     /**
@@ -289,7 +282,7 @@ public class XLog {
      * @param tr  the throwable to be log
      */
     public static void d(String msg, Throwable tr) {
-        getLogger().d(msg, tr);
+        sLogger.d(msg, tr);
     }
 
     /**
@@ -299,7 +292,7 @@ public class XLog {
      * @param args   the arguments of the message to log
      */
     public static void i(String format, Object... args) {
-        getLogger().i(format, args);
+        sLogger.i(format, args);
     }
 
     /**
@@ -308,7 +301,7 @@ public class XLog {
      * @param msg the message to log
      */
     public static void i(String msg) {
-        getLogger().i(msg);
+        sLogger.i(msg);
     }
 
     /**
@@ -318,7 +311,7 @@ public class XLog {
      * @param tr  the throwable to be log
      */
     public static void i(String msg, Throwable tr) {
-        getLogger().i(msg, tr);
+        sLogger.i(msg, tr);
     }
 
     /**
@@ -328,7 +321,7 @@ public class XLog {
      * @param args   the arguments of the message to log
      */
     public static void w(String format, Object... args) {
-        getLogger().w(format, args);
+        sLogger.w(format, args);
     }
 
     /**
@@ -337,7 +330,7 @@ public class XLog {
      * @param msg the message to log
      */
     public static void w(String msg) {
-        getLogger().w(msg);
+        sLogger.w(msg);
     }
 
     /**
@@ -347,7 +340,7 @@ public class XLog {
      * @param tr  the throwable to be log
      */
     public static void w(String msg, Throwable tr) {
-        getLogger().w(msg, tr);
+        sLogger.w(msg, tr);
     }
 
     /**
@@ -357,7 +350,7 @@ public class XLog {
      * @param args   the arguments of the message to log
      */
     public static void e(String format, Object... args) {
-        getLogger().e(format, args);
+        sLogger.e(format, args);
     }
 
     /**
@@ -366,7 +359,7 @@ public class XLog {
      * @param msg the message to log
      */
     public static void e(String msg) {
-        getLogger().e(msg);
+        sLogger.e(msg);
     }
 
     /**
@@ -376,7 +369,7 @@ public class XLog {
      * @param tr  the throwable to be log
      */
     public static void e(String msg, Throwable tr) {
-        getLogger().e(msg, tr);
+        sLogger.e(msg, tr);
     }
 
     /**
@@ -385,7 +378,7 @@ public class XLog {
      * @param json the JSON string to log
      */
     public static void json(String json) {
-        getLogger().json(json);
+        sLogger.json(json);
     }
 
     /**
@@ -394,7 +387,7 @@ public class XLog {
      * @param xml the XML string to log
      */
     public static void xml(String xml) {
-        getLogger().xml(xml);
+        sLogger.xml(xml);
     }
 
     /**
@@ -403,14 +396,14 @@ public class XLog {
      * @param arguments the arguments of the method to log
      */
     public static void method(Object... arguments) {
-        getLogger().method(1, arguments);
+        sLogger.method(1, arguments);
     }
 
     /**
      * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
      */
     public static void stack() {
-        getLogger().stack("", 1);
+        sLogger.stack("", 1);
     }
 
     /**
@@ -420,7 +413,7 @@ public class XLog {
      * @param args   the arguments of the extra message to log
      */
     public static void stack(String format, Object... args) {
-        getLogger().stack(String.format(format, args), 1);
+        sLogger.stack(String.format(format, args), 1);
     }
 
     /**
@@ -429,11 +422,7 @@ public class XLog {
      * @param msg the extra message to log
      */
     public static void stack(String msg) {
-        getLogger().stack(msg, 1);
-    }
-
-    private static Logger getLogger() {
-        return sLocalLogger.get();
+        sLogger.stack(msg, 1);
     }
 
     /**

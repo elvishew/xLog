@@ -22,11 +22,8 @@ import com.elvishew.xlog.formatter.message.method.MethodInfo;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.printer.Printer;
+import com.elvishew.xlog.printer.PrinterSet;
 import com.elvishew.xlog.util.StackTraceUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * A logger is used to do the real logging work, can use multiple log printers to print the log.
@@ -48,19 +45,19 @@ public class Logger {
     private LogConfiguration logConfiguration;
 
     /**
-     * The log printers used to print the logs.
+     * The log printer used to print the logs.
      */
-    private List<Printer> printers;
+    private Printer printer;
 
     /**
      * Construct a logger.
      *
      * @param logConfiguration the log configuration which you should respect to when logging
-     * @param printers         the log printers used to print the log
+     * @param printer          the log printer used to print the log
      */
-    /*package*/ Logger(LogConfiguration logConfiguration, List<Printer> printers) {
+    /*package*/ Logger(LogConfiguration logConfiguration, Printer printer) {
         this.logConfiguration = logConfiguration;
-        this.printers = new ArrayList<Printer>(printers);
+        this.printer = printer;
     }
 
     /**
@@ -87,10 +84,10 @@ public class Logger {
         }
         logConfiguration = logConfigBuilder.build();
 
-        if (builder.printers != null && builder.printers.length > 0) {
-            printers = new ArrayList<Printer>(Arrays.asList(builder.printers));
+        if (builder.printer != null) {
+            printer = builder.printer;
         } else {
-            printers = new ArrayList<Printer>(XLog.sPrinters);
+            printer = XLog.sPrinter;
         }
     }
 
@@ -249,9 +246,7 @@ public class Logger {
         if (logLevel < XLog.sLogLevel) {
             return;
         }
-        for (Printer printer : printers) {
-            printer.println(logLevel, logConfiguration, msg);
-        }
+        printer.println(logLevel, logConfiguration, msg);
     }
 
     /**
@@ -265,9 +260,7 @@ public class Logger {
         if (logLevel < XLog.sLogLevel) {
             return;
         }
-        for (Printer printer : printers) {
-            printer.println(logLevel, logConfiguration, msg, tr);
-        }
+        printer.println(logLevel, logConfiguration, msg, tr);
     }
 
     /**
@@ -279,9 +272,7 @@ public class Logger {
         if (LogLevel.JSON < XLog.sLogLevel) {
             return;
         }
-        for (Printer printer : printers) {
-            printer.json(logConfiguration, json);
-        }
+        printer.json(logConfiguration, json);
     }
 
     /**
@@ -293,9 +284,7 @@ public class Logger {
         if (LogLevel.XML < XLog.sLogLevel) {
             return;
         }
-        for (Printer printer : printers) {
-            printer.xml(logConfiguration, xml);
-        }
+        printer.xml(logConfiguration, xml);
     }
 
     /**
@@ -323,9 +312,7 @@ public class Logger {
         StackTraceElement[] stackTraceForUser = new StackTraceElement[stackTraceDepthForUser];
         java.lang.System.arraycopy(stackTrace, ignoredStackTraceDepth, stackTraceForUser, 0,
                 stackTraceDepthForUser);
-        for (Printer printer : printers) {
-            printer.method(logConfiguration, new MethodInfo(stackTraceForUser, arguments));
-        }
+        printer.method(logConfiguration, new MethodInfo(stackTraceForUser, arguments));
     }
 
     /**
@@ -398,9 +385,9 @@ public class Logger {
         private ThrowableFormatter throwableFormatter;
 
         /**
-         * The printers used to print the log when {@link Logger} log.
+         * The printer used to print the log when {@link Logger} log.
          */
-        private Printer[] printers;
+        private Printer printer;
 
         /*package */ Builder() {
         }
@@ -468,7 +455,16 @@ public class Logger {
          * @return the builder
          */
         public Builder printers(Printer... printers) {
-            this.printers = printers;
+            if (printers.length == 0) {
+                // Is there anybody want to reuse the Builder? It's not a good idea, but
+                // anyway, in case you want to reuse a builder and do not want the custom
+                // printers anymore, just do it.
+                this.printer = null;
+            } else if (printers.length == 1) {
+                this.printer = printers[0];
+            } else {
+                this.printer = new PrinterSet(printers);
+            }
             return this;
         }
 
