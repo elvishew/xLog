@@ -218,7 +218,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 
 ## 许可
 <pre>
-Copyright 2015 Elvis Hew
+Copyright 2016 Elvis Hew
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
