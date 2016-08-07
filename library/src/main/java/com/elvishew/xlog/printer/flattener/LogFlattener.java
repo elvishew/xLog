@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.formatter.log;
+package com.elvishew.xlog.printer.flattener;
 
 /**
- * The log formatter used to format the final log string according to the log level, tag,
- * message and timestamp.
+ * The log flattener used to flatten log elements(log level, tag and message) to a
+ * single string.
  */
-public interface LogFormatter {
+public interface LogFlattener {
 
     /**
-     * Format the log.
+     * Flatten the log.
      *
      * @param logLevel  the level of log
      * @param tag       the tag of log
      * @param message   the message of log
-     * @param timestamp the timestamp when the logging happen
      * @return the formatted final log string
      */
-    String format(int logLevel, String tag, String message, long timestamp);
+    String flatten(int logLevel, String tag, String message);
 }

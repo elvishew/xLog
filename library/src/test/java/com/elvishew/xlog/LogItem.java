@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,13 @@ package com.elvishew.xlog;
 
 public class LogItem {
 
-    public final int logLevel;
-    public final String tag;
-    public final String msg;
+    public int level;
+    public String tag;
+    public String msg;
 
-    public LogItem(int logLevel, String tag, String msg) {
-        this.logLevel = logLevel;
+    public LogItem(int level, String tag, String msg) {
+        this.level = level;
         this.tag = tag;
         this.msg = msg;
-    }
-
-    @Override
-    public String toString() {
-        return "[level:" + logLevel + ", tag:" + tag + ", msg:" + msg + "]";
     }
 }

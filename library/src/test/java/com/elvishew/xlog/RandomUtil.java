@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.formatter.message.throwable;
+package com.elvishew.xlog;
 
-import com.elvishew.xlog.formatter.Formatter;
+import java.util.Random;
 
-/**
- * The throwable formatter used to format the throwable when log a message with throwable.
- */
-public interface ThrowableFormatter extends Formatter<Throwable> {
+public class RandomUtil {
+
+    private static Random sAsciiCharRandom = new Random();
+
+    public static char randomAsciiChar() {
+        return (char) sAsciiCharRandom.nextInt(128);
+    }
 }

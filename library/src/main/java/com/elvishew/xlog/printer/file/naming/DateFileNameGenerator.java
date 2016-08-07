@@ -18,6 +18,7 @@ package com.elvishew.xlog.printer.file.naming;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -29,7 +30,7 @@ public class DateFileNameGenerator implements FileNameGenerator {
 
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd");
+            return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         }
     };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,59 +16,28 @@
 
 package com.elvishew.xlog.printer;
 
-import com.elvishew.xlog.LogConfiguration;
-import com.elvishew.xlog.formatter.message.MessageFormatter;
-import com.elvishew.xlog.formatter.message.method.MethodInfo;
+import com.elvishew.xlog.printer.file.FilePrinter;
 
 /**
- * A printer is used for printing the log to somewhere, like android shell, terminal or file system.
+ * A printer is used for printing the log to somewhere, like android shell, terminal
+ * or file system.
  * <p>
- * Generally, you don't need to implement this interface directly, {@link MessageFormattedPrinter}
- * is better for you because all the log messages are automatically formatted using the
- * {@link MessageFormatter} which are all configured in {@link LogConfiguration}.
+ * There are 4 main implementation of Printer. <br/>
+ * <table>
+ * <tr>{@link AndroidPrinter}, print log to android shell terminal.
+ * <tr>{@link SystemPrinter}, print log to system terminal.
+ * <tr>{@link FilePrinter}, print log to file system.
+ * <tr>{@link RemotePrinter}, print log to remote server, this is empty implementation yet.
+ * </table>
  */
 public interface Printer {
 
     /**
-     * Print a log in a new line.
+     * Print log in new line.
      *
-     * @param logLevel         the log level of the printing log
-     * @param logConfiguration the log configuration which you should respect to when logging
-     * @param msg              the message you would like to log
+     * @param logLevel the level of log
+     * @param tag      the tag of log
+     * @param msg      the msg of log
      */
-    void println(int logLevel, LogConfiguration logConfiguration, String msg);
-
-    /**
-     * Print a log in a new line.
-     *
-     * @param logLevel         the log level of the printing log
-     * @param logConfiguration the log configuration which you should respect to when logging
-     * @param msg              the message you would like log
-     * @param tr               an throwable object to log
-     */
-    void println(int logLevel, LogConfiguration logConfiguration, String msg, Throwable tr);
-
-    /**
-     * Print a JSON string in a new line.
-     *
-     * @param logConfiguration the log configuration which you should respect to when logging
-     * @param json             the JSON string to log
-     */
-    void json(LogConfiguration logConfiguration, String json);
-
-    /**
-     * Print a XML string in a new line.
-     *
-     * @param logConfiguration the log configuration which you should respect to when logging
-     * @param xml              the XML string to log
-     */
-    void xml(LogConfiguration logConfiguration, String xml);
-
-    /**
-     * Print the info of current calling method in a new line.
-     *
-     * @param logConfiguration the log configuration which you should respect to when logging
-     * @param methodInfo       the info of method to log
-     */
-    void method(LogConfiguration logConfiguration, MethodInfo methodInfo);
+    void println(int logLevel, String tag, String msg);
 }

@@ -16,10 +16,10 @@
 
 package com.elvishew.xlog.formatter.message.xml;
 
-import com.elvishew.xlog.formatter.message.MessageFormatter;
+import com.elvishew.xlog.formatter.Formatter;
 
 /**
  * The XML formatter used to format the XML string when log a XML string.
  */
-public interface XmlFormatter extends MessageFormatter<String> {
+public interface XmlFormatter extends Formatter<String> {
 }

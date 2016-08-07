@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog.formatter.message.xml;
 
-import com.elvishew.xlog.System;
+import com.elvishew.xlog.SystemCompat;
 import com.elvishew.xlog.formatter.FormatException;
 
 import java.io.StringReader;
@@ -51,7 +51,8 @@ public class DefaultXmlFormatter implements XmlFormatter {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
                     String.valueOf(XML_INDENT));
             transformer.transform(xmlInput, xmlOutput);
-            formattedString = xmlOutput.getWriter().toString().replaceFirst(">", ">" + System.lineSeparator);
+            formattedString = xmlOutput.getWriter().toString().replaceFirst(">", ">"
+                    + SystemCompat.lineSeparator);
         } catch (Exception e) {
             throw new FormatException("Parse XML error. XML string:" + xml, e);
         }

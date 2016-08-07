@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.formatter.message.method;
-
-import com.elvishew.xlog.formatter.message.MessageFormatter;
+package com.elvishew.xlog.formatter.thread;
 
 /**
- * The method formatter used to format the method when log a method.
+ * Formatted stack trace looks like:
+ * <br>Thread: thread-name
  */
-public interface MethodFormatter extends MessageFormatter<MethodInfo> {
+public class DefaultThreadFormatter implements ThreadFormatter {
+
+    @Override
+    public String format(Thread data) {
+        return "Thread: " + data.getName();
+    }
 }

@@ -16,11 +16,12 @@
 
 package com.elvishew.xlog;
 
+import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
-import com.elvishew.xlog.formatter.message.method.MethodFormatter;
-import com.elvishew.xlog.formatter.message.method.MethodInfo;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
+import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
+import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.PrinterSet;
 import com.elvishew.xlog.util.StackTraceUtil;
@@ -28,16 +29,14 @@ import com.elvishew.xlog.util.StackTraceUtil;
 /**
  * A logger is used to do the real logging work, can use multiple log printers to print the log.
  * <p>
- * A {@link Logger} is always generated and mostly accessed by {@link XLog}, but for customization purpose,
- * you can configure a {@link Logger} via the {@link Builder} which is returned by {@link XLog}
- * when you trying to start a customization using {@link XLog#tag(String)} or other configuration method,
- * and to use the customized {@link Logger}, you should call the {@link Builder#build()} to build a
- * {@link Logger}, and then you can log using the {@link Logger} assuming that you are using the
- * {@link XLog} directly.
+ * A {@link Logger} is always generated and mostly accessed by {@link XLog}, but for customization
+ * purpose, you can configure a {@link Logger} via the {@link Builder} which is returned by
+ * {@link XLog} when you trying to start a customization using {@link XLog#tag(String)}
+ * or other configuration method, and to use the customized {@link Logger}, you should call
+ * the {@link Builder#build()} to build a {@link Logger}, and then you can log using
+ * the {@link Logger} assuming that you are using the {@link XLog} directly.
  */
 public class Logger {
-
-    private static final int BASE_IGNORED_STACK_TRACE_DEPTH = 1;
 
     /**
      * The log configuration which you should respect to when logging.
@@ -66,21 +65,52 @@ public class Logger {
      * @param builder the logger builder
      */
     /*package*/ Logger(Builder builder) {
-        LogConfiguration.Builder logConfigBuilder = new LogConfiguration.Builder(XLog.sLogConfiguration);
+        LogConfiguration.Builder logConfigBuilder = new LogConfiguration.Builder(
+                XLog.sLogConfiguration);
+
         if (builder.tag != null) {
             logConfigBuilder.tag(builder.tag);
         }
+
+        if (builder.threadSet) {
+            if (builder.withThread) {
+                logConfigBuilder.t();
+            } else {
+                logConfigBuilder.nt();
+            }
+        }
+        if (builder.stackTraceSet) {
+            if (builder.withStackTrace) {
+                logConfigBuilder.st(builder.stackTraceDepth);
+            } else {
+                logConfigBuilder.nst();
+            }
+        }
+        if (builder.borderSet) {
+            if (builder.withBorder) {
+                logConfigBuilder.b();
+            } else {
+                logConfigBuilder.nb();
+            }
+        }
+
         if (builder.jsonFormatter != null) {
             logConfigBuilder.jsonFormatter(builder.jsonFormatter);
         }
         if (builder.xmlFormatter != null) {
             logConfigBuilder.xmlFormatter(builder.xmlFormatter);
         }
-        if (builder.methodFormatter != null) {
-            logConfigBuilder.methodFormatter(builder.methodFormatter);
-        }
         if (builder.throwableFormatter != null) {
             logConfigBuilder.throwableFormatter(builder.throwableFormatter);
+        }
+        if (builder.threadFormatter != null) {
+            logConfigBuilder.threadFormatter(builder.threadFormatter);
+        }
+        if (builder.stackTraceFormatter != null) {
+            logConfigBuilder.stackTraceFormatter(builder.stackTraceFormatter);
+        }
+        if (builder.borderFormatter != null) {
+            logConfigBuilder.borderFormatter(builder.borderFormatter);
         }
         logConfiguration = logConfigBuilder.build();
 
@@ -98,7 +128,7 @@ public class Logger {
      * @param args   the arguments of the message to log
      */
     public void v(String format, Object... args) {
-        println(LogLevel.VERBOSE, String.format(format, args));
+        println(LogLevel.VERBOSE, formatArgs(format, args));
     }
 
     /**
@@ -123,11 +153,11 @@ public class Logger {
     /**
      * Log a message with level {@link LogLevel#DEBUG}.
      *
-     * @param format the format of the message to log
+     * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void d(String format, Object... args) {
-        println(LogLevel.DEBUG, String.format(format, args));
+        println(LogLevel.DEBUG, formatArgs(format, args));
     }
 
     /**
@@ -152,11 +182,11 @@ public class Logger {
     /**
      * Log a message with level {@link LogLevel#INFO}.
      *
-     * @param format the format of the message to log
+     * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void i(String format, Object... args) {
-        println(LogLevel.INFO, String.format(format, args));
+        println(LogLevel.INFO, formatArgs(format, args));
     }
 
     /**
@@ -181,11 +211,11 @@ public class Logger {
     /**
      * Log a message with level {@link LogLevel#WARN}.
      *
-     * @param format the format of the message to log
+     * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void w(String format, Object... args) {
-        println(LogLevel.WARN, String.format(format, args));
+        println(LogLevel.WARN, formatArgs(format, args));
     }
 
     /**
@@ -210,11 +240,11 @@ public class Logger {
     /**
      * Log a message with level {@link LogLevel#ERROR}.
      *
-     * @param format the format of the message to log
+     * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void e(String format, Object... args) {
-        println(LogLevel.ERROR, String.format(format, args));
+        println(LogLevel.ERROR, formatArgs(format, args));
     }
 
     /**
@@ -237,42 +267,15 @@ public class Logger {
     }
 
     /**
-     * Print a log in a new line using every printer.
-     *
-     * @param logLevel the log level of the printing log
-     * @param msg      the message you would like log
-     */
-    /*package*/ void println(int logLevel, String msg) {
-        if (logLevel < XLog.sLogLevel) {
-            return;
-        }
-        printer.println(logLevel, logConfiguration, msg);
-    }
-
-    /**
-     * Print a log in a new line using every printer.
-     *
-     * @param logLevel the log level of the printing log
-     * @param msg      the message you would like log
-     * @param tr       an throwable object to log
-     */
-    /*package*/ void println(int logLevel, String msg, Throwable tr) {
-        if (logLevel < XLog.sLogLevel) {
-            return;
-        }
-        printer.println(logLevel, logConfiguration, msg, tr);
-    }
-
-    /**
      * Log a JSON string, with level {@link LogLevel#DEBUG} by default.
      *
      * @param json the JSON string to log
      */
     public void json(String json) {
-        if (LogLevel.JSON < XLog.sLogLevel) {
+        if (LogLevel.DEBUG < XLog.sLogLevel) {
             return;
         }
-        printer.json(logConfiguration, json);
+        println(LogLevel.DEBUG, logConfiguration.jsonFormatter.format(json));
     }
 
     /**
@@ -281,77 +284,83 @@ public class Logger {
      * @param xml the XML string to log
      */
     public void xml(String xml) {
-        if (LogLevel.XML < XLog.sLogLevel) {
+        if (LogLevel.DEBUG < XLog.sLogLevel) {
             return;
         }
-        printer.xml(logConfiguration, xml);
+        println(LogLevel.DEBUG, logConfiguration.xmlFormatter.format(xml));
     }
 
     /**
-     * Log a method, with level {@link LogLevel#DEBUG} by default.
+     * Print a log in a new line.
      *
-     * @param arguments the arguments of the method to log
+     * @param logLevel the log level of the printing log
+     * @param msg      the message you would like log
      */
-    public void method(Object... arguments) {
-        method(1, arguments);
-    }
-
-    /**
-     * Log a method, with level {@link LogLevel#DEBUG} by default.
-     *
-     * @param ignoredStackTraceDepth the stack trace depth to be ignored
-     * @param arguments              the arguments of the method to log
-     */
-    /*package*/ void method(int ignoredStackTraceDepth, Object... arguments) {
-        if (LogLevel.METHOD < XLog.sLogLevel) {
+    /*package*/ void println(int logLevel, String msg) {
+        if (logLevel < XLog.sLogLevel) {
             return;
         }
-        ignoredStackTraceDepth += BASE_IGNORED_STACK_TRACE_DEPTH;
-        StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        int stackTraceDepthForUser = stackTrace.length - ignoredStackTraceDepth;
-        StackTraceElement[] stackTraceForUser = new StackTraceElement[stackTraceDepthForUser];
-        java.lang.System.arraycopy(stackTrace, ignoredStackTraceDepth, stackTraceForUser, 0,
-                stackTraceDepthForUser);
-        printer.method(logConfiguration, new MethodInfo(stackTraceForUser, arguments));
+        printlnInternal(logLevel, msg);
     }
 
     /**
-     * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
-     */
-    public void stack() {
-        stack("", 1);
-    }
-
-    /**
-     * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
+     * Print a log in a new line.
      *
-     * @param format the format of the extra message to log
-     * @param args   the arguments of the extra message to log
+     * @param logLevel the log level of the printing log
+     * @param msg      the message you would like log
+     * @param tr       an throwable object to log
      */
-    public void stack(String format, Object... args) {
-        stack(String.format(format, args), 1);
+    private void println(int logLevel, String msg, Throwable tr) {
+        if (logLevel < XLog.sLogLevel) {
+            return;
+        }
+        printlnInternal(logLevel, ((msg == null || msg.length() == 0)
+                ? "" : (msg + SystemCompat.lineSeparator))
+                + logConfiguration.throwableFormatter.format(tr));
     }
 
     /**
-     * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
+     * Print a log in a new line internally.
      *
-     * @param msg the extra message to log
+     * @param logLevel the log level of the printing log
+     * @param msg      the message you would like log
      */
-    public void stack(String msg) {
-        stack(msg, 1);
+    private void printlnInternal(int logLevel, String msg) {
+        String thread = logConfiguration.withThread
+                ? logConfiguration.threadFormatter.format(Thread.currentThread())
+                : null;
+        String stackTrace = logConfiguration.withStackTrace
+                ? logConfiguration.stackTraceFormatter.format(
+                StackTraceUtil.getCroppedRealStackTrack(new Throwable().getStackTrace(),
+                        logConfiguration.stackTraceDepth))
+                : null;
+        printer.println(logLevel, logConfiguration.tag, logConfiguration.withBorder
+                ? logConfiguration.borderFormatter.format(new String[]{thread, stackTrace, msg})
+                : ((thread != null ? (thread + SystemCompat.lineSeparator) : "")
+                + (stackTrace != null ? (stackTrace + SystemCompat.lineSeparator) : "")
+                + msg));
     }
 
     /**
-     * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
+     * Format a string with arguments.
      *
-     * @param msg                    the extra message to log
-     * @param ignoredStackTraceDepth the stack trace depth to be ignored
+     * @param format the format string, null if just to concat the arguments
+     * @param args the arguments
+     * @return the formatted string
      */
-    /*package*/ void stack(String msg, int ignoredStackTraceDepth) {
-        d(((msg == null || msg.trim().length() == 0) ? "" : (msg + System.lineSeparator)) +
-                StackTraceUtil.getCallStackTraceString(
-                        new Throwable().getStackTrace(),
-                        ignoredStackTraceDepth + BASE_IGNORED_STACK_TRACE_DEPTH));
+    private String formatArgs(String format, Object... args) {
+        if (format != null) {
+            return String.format(format, args);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0, N = args.length; i < N; i++) {
+                if (i != 0) {
+                    sb.append(", ");
+                }
+                sb.append(args[i]);
+            }
+            return sb.toString();
+        }
     }
 
     /**
@@ -365,6 +374,41 @@ public class Logger {
         private String tag;
 
         /**
+         * Whether we should log with thread info.
+         */
+        private boolean withThread;
+
+        /**
+         * Whether we have enabled/disabled thread info.
+         */
+        private boolean threadSet;
+
+        /**
+         * Whether we should log with stack trace.
+         */
+        private boolean withStackTrace;
+
+        /**
+         * The number of stack trace elements we should log when logging with stack trace.
+         */
+        private int stackTraceDepth;
+
+        /**
+         * Whether we have enabled/disabled stack trace.
+         */
+        private boolean stackTraceSet;
+
+        /**
+         * Whether we should log with border.
+         */
+        private boolean withBorder;
+
+        /**
+         * Whether we have enabled/disabled border.
+         */
+        private boolean borderSet;
+
+        /**
          * The JSON formatter when {@link Logger} log a JSON string.
          */
         private JsonFormatter jsonFormatter;
@@ -375,14 +419,24 @@ public class Logger {
         private XmlFormatter xmlFormatter;
 
         /**
-         * The method formatter when {@link Logger} log a method.
-         */
-        private MethodFormatter methodFormatter;
-
-        /**
          * The throwable formatter when {@link Logger} log a message with throwable.
          */
         private ThrowableFormatter throwableFormatter;
+
+        /**
+         * The thread formatter when {@link Logger} logging.
+         */
+        private ThreadFormatter threadFormatter;
+
+        /**
+         * The stack trace formatter when {@link Logger} logging.
+         */
+        private StackTraceFormatter stackTraceFormatter;
+
+        /**
+         * The border formatter when {@link Logger} logging.
+         */
+        private BorderFormatter borderFormatter;
 
         /**
          * The printer used to print the log when {@link Logger} log.
@@ -400,6 +454,74 @@ public class Logger {
          */
         public Builder tag(String tag) {
             this.tag = tag;
+            return this;
+        }
+
+        /**
+         * Enable thread info.
+         *
+         * @return the builder
+         */
+        public Builder t() {
+            this.withThread = true;
+            this.threadSet = true;
+            return this;
+        }
+
+        /**
+         * Disable thread info.
+         *
+         * @return the builder
+         */
+        public Builder nt() {
+            this.withThread = false;
+            this.threadSet = true;
+            return this;
+        }
+
+        /**
+         * Enable stack trace.
+         *
+         * @return the builder
+         */
+        public Builder st(int depth) {
+            this.withStackTrace = true;
+            this.stackTraceDepth = depth;
+            this.stackTraceSet = true;
+            return this;
+        }
+
+        /**
+         * Disable stack trace.
+         *
+         * @return the builder
+         */
+        public Builder nst() {
+            this.withStackTrace = false;
+            this.stackTraceDepth = 0;
+            this.stackTraceSet = true;
+            return this;
+        }
+
+        /**
+         * Enable border.
+         *
+         * @return the builder
+         */
+        public Builder b() {
+            this.withBorder = true;
+            this.borderSet = true;
+            return this;
+        }
+
+        /**
+         * Disable border.
+         *
+         * @return the builder
+         */
+        public Builder nb() {
+            this.withBorder = false;
+            this.borderSet = true;
             return this;
         }
 
@@ -426,17 +548,6 @@ public class Logger {
         }
 
         /**
-         * Set the method formatter when {@link Logger} log a method.
-         *
-         * @param methodFormatter the method formatter when {@link Logger} log a method
-         * @return the builder
-         */
-        public Builder methodFormatter(MethodFormatter methodFormatter) {
-            this.methodFormatter = methodFormatter;
-            return this;
-        }
-
-        /**
          * Set the throwable formatter when {@link Logger} log a message with throwable.
          *
          * @param throwableFormatter the throwable formatter when {@link Logger} log a message with
@@ -445,6 +556,39 @@ public class Logger {
          */
         public Builder throwableFormatter(ThrowableFormatter throwableFormatter) {
             this.throwableFormatter = throwableFormatter;
+            return this;
+        }
+
+        /**
+         * Set the thread formatter when {@link Logger} logging.
+         *
+         * @param threadFormatter the thread formatter when {@link Logger} logging
+         * @return the builder
+         */
+        public Builder threadFormatter(ThreadFormatter threadFormatter) {
+            this.threadFormatter = threadFormatter;
+            return this;
+        }
+
+        /**
+         * Set the stack trace formatter when {@link Logger} logging.
+         *
+         * @param stackTraceFormatter the stace trace formatter when {@link Logger} logging
+         * @return the builder
+         */
+        public Builder stackTraceFormatter(StackTraceFormatter stackTraceFormatter) {
+            this.stackTraceFormatter = stackTraceFormatter;
+            return this;
+        }
+
+        /**
+         * Set the border formatter when {@link Logger} logging.
+         *
+         * @param borderFormatter the border formatter when {@link Logger} logging
+         * @return the builder
+         */
+        public Builder borderFormatter(BorderFormatter borderFormatter) {
+            this.borderFormatter = borderFormatter;
             return this;
         }
 
@@ -585,34 +729,6 @@ public class Logger {
          */
         public void xml(String xml) {
             build().xml(xml);
-        }
-
-        /**
-         * Convenience of {@link #build()} and {@link Logger#method(Object...)}.
-         */
-        public void method(Object... arguments) {
-            build().method(1, arguments);
-        }
-
-        /**
-         * Convenience of {@link #build()} and {@link Logger#stack()}.
-         */
-        public void stack() {
-            build().stack("", 1);
-        }
-
-        /**
-         * Convenience of {@link #build()} and {@link Logger#stack(String, Object...)}.
-         */
-        public void stack(String format, Object... args) {
-            build().stack(String.format(format, args), 1);
-        }
-
-        /**
-         * Convenience of {@link #build()} and {@link Logger#stack(String)}.
-         */
-        public void stack(String msg) {
-            build().stack(msg, 1);
         }
 
         /**

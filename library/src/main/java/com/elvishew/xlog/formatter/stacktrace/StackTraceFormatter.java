@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.formatter.message.throwable;
+package com.elvishew.xlog.formatter.stacktrace;
 
 import com.elvishew.xlog.formatter.Formatter;
 
 /**
- * The throwable formatter used to format the throwable when log a message with throwable.
+ * The stack trace formatter used to format the stack trace when logging.
  */
-public interface ThrowableFormatter extends Formatter<Throwable> {
+public interface StackTraceFormatter extends Formatter<StackTraceElement[]> {
 }

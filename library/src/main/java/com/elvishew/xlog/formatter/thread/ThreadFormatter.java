@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.formatter.message;
+package com.elvishew.xlog.formatter.thread;
+
+import com.elvishew.xlog.formatter.Formatter;
 
 /**
- * A message formatter is used for format a message or part of message that is not a string, or that
- * is a string but not well formatted, we should format the data to a well formatted string so
- * printers can print them.
- *
- * @param <T> the type of the message
+ * The thread formatter used to format the thread info when logging.
  */
-public interface MessageFormatter<T> {
-
-    /**
-     * Format the data.
-     *
-     * @param data the data to format
-     * @return the formatted string data
-     */
-    String format(T data);
+public interface ThreadFormatter extends Formatter<Thread> {
 }

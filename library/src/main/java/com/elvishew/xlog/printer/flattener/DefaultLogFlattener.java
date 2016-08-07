@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.formatter.log;
+package com.elvishew.xlog.printer.flattener;
 
 import com.elvishew.xlog.LogLevel;
 
 /**
  * Simply join the timestamp, log level, tag and message together.
  */
-public class DefaultLogFormatter implements LogFormatter {
+public class DefaultLogFlattener implements LogFlattener {
 
     @Override
-    public String format(int logLevel, String tag, String message, long timestamp) {
-        return new StringBuilder(tag.length() + message.length() + 20)
-                .append(Long.toString(timestamp))
-                .append('\t')
-                .append(LogLevel.getShortLevelName(logLevel))
-                .append('\t')
-                .append(tag)
-                .append('\t')
-                .append(message)
-                .toString();
+    public String flatten(int logLevel, String tag, String message) {
+        return Long.toString(System.currentTimeMillis())
+                + '|' + LogLevel.getShortLevelName(logLevel)
+                + '|' + tag
+                + '|' + message;
     }
 }

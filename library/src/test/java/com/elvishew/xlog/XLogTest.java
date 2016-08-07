@@ -16,13 +16,11 @@
 
 package com.elvishew.xlog;
 
-import com.elvishew.xlog.border.BorderConfiguration;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
-import com.elvishew.xlog.formatter.message.method.MethodFormatter;
-import com.elvishew.xlog.formatter.message.method.MethodInfo;
+import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
-import com.elvishew.xlog.printer.MessageBorderedPrinter;
-import com.elvishew.xlog.printer.Printer;
+import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
+import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,46 +43,84 @@ public class XLogTest {
 
     private static final String CUSTOM_PRINTER_MSG_PREFIX = "message from custom printer - ";
 
-    private SimpleLogPrinter logPrinter;
-
     private List<LogItem> logsContainer = new ArrayList<>();
 
     @Before
     public void setup() {
-        logPrinter = new SimpleLogPrinter(logsContainer);
+        XLogUtil.beforeTest();
         XLog.init(VERBOSE,
                 new LogConfiguration.Builder().tag(DEFAULT_TAG).build(),
-                logPrinter);
+                new ContainerPrinter(logsContainer));
     }
 
     @Test
-    public void infoSimple() {
+    public void testSimpleLogging() {
         XLog.i(MESSAGE);
         assertLog(INFO, DEFAULT_TAG, MESSAGE);
     }
 
     @Test
-    public void infoCustomTag() {
+    public void testTag() {
+        XLog.i(MESSAGE);
+        assertLog(INFO, DEFAULT_TAG, MESSAGE);
+
+        logsContainer.clear();
         XLog.tag(CUSTOM_TAG).i(MESSAGE);
         assertLog(INFO, CUSTOM_TAG, MESSAGE);
     }
 
     @Test
-    public void infoCustomPrinter() {
-        XLog.printers(
-                new SimpleLogPrinter(logsContainer) {
+    public void testThread() {
+        XLog.t().t().i("Message with thread info");
+        boolean result = (logsContainer.size() == 1
+                && logsContainer.get(0).msg.contains("Thread: "));
+        assertTrue("No thread info found", result);
 
-                    @Override
-                    protected LogItem onPrint(int logLevel, String tag, String msg) {
-                        return super.onPrint(logLevel, tag, CUSTOM_PRINTER_MSG_PREFIX + msg);
-                    }
-                })
-                .i(MESSAGE);
-        assertLog(INFO, DEFAULT_TAG, CUSTOM_PRINTER_MSG_PREFIX + MESSAGE);
+        logsContainer.clear();
+        XLog.t().nt().i("Message without thread info");
+        result = (logsContainer.size() == 1
+                && !logsContainer.get(0).msg.contains("Thread: "));
+        assertTrue("Thread info found", result);
     }
 
     @Test
-    public void jsonCustomFormatter() {
+    public void testStackTrace() {
+        XLog.st(1).i("Message with stack trace, depth 1");
+        boolean result = (logsContainer.size() == 1
+                && logsContainer.get(0).msg.contains("\t─ "));
+        assertTrue("No stack trace found", result);
+
+        logsContainer.clear();
+        XLog.st(2).i("Message with stack trace, depth 2");
+        result = (logsContainer.size() == 1
+                && logsContainer.get(0).msg.contains("\t├ "));
+        assertTrue("No stack trace found", result);
+
+        logsContainer.clear();
+        XLog.nst().i("Message without stack trace");
+        result = (logsContainer.size() == 1
+                && !logsContainer.get(0).msg.contains("\t├ "));
+        assertTrue("Stack trace found", result);
+    }
+
+    @Test
+    public void testBorder() {
+        XLog.b().i("Message with a border");
+        boolean result = (logsContainer.size() == 1
+                && logsContainer.get(0).msg.startsWith("╔═══")
+                && logsContainer.get(0).msg.endsWith("════"));
+        assertTrue("No bordered log found", result);
+
+        logsContainer.clear();
+        XLog.nb().i("Message without a border");
+        result = (logsContainer.size() == 1
+                && !logsContainer.get(0).msg.startsWith("╔═══")
+                && !logsContainer.get(0).msg.endsWith("════"));
+        assertTrue("Bordered log found", result);
+    }
+
+    @Test
+    public void testCustomJsonFormatter() {
         XLog.jsonFormatter(
                 new JsonFormatter() {
 
@@ -98,7 +134,7 @@ public class XLogTest {
     }
 
     @Test
-    public void xmlCustomFormatter() {
+    public void testCustomXmlFormatter() {
         XLog.xmlFormatter(
                 new XmlFormatter() {
 
@@ -112,54 +148,65 @@ public class XLogTest {
     }
 
     @Test
-    public void methodCustomFormatter() {
-        XLog.methodFormatter(
-                new MethodFormatter() {
-
+    public void testCustomThrowableFormatter() {
+        final String formattedThrowable = "This is a throwable";
+        XLog.throwableFormatter(
+                new ThrowableFormatter() {
                     @Override
-                    public String format(MethodInfo data) {
-                        return data.stackTraceElements[0].getMethodName();
+                    public String format(Throwable data) {
+                        return formattedThrowable;
                     }
                 })
-                .method();
-        assertLog(DEBUG, DEFAULT_TAG, "methodCustomFormatter");
+                .i(MESSAGE, new Throwable());
+        assertLog(INFO, DEFAULT_TAG, MESSAGE + "\n" + formattedThrowable);
     }
 
     @Test
-    public void border() {
-        BorderConfiguration border = new BorderConfiguration.Builder()
-                .enable(true)
-                .horizontalBorderChar('*')
-                .verticalBorderChar('*')
-                .borderLength(10)
-                .build();
-        Printer printer = new MessageBorderedPrinter(border) {
+    public void testCustomThreadFormatter() {
+        final String formattedThread = "This is the thread info";
+        XLog.threadFormatter(
+                new ThreadFormatter() {
+                    @Override
+                    public String format(Thread data) {
+                        return formattedThread;
+                    }
+                })
+                .t()
+                .i(MESSAGE);
+        assertLog(INFO, DEFAULT_TAG, formattedThread + "\n" + MESSAGE);
+    }
 
-            @Override
-            protected void onPrintBorderedMessage(int logLevel, String tag, String msg) {
-                logsContainer.add(new LogItem(logLevel, tag, msg));
-            }
-        };
-        XLog.printers(printer).i("Message with a border");
-        assertLog(INFO, DEFAULT_TAG,
-                "**********" + System.lineSeparator +
-                        "*Message with a border" + System.lineSeparator +
-                        "**********");
+    @Test
+    public void testCustomStackTraceFormatter() {
+        final String formattedStackTrace = "This is the stack trace";
+        XLog.stackTraceFormatter(
+                new StackTraceFormatter() {
+                    @Override
+                    public String format(StackTraceElement[] data) {
+                        return formattedStackTrace;
+                    }
+                })
+                .st(1)
+                .i(MESSAGE);
+        assertLog(INFO, DEFAULT_TAG, formattedStackTrace + "\n" + MESSAGE);
+    }
+
+    @Test
+    public void testCustomPrinter() {
+        XLog.printers(
+                new ContainerPrinter(logsContainer) {
+
+                    @Override
+                    protected LogItem onPrint(LogItem logItem) {
+                        logItem.msg = CUSTOM_PRINTER_MSG_PREFIX + logItem.msg;
+                        return logItem;
+                    }
+                })
+                .i(MESSAGE);
+        assertLog(INFO, DEFAULT_TAG, CUSTOM_PRINTER_MSG_PREFIX + MESSAGE);
     }
 
     private void assertLog(int logLevel, String tag, String msg) {
-        assertLog(new LogItem(logLevel, tag, msg));
-    }
-
-    private void assertLog(LogItem target) {
-        boolean result = false;
-        for (LogItem log : logsContainer) {
-            if ((log.logLevel == target.logLevel)
-                    && log.tag.equals(target.tag)
-                    && log.msg.equals(target.msg)) {
-                result = true;
-            }
-        }
-        assertTrue("Missing log: " + target, result);
+        AssertUtil.assertHasLog(logsContainer, new LogItem(logLevel, tag, msg));
     }
 }

@@ -16,13 +16,23 @@
 
 package com.elvishew.xlog.util;
 
-import com.elvishew.xlog.System;
+import com.elvishew.xlog.XLog;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.UnknownHostException;
 
+/**
+ * Utility related with stack trace.
+ */
 public class StackTraceUtil {
+
+    private static final String XLOG_CLASS_PREFIX;
+
+    static {
+        String xlogClassName = XLog.class.getName();
+        XLOG_CLASS_PREFIX = xlogClassName.substring(0, xlogClassName.lastIndexOf('.') + 1);
+    }
 
     /**
      * Get a loggable stack trace from a Throwable
@@ -51,15 +61,55 @@ public class StackTraceUtil {
         return sw.toString();
     }
 
-    public static String getCallStackTraceString(StackTraceElement[] callStack, int ignoredStackTraceDepth) {
-        StringBuilder sb = new StringBuilder(256);
-        if (callStack != null) {
-            for (int i = ignoredStackTraceDepth; i < callStack.length; i++) {
-                sb.append("\tat ");
-                sb.append(callStack[i].toString());
-                sb.append(System.lineSeparator);
+    /**
+     * Get the real stack trace and then crop it with a max depth.
+     *
+     * @param stackTrace the full stack trace
+     * @param maxDepth   the max depth of real stack trace that will be cropped, 0 means no limitation
+     * @return the cropped real stack trace
+     */
+    public static StackTraceElement[] getCroppedRealStackTrack(StackTraceElement[] stackTrace,
+                                                               int maxDepth) {
+        return cropStackTrace(getRealStackTrack(stackTrace), maxDepth);
+    }
+
+    /**
+     * Get the real stack trace, all elements that come from XLog library would be dropped.
+     *
+     * @param stackTrace the full stack trace
+     * @return the real stack trace, all elements come from system and library user
+     */
+    private static StackTraceElement[] getRealStackTrack(StackTraceElement[] stackTrace) {
+        int ignoreDepth = 0;
+        int allDepth = stackTrace.length;
+        for (int i = 0; i < allDepth; i++) {
+            if (!stackTrace[i].getClassName().startsWith(XLOG_CLASS_PREFIX)) {
+                ignoreDepth = i;
+                break;
             }
         }
-        return sb.toString();
+        int realDepth = allDepth - ignoreDepth;
+        StackTraceElement[] realStack = new StackTraceElement[realDepth];
+        System.arraycopy(stackTrace, ignoreDepth, realStack, 0, realDepth);
+        return realStack;
+    }
+
+    /**
+     * Crop the stack trace with a max depth.
+     *
+     * @param callStack the original stack trace
+     * @param maxDepth  the max depth of real stack trace that will be cropped,
+     *                  0 means no limitation
+     * @return the cropped stack trace
+     */
+    private static StackTraceElement[] cropStackTrace(StackTraceElement[] callStack,
+                                                      int maxDepth) {
+        int realDepth = callStack.length;
+        if (maxDepth > 0) {
+            realDepth = Math.min(maxDepth, realDepth);
+        }
+        StackTraceElement[] realStack = new StackTraceElement[realDepth];
+        System.arraycopy(callStack, 0, realStack, 0, realDepth);
+        return realStack;
     }
 }

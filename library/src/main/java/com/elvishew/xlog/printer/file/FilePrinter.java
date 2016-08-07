@@ -16,14 +16,11 @@
 
 package com.elvishew.xlog.printer.file;
 
-import com.elvishew.xlog.formatter.DefaultFormatterFactory;
-import com.elvishew.xlog.formatter.log.LogFormatter;
-import com.elvishew.xlog.printer.MessageFormattedPrinter;
+import com.elvishew.xlog.DefaultsFactory;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
-import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
-import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
+import com.elvishew.xlog.printer.flattener.LogFlattener;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,11 +30,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 /**
- * {@link Printer} using file system. When print a log, it will print it to the specified file.
+ * Log {@link Printer} using file system. When print a log, it will print it to the specified file.
  * <p>
  * Use the {@link Builder} to construct a {@link FilePrinter} object.
  */
-public class FilePrinter extends MessageFormattedPrinter {
+public class FilePrinter implements Printer {
 
     /**
      * The folder path of log file.
@@ -55,9 +52,9 @@ public class FilePrinter extends MessageFormattedPrinter {
     private final BackupStrategy backupStrategy;
 
     /**
-     * The log formatter when print a log.
+     * The log flattener when print a log.
      */
-    private LogFormatter logFormatter;
+    private LogFlattener logFlattener;
 
     /**
      * Log writer.
@@ -78,16 +75,16 @@ public class FilePrinter extends MessageFormattedPrinter {
         folderPath = builder.folderPath;
         fileNameGenerator = builder.fileNameGenerator;
         backupStrategy = builder.backupStrategy;
-        logFormatter = builder.logFormatter;
+        logFlattener = builder.logFlattener;
 
         checkLogFolder();
     }
 
     @Override
-    protected void onPrintFormattedMessage(int logLevel, String tag, String msg) {
-        long now = System.currentTimeMillis();
+    public void println(int logLevel, String tag, String msg) {
         if (lastFileName == null || fileNameGenerator.isFileNameChangeable()) {
-            String newFileName = fileNameGenerator.generateFileName(logLevel, now);
+            String newFileName = fileNameGenerator.generateFileName(logLevel,
+                    System.currentTimeMillis());
             if (newFileName == null || newFileName.trim().length() == 0) {
                 throw new IllegalArgumentException("File name should not be empty.");
             }
@@ -119,8 +116,8 @@ public class FilePrinter extends MessageFormattedPrinter {
             }
         }
         try {
-            String formattedLog = logFormatter.format(logLevel, tag, msg, now);
-            mBufferedWriter.write(formattedLog);
+            String flattenedLog = logFlattener.flatten(logLevel, tag, msg);
+            mBufferedWriter.write(flattenedLog);
             mBufferedWriter.newLine();
             mBufferedWriter.flush();
         } catch (IOException e) {
@@ -173,10 +170,6 @@ public class FilePrinter extends MessageFormattedPrinter {
      */
     public static class Builder {
 
-        private static final String DEFAULT_LOG_FILE_NAME = "log";
-
-        private static final long DEFAULT_LOG_FILE_MAX_SIZE = 1 * 1024 * 1024; // 1M bytes;
-
         /**
          * The folder path of log file.
          */
@@ -193,9 +186,9 @@ public class FilePrinter extends MessageFormattedPrinter {
         BackupStrategy backupStrategy;
 
         /**
-         * The log formatter when print a log.
+         * The log flattener when print a log.
          */
-        LogFormatter logFormatter;
+        LogFlattener logFlattener;
 
         /**
          * Construct a builder.
@@ -229,13 +222,13 @@ public class FilePrinter extends MessageFormattedPrinter {
         }
 
         /**
-         * Set the log formatter when print a log.
+         * Set the log flattener when print a log.
          *
-         * @param logFormatter the log formatter when print a log
+         * @param logFlattener the log flattener when print a log
          * @return the builder
          */
-        public Builder logFormatter(LogFormatter logFormatter) {
-            this.logFormatter = logFormatter;
+        public Builder logFormatter(LogFlattener logFlattener) {
+            this.logFlattener = logFlattener;
             return this;
         }
 
@@ -251,13 +244,13 @@ public class FilePrinter extends MessageFormattedPrinter {
 
         private void fillEmptyFields() {
             if (fileNameGenerator == null) {
-                fileNameGenerator = new ChangelessFileNameGenerator(DEFAULT_LOG_FILE_NAME);
+                fileNameGenerator = DefaultsFactory.createFileNameGenerator();
             }
             if (backupStrategy == null) {
-                backupStrategy = new FileSizeBackupStrategy(DEFAULT_LOG_FILE_MAX_SIZE);
+                backupStrategy = DefaultsFactory.createBackupStrategy();
             }
-            if (logFormatter == null) {
-                logFormatter = DefaultFormatterFactory.createLogFormatter();
+            if (logFlattener == null) {
+                logFlattener = DefaultsFactory.createLogFlattener();
             }
         }
     }

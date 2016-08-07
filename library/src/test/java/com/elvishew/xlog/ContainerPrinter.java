@@ -16,27 +16,27 @@
 
 package com.elvishew.xlog;
 
-import com.elvishew.xlog.printer.MessageFormattedPrinter;
+import com.elvishew.xlog.printer.Printer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleLogPrinter extends MessageFormattedPrinter {
+public class ContainerPrinter implements Printer {
 
     private List<LogItem> logsContainers = new ArrayList<>();
 
-    public SimpleLogPrinter(List<LogItem> logsContainer) {
+    public ContainerPrinter(List<LogItem> logsContainer) {
         this.logsContainers = logsContainer;
     }
 
     @Override
-    protected void onPrintFormattedMessage(int logLevel, String tag, String msg) {
-        LogItem log = onPrint(logLevel, tag, msg);
+    public void println(int logLevel, String tag, String msg) {
+        LogItem log = onPrint(new LogItem(logLevel, tag, msg));
         afterPrint(log);
     }
 
-    protected LogItem onPrint(int logLevel, String tag, String msg) {
-        return new LogItem(logLevel, tag, msg);
+    protected LogItem onPrint(LogItem logItem) {
+        return logItem;
     }
 
     private void afterPrint(LogItem log) {

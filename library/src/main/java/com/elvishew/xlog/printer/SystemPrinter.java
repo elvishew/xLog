@@ -16,35 +16,38 @@
 
 package com.elvishew.xlog.printer;
 
-import com.elvishew.xlog.formatter.DefaultFormatterFactory;
-import com.elvishew.xlog.formatter.log.LogFormatter;
+import com.elvishew.xlog.DefaultsFactory;
+import com.elvishew.xlog.printer.flattener.LogFlattener;
 
-public class SystemPrinter extends MessageFormattedPrinter {
+/**
+ * Log {@link Printer} using {@code System.out.println(String)}.
+ */
+public class SystemPrinter implements Printer {
 
     /**
-     * The log formatter when print a log.
+     * The log flattener when print a log.
      */
-    private LogFormatter logFormatter;
+    private LogFlattener logFlattener;
 
     /**
      * Constructor.
      */
     public SystemPrinter() {
-        this.logFormatter = DefaultFormatterFactory.createLogFormatter();
+        this.logFlattener = DefaultsFactory.createLogFlattener();
     }
 
     /**
      * Constructor.
      *
-     * @param logFormatter the log formatter when print a log
+     * @param logFlattener the log flattener when print a log
      */
-    public SystemPrinter(LogFormatter logFormatter) {
-        this.logFormatter = logFormatter;
+    public SystemPrinter(LogFlattener logFlattener) {
+        this.logFlattener = logFlattener;
     }
 
     @Override
-    protected void onPrintFormattedMessage(int logLevel, String tag, String msg) {
-        String formattedLog = logFormatter.format(logLevel, tag, msg, System.currentTimeMillis());
-        System.out.println(formattedLog);
+    public void println(int logLevel, String tag, String msg) {
+        String flattenedLog = logFlattener.flatten(logLevel, tag, msg);
+        System.out.println(flattenedLog);
     }
 }

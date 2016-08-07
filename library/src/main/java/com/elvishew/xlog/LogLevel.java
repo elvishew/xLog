@@ -20,12 +20,10 @@ package com.elvishew.xlog;
  * Log level indicate how important the log is.
  * <p>
  * Usually when we log a message, we also specify the log level explicitly or implicitly,
- * so if we setup a log level using Log#init, all the logs which is with a log level
+ * so if we setup a log level using <code>XLog.init(...)</code>, all the logs which is with a log level
  * smaller than the setup one would not be printed.
  * <p>
  * The priority of log levels is: {@link #VERBOSE} &lt; {@link #DEBUG} &lt; {@link #INFO} &lt; {@link #WARN} &lt; {@link #ERROR}.
- * <br>There are some log levels just for convenience, such as {@link #JSON}, {@link #XML} and
- * {@link #METHOD}, they all have the same log level {@link #DEBUG}
  * <br>And there are two special log levels which are usually used for Log#init:
  * {@link #NONE} and {@link #ALL}, {@link #NONE} for not printing any log and {@link #ALL} for
  * printing all logs.
@@ -35,9 +33,6 @@ package com.elvishew.xlog;
  * @see #INFO
  * @see #WARN
  * @see #ERROR
- * @see #JSON
- * @see #XML
- * @see #METHOD
  * @see #NONE
  * @see #ALL
  */
@@ -67,21 +62,6 @@ public class LogLevel {
      * Log level for Log.e.
      */
     public static final int ERROR = android.util.Log.ERROR;
-
-    /**
-     * Log level for Log.json, same priority with {@link #DEBUG}.
-     */
-    public static final int JSON = DEBUG;
-
-    /**
-     * Log level for Log.xml, same priority with {@link #DEBUG}.
-     */
-    public static final int XML = DEBUG;
-
-    /**
-     * Log level for Log.method, same priority with {@link #DEBUG}.
-     */
-    public static final int METHOD = DEBUG;
 
     /**
      * Log level for Log#init, printing all logs.

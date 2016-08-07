@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,9 @@
 
 package com.elvishew.xlog;
 
-import android.annotation.TargetApi;
-import android.os.Build;
+public class XLogUtil {
 
-/**
- * System environment.
- */
-public class System {
-
-    /**
-     * The line separator of system.
-     */
-    public static String lineSeparator = lineSeparator();
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static String lineSeparator() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return java.lang.System.lineSeparator();
-        } else {
-            return "\n";
-        }
+    public static void beforeTest() {
+        XLog.sIsInitialized = false;
     }
 }

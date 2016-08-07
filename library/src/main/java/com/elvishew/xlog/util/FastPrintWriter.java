@@ -18,7 +18,7 @@ package com.elvishew.xlog.util;
 
 import android.util.Printer;
 
-import com.elvishew.xlog.System;
+import com.elvishew.xlog.SystemCompat;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -34,7 +34,7 @@ import java.nio.charset.CodingErrorAction;
 
 public class FastPrintWriter extends PrintWriter {
 
-    private static final String LINE_SEPARATOR = System.lineSeparator;
+    private static final String LINE_SEPARATOR = SystemCompat.lineSeparator;
 
     private static class DummyWriter extends Writer {
         @Override
@@ -324,7 +324,7 @@ public class FastPrintWriter extends PrintWriter {
             flushLocked();
             pos = mPos;
         }
-        java.lang.System.arraycopy(buf, i, mText, pos, length);
+        System.arraycopy(buf, i, mText, pos, length);
         mPos = pos + length;
     }
 

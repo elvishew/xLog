@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.formatter.message.throwable;
-
-import com.elvishew.xlog.formatter.Formatter;
+package com.elvishew.xlog.formatter;
 
 /**
- * The throwable formatter used to format the throwable when log a message with throwable.
+ * A formatter is used for format the data that is not a string, or that is a string but not well
+ * formatted, we should format the data to a well formatted string so printers can print them.
+ *
+ * @param <T> the type of the data
  */
-public interface ThrowableFormatter extends Formatter<Throwable> {
+public interface Formatter<T> {
+
+    /**
+     * Format the data to a readable and loggable string.
+     *
+     * @param data the data to format
+     * @return the formatted string data
+     */
+    String format(T data);
 }

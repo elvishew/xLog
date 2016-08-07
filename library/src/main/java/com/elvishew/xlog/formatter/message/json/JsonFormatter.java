@@ -16,10 +16,10 @@
 
 package com.elvishew.xlog.formatter.message.json;
 
-import com.elvishew.xlog.formatter.message.MessageFormatter;
+import com.elvishew.xlog.formatter.Formatter;
 
 /**
  * The JSON formatter used to format the JSON string when log a JSON string.
  */
-public interface JsonFormatter extends MessageFormatter<String> {
+public interface JsonFormatter extends Formatter<String> {
 }

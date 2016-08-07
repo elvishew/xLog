@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog;
 
-import com.elvishew.xlog.printer.MessageFormattedPrinter;
+import com.elvishew.xlog.printer.Printer;
 
 import org.junit.Test;
 
@@ -41,13 +41,13 @@ public class ConcurrentTest {
         List<SequencedLog> logsContainer4 = new ArrayList<>();
         List<SequencedLog> logsContainer5 = new ArrayList<>();
 
-        LogPrinter logPrinter1 = new LogPrinter(logsContainer1);
-        LogPrinter logPrinter2 = new LogPrinter(logsContainer2);
-        LogPrinter logPrinter3 = new LogPrinter(logsContainer3);
-        LogPrinter logPrinter4 = new LogPrinter(logsContainer4);
-        LogPrinter logPrinter5 = new LogPrinter(logsContainer5);
+        ThreadSafePrinter printer1 = new ThreadSafePrinter(logsContainer1);
+        ThreadSafePrinter printer2 = new ThreadSafePrinter(logsContainer2);
+        ThreadSafePrinter printer3 = new ThreadSafePrinter(logsContainer3);
+        ThreadSafePrinter printer4 = new ThreadSafePrinter(logsContainer4);
+        ThreadSafePrinter printer5 = new ThreadSafePrinter(logsContainer5);
 
-        XLog.init(VERBOSE, logPrinter1, logPrinter2, logPrinter3, logPrinter4, logPrinter5);
+        XLog.init(VERBOSE, printer1, printer2, printer3, printer4, printer5);
 
         // 4 threads print logs concurrently.
 
@@ -125,18 +125,18 @@ public class ConcurrentTest {
         assertTrue("Expect " + expected + " but found " + log, expected.seq == log.seq);
     }
 
-    private static class LogPrinter extends MessageFormattedPrinter {
+    private static class ThreadSafePrinter implements Printer {
 
         int seq;
 
         private List<SequencedLog> logsContainers;
 
-        public LogPrinter(List<SequencedLog> logsContainer) {
+        public ThreadSafePrinter(List<SequencedLog> logsContainer) {
             this.logsContainers = logsContainer;
         }
 
         @Override
-        protected void onPrintFormattedMessage(int logLevel, String tag, String msg) {
+        public void println(int logLevel, String tag, String msg) {
             synchronized (this) {
                 logsContainers.add(new SequencedLog(seq++, msg));
             }

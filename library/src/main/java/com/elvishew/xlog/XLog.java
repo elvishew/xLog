@@ -18,11 +18,12 @@ package com.elvishew.xlog;
 
 import android.app.Application;
 
+import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
-import com.elvishew.xlog.formatter.message.method.MethodFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
-import com.elvishew.xlog.printer.AndroidPrinter;
+import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
+import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.PrinterSet;
 import com.elvishew.xlog.util.StackTraceUtil;
@@ -36,13 +37,15 @@ import com.elvishew.xlog.util.StackTraceUtil;
  * <b>How to use in a general way:</b>
  * <p>
  * <b>1. Initial the log system.</b>
- * <br>Using one of {@link XLog#init(int)}, {@link XLog#init(int, LogConfiguration)} and
- * {@link XLog#init(int, LogConfiguration, Printer...)}, that will setup a {@link LogConfiguration}
- * for a global usage.
+ * <br>Using one of
+ * <br>{@link XLog#init(int)},
+ * <br>{@link XLog#init(int, LogConfiguration)}
+ * <br>{@link XLog#init(int, LogConfiguration, Printer...)},
+ * <br>that will setup a {@link LogConfiguration} for a global usage.
  * If you want to use a customized configuration instead of the global one to log something, you can
  * start a customization logging.
  * <p>
- * <br>For android, a best place to do the initialization is {@link Application#onCreate()}.
+ * For android, a best place to do the initialization is {@link Application#onCreate()}.
  * <p>
  * <b>2. Start to log.</b>
  * <br>{@link #v(String, Object...)}, {@link #v(String)} and {@link #v(String, Throwable)} are for
@@ -55,19 +58,28 @@ import com.elvishew.xlog.util.StackTraceUtil;
  * logging a {@link LogLevel#WARN} log.
  * <br>{@link #e(String, Object...)}, {@link #e(String)} and {@link #e(String, Throwable)} are for
  * logging a {@link LogLevel#ERROR} log.
- * <br>{@link #json(String)} is for logging a {@link LogLevel#JSON} log.
- * <br>{@link #xml(String)} is for logging a {@link LogLevel#XML} log.
- * <br>{@link #method(Object...)} is for logging a {@link LogLevel#METHOD} log.
- * <br>{@link #stack()}, {@link #stack(String, Object...)} and {@link #stack(String)} are for
- * logging a calling stack.
+ * <br>{@link #json(String)} is for logging a {@link LogLevel#DEBUG} JSON log.
+ * <br>{@link #xml(String)} is for logging a {@link LogLevel#DEBUG} XML log.
  * <p>
  * <b>How to use in a dynamically customizing way after initializing the log system:</b>
  * <p>
  * <b>1. Start a customization.</b>
- * <br>Call any of {@link #tag(String)}, {@link #jsonFormatter(JsonFormatter)},
- * {@link #xmlFormatter(XmlFormatter)}, {@link #methodFormatter(MethodFormatter)},
- * {@link #throwableFormatter(ThrowableFormatter)} and {@link #printers(Printer...)}, it will return
- * a {@link Logger.Builder} object.
+ * <br>Call any of
+ * <br>{@link #tag(String)},
+ * <br>{@link #t()},
+ * <br>{@link #nt()},
+ * <br>{@link #st(int)},
+ * <br>{@link #nst()},
+ * <br>{@link #b()},
+ * <br>{@link #nb()},
+ * <br>{@link #jsonFormatter(JsonFormatter)},
+ * <br>{@link #xmlFormatter(XmlFormatter)},
+ * <br>{@link #threadFormatter(ThreadFormatter)},
+ * <br>{@link #stackTraceFormatter(StackTraceFormatter)},
+ * <br>{@link #throwableFormatter(ThrowableFormatter)}
+ * <br>{@link #borderFormatter(BorderFormatter)}
+ * <br>{@link #printers(Printer...)},
+ * <br>it will return a {@link Logger.Builder} object.
  * <p>
  * <b>2. Finish the customization.</b>
  * <br>Continue to setup other fields of the returned {@link Logger.Builder}.
@@ -119,7 +131,7 @@ public class XLog {
      */
     static int sLogLevel = LogLevel.ALL;
 
-    private static boolean sIsInitialized;
+    static boolean sIsInitialized;
 
     /**
      * Prevent instance.
@@ -129,22 +141,28 @@ public class XLog {
 
     /**
      * Initialize log system, should be called only once.
+     *
+     * @param logLevel the log level, logs with a lower level than which would not be printed
      */
     public static void init(int logLevel) {
-        init(logLevel, new LogConfiguration.Builder().build(), new AndroidPrinter());
+        init(logLevel, new LogConfiguration.Builder().build(), DefaultsFactory.createPrinter());
     }
 
     /**
      * Initialize log system, should be called only once.
      *
+     * @param logLevel the log level, logs with a lower level than which would not be printed
      * @param logConfiguration the log configuration
      */
     public static void init(int logLevel, LogConfiguration logConfiguration) {
-        init(logLevel, logConfiguration, new AndroidPrinter());
+        init(logLevel, logConfiguration, DefaultsFactory.createPrinter());
     }
 
     /**
      * Initialize log system, should be called only once.
+     *
+     * @param logLevel the log level, logs with a lower level than which would not be printed
+     * @param printers the printers, each log would be printed by all of the printers
      */
     public static void init(int logLevel, Printer... printers) {
         init(logLevel, new LogConfiguration.Builder().build(), printers);
@@ -153,15 +171,24 @@ public class XLog {
     /**
      * Initialize log system, should be called only once.
      *
+     * @param logLevel the log level, logs with a lower level than which would not be printed
      * @param logConfiguration the log configuration
+     * @param printers the printers, each log would be printed by all of the printers
      */
     public static void init(int logLevel, LogConfiguration logConfiguration, Printer... printers) {
         if (sIsInitialized) {
             throw new IllegalStateException(
-                    "XLog is already initialized, do not initialize again.");
+                    "XLog is already initialized, do not initialize again");
         }
+        sIsInitialized = true;
+
         sLogLevel = logLevel;
+
+        if (logConfiguration == null) {
+            throw new IllegalArgumentException("Please specify a LogConfiguration");
+        }
         sLogConfiguration = logConfiguration;
+
         sPrinter = new PrinterSet(printers);
 
         sLogger = new Logger(sLogConfiguration, sPrinter);
@@ -175,6 +202,60 @@ public class XLog {
      */
     public static Logger.Builder tag(String tag) {
         return new Logger.Builder().tag(tag);
+    }
+
+    /**
+     * Start to customize a {@link Logger} and enable thread info.
+     *
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder t() {
+        return new Logger.Builder().t();
+    }
+
+    /**
+     * Start to customize a {@link Logger} and disable thread info.
+     *
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder nt() {
+        return new Logger.Builder().nt();
+    }
+
+    /**
+     * Start to customize a {@link Logger} and enable stack trace.
+     *
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder st(int depth) {
+        return new Logger.Builder().st(depth);
+    }
+
+    /**
+     * Start to customize a {@link Logger} and disable stack trace.
+     *
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder nst() {
+        return new Logger.Builder().nst();
+    }
+
+    /**
+     * Start to customize a {@link Logger} and enable border.
+     *
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder b() {
+        return new Logger.Builder().b();
+    }
+
+    /**
+     * Start to customize a {@link Logger} and disable border.
+     *
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder nb() {
+        return new Logger.Builder().nb();
     }
 
     /**
@@ -198,16 +279,6 @@ public class XLog {
     }
 
     /**
-     * Start to customize a {@link Logger} and set the {@link MethodFormatter}.
-     *
-     * @param methodFormatter the {@link MethodFormatter} to customize
-     * @return the {@link Logger.Builder} to build the a {@link Logger}
-     */
-    public static Logger.Builder methodFormatter(MethodFormatter methodFormatter) {
-        return new Logger.Builder().methodFormatter(methodFormatter);
-    }
-
-    /**
      * Start to customize a {@link Logger} and set the {@link ThrowableFormatter}.
      *
      * @param throwableFormatter the {@link ThrowableFormatter} to customize
@@ -215,6 +286,36 @@ public class XLog {
      */
     public static Logger.Builder throwableFormatter(ThrowableFormatter throwableFormatter) {
         return new Logger.Builder().throwableFormatter(throwableFormatter);
+    }
+
+    /**
+     * Start to customize a {@link Logger} and set the {@link ThreadFormatter}.
+     *
+     * @param threadFormatter the {@link ThreadFormatter} to customize
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder threadFormatter(ThreadFormatter threadFormatter) {
+        return new Logger.Builder().threadFormatter(threadFormatter);
+    }
+
+    /**
+     * Start to customize a {@link Logger} and set the {@link StackTraceFormatter}.
+     *
+     * @param stackTraceFormatter the {@link StackTraceFormatter} to customize
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder stackTraceFormatter(StackTraceFormatter stackTraceFormatter) {
+        return new Logger.Builder().stackTraceFormatter(stackTraceFormatter);
+    }
+
+    /**
+     * Start to customize a {@link Logger} and set the {@link BorderFormatter}.
+     *
+     * @param borderFormatter the {@link BorderFormatter} to customize
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static Logger.Builder borderFormatter(BorderFormatter borderFormatter) {
+        return new Logger.Builder().borderFormatter(borderFormatter);
     }
 
     /**
@@ -388,41 +489,6 @@ public class XLog {
      */
     public static void xml(String xml) {
         sLogger.xml(xml);
-    }
-
-    /**
-     * Log a method, with level {@link LogLevel#DEBUG} by default.
-     *
-     * @param arguments the arguments of the method to log
-     */
-    public static void method(Object... arguments) {
-        sLogger.method(1, arguments);
-    }
-
-    /**
-     * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
-     */
-    public static void stack() {
-        sLogger.stack("", 1);
-    }
-
-    /**
-     * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
-     *
-     * @param format the format of the extra message to log
-     * @param args   the arguments of the extra message to log
-     */
-    public static void stack(String format, Object... args) {
-        sLogger.stack(String.format(format, args), 1);
-    }
-
-    /**
-     * Log a stack trace, with level {@link LogLevel#DEBUG} by default.
-     *
-     * @param msg the extra message to log
-     */
-    public static void stack(String msg) {
-        sLogger.stack(msg, 1);
     }
 
     /**

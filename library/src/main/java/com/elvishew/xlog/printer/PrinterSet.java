@@ -16,57 +16,27 @@
 
 package com.elvishew.xlog.printer;
 
-import com.elvishew.xlog.LogConfiguration;
-import com.elvishew.xlog.formatter.message.method.MethodInfo;
-
 /**
- * Represents a group of Printers that should used to print the single log in the same time.
+ * Represents a group of Printers that should used to print logs in the same time, each printer
+ * may probably print the log to different place.
  */
 public class PrinterSet implements Printer {
 
     private Printer[] printers;
 
     /**
-     * Constructor, pass printers in and will use all these printers to print the same log.
+     * Constructor, pass printers in and will use all these printers to print the same logs.
      *
-     * @param printers the printers used to print the same log
+     * @param printers the printers used to print the same logs
      */
     public PrinterSet(Printer... printers) {
         this.printers = printers;
     }
 
     @Override
-    public void println(int logLevel, LogConfiguration logConfiguration, String msg) {
+    public void println(int logLevel, String tag, String msg) {
         for (Printer printer : printers) {
-            printer.println(logLevel, logConfiguration, msg);
-        }
-    }
-
-    @Override
-    public void println(int logLevel, LogConfiguration logConfiguration, String msg, Throwable tr) {
-        for (Printer printer : printers) {
-            printer.println(logLevel, logConfiguration, msg, tr);
-        }
-    }
-
-    @Override
-    public void json(LogConfiguration logConfiguration, String json) {
-        for (Printer printer : printers) {
-            printer.json(logConfiguration, json);
-        }
-    }
-
-    @Override
-    public void xml(LogConfiguration logConfiguration, String xml) {
-        for (Printer printer : printers) {
-            printer.xml(logConfiguration, xml);
-        }
-    }
-
-    @Override
-    public void method(LogConfiguration logConfiguration, MethodInfo methodInfo) {
-        for (Printer printer : printers) {
-            printer.method(logConfiguration, methodInfo);
+            printer.println(logLevel, tag, msg);
         }
     }
 }

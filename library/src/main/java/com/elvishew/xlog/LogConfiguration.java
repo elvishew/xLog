@@ -16,16 +16,16 @@
 
 package com.elvishew.xlog;
 
-import com.elvishew.xlog.formatter.DefaultFormatterFactory;
+import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
-import com.elvishew.xlog.formatter.message.method.MethodFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
+import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
+import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 
 /**
- * The configuration used for logging, will be passed to every {@link com.elvishew.xlog.printer.Printer}
- * when trying to print any log, the {@link com.elvishew.xlog.printer.Printer} should respect the
- * configuration when printing the log.
+ * The configuration used for logging, always attached to a {@link Logger}, will affect all logs
+ * logged by the {@link Logger}.
  * <p>
  * Use the {@link Builder} to construct a {@link LogConfiguration} object.
  */
@@ -35,6 +35,26 @@ public class LogConfiguration {
      * The tag string.
      */
     public final String tag;
+
+    /**
+     * Whether we should log with thread info.
+     */
+    public final boolean withThread;
+
+    /**
+     * Whether we should log with stack trace.
+     */
+    public final boolean withStackTrace;
+
+    /**
+     * The number of stack trace elements we should log when logging with stack trace.
+     */
+    public final int stackTraceDepth;
+
+    /**
+     * Whether we should log with border.
+     */
+    public final boolean withBorder;
 
     /**
      * The JSON formatter used to format the JSON string when log a JSON string.
@@ -47,21 +67,39 @@ public class LogConfiguration {
     public final XmlFormatter xmlFormatter;
 
     /**
-     * The method formatter used to format the method when log a method.
-     */
-    public final MethodFormatter methodFormatter;
-
-    /**
      * The throwable formatter used to format the throwable when log a message with throwable.
      */
     public final ThrowableFormatter throwableFormatter;
 
+    /**
+     * The thread formatter used to format the thread when logging.
+     */
+    public final ThreadFormatter threadFormatter;
+
+    /**
+     * The stack trace formatter used to format the stack trace when logging.
+     */
+    public final StackTraceFormatter stackTraceFormatter;
+
+    /**
+     * The border formatter used to format the border when logging.
+     */
+    public final BorderFormatter borderFormatter;
+
     /*package*/ LogConfiguration(final Builder builder) {
         tag = builder.tag;
+
+        withThread = builder.withThread;
+        withStackTrace = builder.withStackTrace;
+        stackTraceDepth = builder.stackTraceDepth;
+        withBorder = builder.withBorder;
+
         jsonFormatter = builder.jsonFormatter;
         xmlFormatter = builder.xmlFormatter;
-        methodFormatter = builder.methodFormatter;
         throwableFormatter = builder.throwableFormatter;
+        threadFormatter = builder.threadFormatter;
+        stackTraceFormatter = builder.stackTraceFormatter;
+        borderFormatter = builder.borderFormatter;
     }
 
     /**
@@ -69,12 +107,32 @@ public class LogConfiguration {
      */
     public static class Builder {
 
-        private static final String DEFAULT_TAG = "XLog";
+        private static final String DEFAULT_TAG = "X-LOG";
 
         /**
          * The tag string used when log.
          */
         private String tag = DEFAULT_TAG;
+
+        /**
+         * Whether we should log with thread info.
+         */
+        private boolean withThread;
+
+        /**
+         * Whether we should log with stack trace.
+         */
+        private boolean withStackTrace;
+
+        /**
+         * The number of stack trace elements we should log when logging with stack trace.
+         */
+        private int stackTraceDepth;
+
+        /**
+         * Whether we should log with border.
+         */
+        private boolean withBorder;
 
         /**
          * The JSON formatter used to format the JSON string when log a JSON string.
@@ -87,14 +145,24 @@ public class LogConfiguration {
         private XmlFormatter xmlFormatter;
 
         /**
-         * The method formatter used to format the method when log a method.
-         */
-        private MethodFormatter methodFormatter;
-
-        /**
          * The throwable formatter used to format the throwable when log a message with throwable.
          */
         private ThrowableFormatter throwableFormatter;
+
+        /**
+         * The thread formatter used to format the thread when logging.
+         */
+        private ThreadFormatter threadFormatter;
+
+        /**
+         * The stack trace formatter used to format the stack trace when logging.
+         */
+        private StackTraceFormatter stackTraceFormatter;
+
+        /**
+         * The border formatter used to format the border when logging.
+         */
+        private BorderFormatter borderFormatter;
 
         /**
          * Construct a builder with all default configurations.
@@ -109,10 +177,18 @@ public class LogConfiguration {
          */
         public Builder(LogConfiguration logConfiguration) {
             tag = logConfiguration.tag;
+
+            withThread = logConfiguration.withThread;
+            withStackTrace = logConfiguration.withStackTrace;
+            stackTraceDepth = logConfiguration.stackTraceDepth;
+            withBorder = logConfiguration.withBorder;
+
             jsonFormatter = logConfiguration.jsonFormatter;
             xmlFormatter = logConfiguration.xmlFormatter;
-            methodFormatter = logConfiguration.methodFormatter;
             throwableFormatter = logConfiguration.throwableFormatter;
+            threadFormatter = logConfiguration.threadFormatter;
+            stackTraceFormatter = logConfiguration.stackTraceFormatter;
+            borderFormatter = logConfiguration.borderFormatter;
         }
 
         /**
@@ -123,6 +199,68 @@ public class LogConfiguration {
          */
         public Builder tag(String tag) {
             this.tag = tag;
+            return this;
+        }
+
+        /**
+         * Enable thread info.
+         *
+         * @return the builder
+         */
+        public Builder t() {
+            this.withThread = true;
+            return this;
+        }
+
+        /**
+         * Disable thread info.
+         *
+         * @return the builder
+         */
+        public Builder nt() {
+            this.withThread = false;
+            return this;
+        }
+
+        /**
+         * Enable stack trace.
+         *
+         * @return the builder
+         */
+        public Builder st(int depth) {
+            this.withStackTrace = true;
+            this.stackTraceDepth = depth;
+            return this;
+        }
+
+        /**
+         * Disable stack trace.
+         *
+         * @return the builder
+         */
+        public Builder nst() {
+            this.withStackTrace = false;
+            this.stackTraceDepth = 0;
+            return this;
+        }
+
+        /**
+         * Enable border.
+         *
+         * @return the builder
+         */
+        public Builder b() {
+            this.withBorder = true;
+            return this;
+        }
+
+        /**
+         * Disable border.
+         *
+         * @return the builder
+         */
+        public Builder nb() {
+            this.withBorder = false;
             return this;
         }
 
@@ -149,17 +287,6 @@ public class LogConfiguration {
         }
 
         /**
-         * Set the method formatter used when log a method.
-         *
-         * @param methodFormatter the method formatter used when log a method
-         * @return the builder
-         */
-        public Builder methodFormatter(MethodFormatter methodFormatter) {
-            this.methodFormatter = methodFormatter;
-            return this;
-        }
-
-        /**
          * Set the throwable formatter used when log a message with throwable.
          *
          * @param throwableFormatter the throwable formatter used when log a message with throwable
@@ -167,6 +294,39 @@ public class LogConfiguration {
          */
         public Builder throwableFormatter(ThrowableFormatter throwableFormatter) {
             this.throwableFormatter = throwableFormatter;
+            return this;
+        }
+
+        /**
+         * Set the thread formatter used when logging.
+         *
+         * @param threadFormatter the thread formatter used when logging
+         * @return the builder
+         */
+        public Builder threadFormatter(ThreadFormatter threadFormatter) {
+            this.threadFormatter = threadFormatter;
+            return this;
+        }
+
+        /**
+         * Set the stack trace formatter used when logging.
+         *
+         * @param stackTraceFormatter the stack trace formatter used when logging
+         * @return the builder
+         */
+        public Builder stackTraceFormatter(StackTraceFormatter stackTraceFormatter) {
+            this.stackTraceFormatter = stackTraceFormatter;
+            return this;
+        }
+
+        /**
+         * Set the border formatter used when logging.
+         *
+         * @param borderFormatter the border formatter used when logging
+         * @return the builder
+         */
+        public Builder borderFormatter(BorderFormatter borderFormatter) {
+            this.borderFormatter = borderFormatter;
             return this;
         }
 
@@ -182,16 +342,22 @@ public class LogConfiguration {
 
         private void initEmptyFieldsWithDefaultValues() {
             if (jsonFormatter == null) {
-                jsonFormatter = DefaultFormatterFactory.createJsonFormatter();
+                jsonFormatter = DefaultsFactory.createJsonFormatter();
             }
             if (xmlFormatter == null) {
-                xmlFormatter = DefaultFormatterFactory.createXmlFormatter();
-            }
-            if (methodFormatter == null) {
-                methodFormatter = DefaultFormatterFactory.createMethodFormatter();
+                xmlFormatter = DefaultsFactory.createXmlFormatter();
             }
             if (throwableFormatter == null) {
-                throwableFormatter = DefaultFormatterFactory.createThrowableFormatter();
+                throwableFormatter = DefaultsFactory.createThrowableFormatter();
+            }
+            if (threadFormatter == null) {
+                threadFormatter = DefaultsFactory.createThreadFormatter();
+            }
+            if (stackTraceFormatter == null) {
+                stackTraceFormatter = DefaultsFactory.createStackTraceFormatter();
+            }
+            if (borderFormatter == null) {
+                borderFormatter = DefaultsFactory.createBorderFormatter();
             }
         }
     }
