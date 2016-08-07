@@ -139,9 +139,15 @@ public class FilePrinter implements Printer {
         logFile = new File(folderPath, lastFileName);
         if (!logFile.exists()) {
             try {
+                File parent = logFile.getParentFile();
+                if (!parent.exists()) {
+                    parent.mkdirs();
+                }
                 logFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
+                lastFileName = null;
+                logFile = null;
                 return;
             }
         }
@@ -151,6 +157,8 @@ public class FilePrinter implements Printer {
             mBufferedWriter = new BufferedWriter(osw);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            lastFileName = null;
+            logFile = null;
         }
     }
 
