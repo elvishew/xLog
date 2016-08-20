@@ -2,14 +2,17 @@
 # XLog
 方便可扩展的 Android 和 java 库，可同时在多个通道打印日志，如 Logcat、System.out 和文件。如果你愿意，甚至可以打印到远程服务器（或其他任何地方）。
 
+XLog 能干什么:
+* XML 和 JSON 格式化输出
+* 线程信息
+* 调用栈信息
+* 保存 log 文件（文件名和自动备份策略可灵活配置）
+* 在 Android Studio 中的 log 样式美观
+* 简单易用，扩展性高
+
 ## 依赖
 ```groovy
-repositories {
-    jcenter() // mavenCentral() would work, too
-}
-dependencies {
-  compile 'com.elvishew:xlog:0.1.1'
-}
+compile 'com.elvishew:xlog:0.1.1'
 ```
 
 ## 用法
@@ -25,26 +28,23 @@ XLog.init(LogLevel.ALL,
         new LogConfiguration                                             // 如果没有指定 LogConfiguration，会默认使用 new LogConfiguration.Builder().build()
                 .Builder()                                               // 打印日志时会用到的配置
                 .tag("MY_TAG")                                           // 默认: "XLOG"
+                .t()                                                     // 允许打印线程信息，默认禁止
+                .st(1)                                                   // 允许打印调用栈信息，默认禁止
+                .b()                                                     // Enable border, disabled by default
                 .jsonFormatter(new DefaultJsonFormatter())               // 默认: DefaultJsonFormatter
                 .xmlFormatter(new DefaultXmlFormatter())                 // 默认: DefaultXmlFormatter
-                .methodFormatter(new DefaultMethodFormatter())           // 默认: DefaultMethodFormatter
                 .throwableFormatter(new DefaultThrowableFormatter())     // 默认: DefaultThrowableFormatter
+                .threadFormatter(new DefaultThreadFormatter())           // 默认: DefaultThreadFormatter
+                .stackTraceFormatter(new DefaultStackTraceFormatter())   // 默认: DefaultStackTraceFormatter
+                .borderFormatter(new DefaultBoardFormatter())            // 默认: DefaultBorderFormatter
                 .build(),
-        new AndroidPrinter(                                              // 通过 android.util.Log 打印 log。如果没有指定任何 Printer，会默认使用 AndroidPrinter
-                new BorderConfiguration                                  // 如果没有指定 BorderConfiguration，会默认使用 new BorderConfiguration.Builder().enable(false).build()
-                        .Builder()                                       // 用来装饰日志消息的边框配置
-                        .enable(true)                                    // 默认: false
-                        .horizontalBorderChar('═')                       // 默认: '═'
-                        .verticalBorderChar('║')                         // 默认: '║'
-                        .borderLength(100)                               // 默认: 100
-                        .build()
-        ),
+        new AndroidPrinter(),                                            // 通过 android.util.Log 打印 log。如果没有指定任何 Printer，会默认使用 AndroidPrinter
         new SystemPrinter(),                                             // 通过 System.out.println 打印日志。如果没有指定，则不会使用
         new FilePrinter                                                  // 打印日志到文件。如果没有指定，则不会使用
                 .Builder("/sdcard/xlog/")                                // 保存日志文件的路径
                 .fileNameGenerator(new DateFileNameGenerator())          // 默认: ChangelessFileNameGenerator("log")
                 .backupStrategy(new FileSizeBackupStrategy(1024 * 1024)) // 默认: FileSizeBackupStrategy(1024 * 1024)
-                .logFormatter(new DefaultLogFormatter())                 // 默认: DefaultLogFormatter
+                .logFlattener(new DefaultLogFlattener())                 // 默认: DefaultLogFlattener
                 .build()
 ```
 对于 android，做初始化的最佳地方是 [Application.onCreate()](http://developer.android.com/reference/android/app/Application.html#onCreate())。
@@ -81,14 +81,6 @@ XLog.json(String);
 
 // 打印一个 XML 字符串
 XLog.xml(String);
-
-// 打印一个方法
-XLog.method(Object...);
-
-// 打印一个调用栈
-XLog.stack();
-XLog.stack(String, Object...);
-XLog.stack(String);
 ```
 
 ### 定制用法
@@ -96,10 +88,18 @@ XLog.stack(String);
 调用
 ```java
 XLog.tag(String);
+XLog.t();
+XLog.nt();
+XLog.st(int);
+XLog.nst();
+XLog.b();
+XLog.nb();
 XLog.jsonFormatter(JsonFormatter);
 XLog.xmlFormatter(XmlFormatter);
-XLog.methodFormatter(MethodFormatter);
 XLog.throwableFormatter(ThrowableFormatter);
+XLog.threadFormatter(ThreadFormatter);
+XLog.stackTraceFormatter(StackTraceFormatter);
+XLog.borderFormatter(BorderFormatter);
 XLog.printers(Printer...);
 ```
 中的任何一个方法以创建一个 [Logger].Builder 对象。
@@ -108,10 +108,18 @@ XLog.printers(Printer...);
 继续定制 [Logger].Builder 对象的其他参数。
 ```java
 builer.tag(String);
+builer.t();
+builer.nt();
+builer.st(int);
+builer.nst();
+builer.b();
+builer.nb();
 builer.jsonFormatter(JsonFormatter);
 builer.xmlFormatter(XmlFormatter);
-builer.methodFormatter(MethodFormatter);
 builer.throwableFormatter(ThrowableFormatter);
+builer.threadFormatter(ThreadFormatter);
+builer.stackTraceFormatter(StackTraceFormatter);
+builer.borderFormatter(BorderFormatter);
 builer.printers(Printer...);
 ```
 
@@ -123,8 +131,8 @@ builder.build();
 方法以生成一个 [Logger] 对象。
 
 #### 4. 开始打印日志.
-[Logger] 类里的所有打印日志相关方法都跟 [XLog] 类里的一模一样  
-**为了更便利，你可以忽略第 3 步，直接调用 [Logger].Builder 对象的打印日志相关方法，这会生成一个 [Logger] 对象并自动调用它里面的相应方法，也就是说这个生成的 [Logger] 对象是“一次性”的。**  
+[Logger] 类里的所有打印日志相关方法都跟 [XLog] 类里的一模一样
+**为了更便利，你可以忽略第 3 步，直接调用 [Logger].Builder 对象的打印日志相关方法，这会生成一个 [Logger] 对象并自动调用它里面的相应方法，也就是说这个生成的 [Logger] 对象是“一次性”的。**
 所有打印日志相关方法都在 **全局使用** 中列出来了。
 
 ## 比较
@@ -151,26 +159,16 @@ XLog.d("The message");
 XLog.d("The message with argument: age=%s", 18);
 XLog.json(jsonString);
 XLog.xml(xmlString);
-XLog.method(arg1, arg2, arg3);
-XLog.stack("Here's the call stack");
 ```
 <img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png'/>
 
 ### 带边框的 XLog
 ```java
-Logger logger = XLog.printers(
-        new AndroidPrinter(
-                new BorderConfiguration
-                        .Builder()
-                        .enable(true)
-                        .build()))
-        .build();    
+Logger logger = XLog.b().build();
 logger.d("The message");
 logger.d("The message with argument: age=%s", 18);
 logger.json(jsonString);
 logger.xml(xmlString);
-logger.method(arg1, arg2, arg3);
-logger.stack("Here's the call stack");
 ```
 <img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png'/>
 
