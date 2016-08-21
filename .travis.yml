@@ -1,0 +1,16 @@
+language: android
+android:
+  components:
+    - tools
+    - platform-tools
+    - build-tools-24.0.1
+    - android-24
+
+jdk:
+  - oraclejdk8
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.gradle

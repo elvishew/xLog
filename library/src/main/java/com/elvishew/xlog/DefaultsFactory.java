@@ -37,10 +37,9 @@ import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
 import com.elvishew.xlog.printer.flattener.DefaultLogFlattener;
 import com.elvishew.xlog.printer.flattener.LogFlattener;
+
 /**
  * Factory for providing default formatter.
- *
- * @hide
  */
 public class DefaultsFactory {
 
