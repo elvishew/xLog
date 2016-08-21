@@ -9,6 +9,9 @@ android:
 jdk:
   - oraclejdk8
 
+after_success:
+  - .buildscript/deploy.sh
+
 sudo: false
 
 cache:
