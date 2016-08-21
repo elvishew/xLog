@@ -1,5 +1,7 @@
-[English](https://github.com/elvishew/XLog/blob/master/README.md)
 # XLog
+<img src='https://travis-ci.org/elvishew/xLog.svg?branch=master'/>
+
+[English](https://github.com/elvishew/XLog/blob/master/README.md)  
 方便可扩展的 Android 和 java 库，可同时在多个通道打印日志，如 Logcat、System.out 和文件。如果你愿意，甚至可以打印到远程服务器（或其他任何地方）。
 
 XLog 能干什么:

@@ -1,5 +1,7 @@
-[简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)
 # XLog
+<img src='https://travis-ci.org/elvishew/xLog.svg?branch=master'/>
+
+[简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)  
 Convenient and flexible library for logging in android and java, can concurrently print the log to multiple target like Logcat, System.out and File, or even Server(or anywhere) if you like.
 
 What XLog can do:
