@@ -55,7 +55,7 @@ public class AndroidPrinterTest {
 
     @Test
     public void testPrint4kMessage() throws Exception {
-        int length = 4 * 1024;
+        int length = AndroidPrinter.MAX_LENGTH_OF_SINGLE_MESSAGE;
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             sb.append(RandomUtil.randomAsciiChar());
@@ -68,7 +68,8 @@ public class AndroidPrinterTest {
 
     @Test
     public void testPrintLongMessage() throws Exception {
-        int length = 13 * 1024;
+        int messageChunkLength = AndroidPrinter.MAX_LENGTH_OF_SINGLE_MESSAGE;
+        int length = (int) (3.6 * messageChunkLength);
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {
             sb.append(RandomUtil.randomAsciiChar());
@@ -77,10 +78,10 @@ public class AndroidPrinterTest {
         XLog.d(msg);
         assertEquals(4, logContainer.size());
 
-        String chunk1 = msg.substring(0, 4 * 1024);
-        String chunk2 = msg.substring(4 * 1024, 8 * 1024);
-        String chunk3 = msg.substring(8 * 1024, 12 * 1024);
-        String chunk4 = msg.substring(12 * 1024, length);
+        String chunk1 = msg.substring(0, messageChunkLength);
+        String chunk2 = msg.substring(messageChunkLength, 2 * messageChunkLength);
+        String chunk3 = msg.substring(2 * messageChunkLength, 3 * messageChunkLength);
+        String chunk4 = msg.substring(3 * messageChunkLength, length);
         AssertUtil.assertHasLog(logContainer, 0, chunk1);
         AssertUtil.assertHasLog(logContainer, 1, chunk2);
         AssertUtil.assertHasLog(logContainer, 2, chunk3);
