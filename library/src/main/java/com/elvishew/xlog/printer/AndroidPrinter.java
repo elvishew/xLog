@@ -21,7 +21,7 @@ package com.elvishew.xlog.printer;
  */
 public class AndroidPrinter implements Printer {
 
-    private static final int MAX_LENGTH_OF_SINGLE_MESSAGE = 4 * 1024; // 4kb
+    private static final int MAX_LENGTH_OF_SINGLE_MESSAGE = 4063;
 
     @Override
     public void println(int logLevel, String tag, String msg) {
