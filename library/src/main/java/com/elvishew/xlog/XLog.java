@@ -329,6 +329,15 @@ public class XLog {
     }
 
     /**
+     * Log an array with level {@link LogLevel#VERBOSE}.
+     *
+     * @param array the array to log
+     */
+    public static void v(Object[] array) {
+        sLogger.v(array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#VERBOSE}.
      *
      * @param format the format of the message to log
@@ -355,6 +364,15 @@ public class XLog {
      */
     public static void v(String msg, Throwable tr) {
         sLogger.v(msg, tr);
+    }
+
+    /**
+     * Log an array with level {@link LogLevel#DEBUG}.
+     *
+     * @param array the array to log
+     */
+    public static void d(Object[] array) {
+        sLogger.d(array);
     }
 
     /**
@@ -387,6 +405,15 @@ public class XLog {
     }
 
     /**
+     * Log an array with level {@link LogLevel#INFO}.
+     *
+     * @param array the array to log
+     */
+    public static void i(Object[] array) {
+        sLogger.i(array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#INFO}.
      *
      * @param format the format of the message to log
@@ -416,6 +443,15 @@ public class XLog {
     }
 
     /**
+     * Log an array with level {@link LogLevel#WARN}.
+     *
+     * @param array the array to log
+     */
+    public static void w(Object[] array) {
+        sLogger.w(array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#WARN}.
      *
      * @param format the format of the message to log
@@ -442,6 +478,15 @@ public class XLog {
      */
     public static void w(String msg, Throwable tr) {
         sLogger.w(msg, tr);
+    }
+
+    /**
+     * Log an array with level {@link LogLevel#ERROR}.
+     *
+     * @param array the array to log
+     */
+    public static void e(Object[] array) {
+        sLogger.e(array);
     }
 
     /**

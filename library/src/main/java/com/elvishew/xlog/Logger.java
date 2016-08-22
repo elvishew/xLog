@@ -26,6 +26,8 @@ import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.PrinterSet;
 import com.elvishew.xlog.util.StackTraceUtil;
 
+import java.util.Arrays;
+
 /**
  * A logger is used to do the real logging work, can use multiple log printers to print the log.
  * <p>
@@ -122,13 +124,22 @@ public class Logger {
     }
 
     /**
+     * Log an array with level {@link LogLevel#VERBOSE}.
+     *
+     * @param array the array to log
+     */
+    public void v(Object[] array) {
+        println(LogLevel.VERBOSE, array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#VERBOSE}.
      *
      * @param format the format of the message to log
      * @param args   the arguments of the message to log
      */
     public void v(String format, Object... args) {
-        println(LogLevel.VERBOSE, formatArgs(format, args));
+        println(LogLevel.VERBOSE, format, args);
     }
 
     /**
@@ -151,13 +162,22 @@ public class Logger {
     }
 
     /**
+     * Log an array with level {@link LogLevel#DEBUG}.
+     *
+     * @param array the array to log
+     */
+    public void d(Object[] array) {
+        println(LogLevel.DEBUG, array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#DEBUG}.
      *
      * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void d(String format, Object... args) {
-        println(LogLevel.DEBUG, formatArgs(format, args));
+        println(LogLevel.DEBUG, format, args);
     }
 
     /**
@@ -180,13 +200,22 @@ public class Logger {
     }
 
     /**
+     * Log an array with level {@link LogLevel#INFO}.
+     *
+     * @param array the array to log
+     */
+    public void i(Object[] array) {
+        println(LogLevel.INFO, array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#INFO}.
      *
      * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void i(String format, Object... args) {
-        println(LogLevel.INFO, formatArgs(format, args));
+        println(LogLevel.INFO, format, args);
     }
 
     /**
@@ -209,13 +238,22 @@ public class Logger {
     }
 
     /**
+     * Log an array with level {@link LogLevel#WARN}.
+     *
+     * @param array the array to log
+     */
+    public void w(Object[] array) {
+        println(LogLevel.WARN, array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#WARN}.
      *
      * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void w(String format, Object... args) {
-        println(LogLevel.WARN, formatArgs(format, args));
+        println(LogLevel.WARN, format, args);
     }
 
     /**
@@ -238,13 +276,22 @@ public class Logger {
     }
 
     /**
+     * Log an array with level {@link LogLevel#ERROR}.
+     *
+     * @param array the array to log
+     */
+    public void e(Object[] array) {
+        println(LogLevel.ERROR, array);
+    }
+
+    /**
      * Log a message with level {@link LogLevel#ERROR}.
      *
      * @param format the format of the message to log, null if just need to concat arguments
      * @param args   the arguments of the message to log
      */
     public void e(String format, Object... args) {
-        println(LogLevel.ERROR, formatArgs(format, args));
+        println(LogLevel.ERROR, format, args);
     }
 
     /**
@@ -291,10 +338,37 @@ public class Logger {
     }
 
     /**
+     * Print an array in a new line.
+     *
+     * @param logLevel the log level of the printing array
+     * @param array    the array to print
+     */
+    private void println(int logLevel, Object[] array) {
+        if (logLevel < XLog.sLogLevel) {
+            return;
+        }
+        printlnInternal(logLevel, Arrays.deepToString(array));
+    }
+
+    /**
      * Print a log in a new line.
      *
      * @param logLevel the log level of the printing log
-     * @param msg      the message you would like log
+     * @param format   the format of the printing log, null if just need to concat arguments
+     * @param args     the arguments of the printing log
+     */
+    private void println(int logLevel, String format, Object... args) {
+        if (logLevel < XLog.sLogLevel) {
+            return;
+        }
+        printlnInternal(logLevel, formatArgs(format, args));
+    }
+
+    /**
+     * Print a log in a new line.
+     *
+     * @param logLevel the log level of the printing log
+     * @param msg      the message you would like to log
      */
     /*package*/ void println(int logLevel, String msg) {
         if (logLevel < XLog.sLogLevel) {
@@ -307,7 +381,7 @@ public class Logger {
      * Print a log in a new line.
      *
      * @param logLevel the log level of the printing log
-     * @param msg      the message you would like log
+     * @param msg      the message you would like to log
      * @param tr       an throwable object to log
      */
     private void println(int logLevel, String msg, Throwable tr) {
@@ -323,7 +397,7 @@ public class Logger {
      * Print a log in a new line internally.
      *
      * @param logLevel the log level of the printing log
-     * @param msg      the message you would like log
+     * @param msg      the message you would like to log
      */
     private void printlnInternal(int logLevel, String msg) {
         String thread = logConfiguration.withThread
@@ -345,7 +419,7 @@ public class Logger {
      * Format a string with arguments.
      *
      * @param format the format string, null if just to concat the arguments
-     * @param args the arguments
+     * @param args   the arguments
      * @return the formatted string
      */
     private String formatArgs(String format, Object... args) {
