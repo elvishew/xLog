@@ -47,7 +47,8 @@ public class LogConfiguration {
     public final boolean withStackTrace;
 
     /**
-     * The number of stack trace elements we should log when logging with stack trace.
+     * The number of stack trace elements we should log when logging with stack trace,
+     * 0 if no limitation.
      */
     public final int stackTraceDepth;
 
@@ -125,7 +126,8 @@ public class LogConfiguration {
         private boolean withStackTrace;
 
         /**
-         * The number of stack trace elements we should log when logging with stack trace.
+         * The number of stack trace elements we should log when logging with stack trace,
+         * 0 if no limitation.
          */
         private int stackTraceDepth;
 
@@ -225,6 +227,7 @@ public class LogConfiguration {
         /**
          * Enable stack trace.
          *
+         * @param depth the number of stack trace elements we should log, 0 if no limitation
          * @return the builder
          */
         public Builder st(int depth) {

@@ -463,7 +463,8 @@ public class Logger {
         private boolean withStackTrace;
 
         /**
-         * The number of stack trace elements we should log when logging with stack trace.
+         * The number of stack trace elements we should log when logging with stack trace,
+         * 0 if no limitation.
          */
         private int stackTraceDepth;
 
@@ -517,7 +518,10 @@ public class Logger {
          */
         private Printer printer;
 
-        /*package */ Builder() {
+        /**
+         * Construct a builder, which will perform the same as the global one by default.
+         */
+        public Builder() {
         }
 
         /**
@@ -556,6 +560,7 @@ public class Logger {
         /**
          * Enable stack trace.
          *
+         * @param depth the number of stack trace elements we should log, 0 if no limitation
          * @return the builder
          */
         public Builder st(int depth) {

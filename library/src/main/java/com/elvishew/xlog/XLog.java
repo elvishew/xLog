@@ -225,6 +225,7 @@ public class XLog {
     /**
      * Start to customize a {@link Logger} and enable stack trace.
      *
+     * @param depth the number of stack trace elements we should log, 0 if no limitation
      * @return the {@link Logger.Builder} to build the a {@link Logger}
      */
     public static Logger.Builder st(int depth) {
