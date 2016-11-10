@@ -1,7 +1,6 @@
 # XLog
 <img src='https://travis-ci.org/elvishew/xLog.svg?branch=master'/>
 
-[简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)  
 Convenient and flexible library for logging in android and java, can concurrently print the log to multiple target like Logcat, System.out and File, or even Server(or anywhere) if you like.
 
 What XLog can do:
@@ -12,11 +11,19 @@ What XLog can do:
 * Good looking in Android Studio
 * Easy to use, powerful in customization
 
-
 ## Dependency
 ```groovy
 compile 'com.elvishew:xlog:1.0.0'
 ```
+
+## Architecture
+<img src='https://github.com/elvishew/XLog/blob/master/images/architecture.png'/>
+
+## Preview
+* Log with thread information, stack trace information and border
+<img src='https://github.com/elvishew/XLog/blob/master/images/classic_log.png'/>
+* Log files
+<img src='https://github.com/elvishew/XLog/blob/master/images/log_files.png'/>
 
 ## Usage
 ### Initialization
@@ -24,154 +31,126 @@ compile 'com.elvishew:xlog:1.0.0'
 ```java
 XLog.init(LogLevel.ALL);
 ```
+Or if you want to disable the log in release version
+```
+XLog.init(BuildConfig.DEBUG ? LogLevel.ALL : LogLevel.NONE);
+```
 
 #### Advance way
 ```java
-XLog.init(LogLevel.ALL,
-        new LogConfiguration                                             // If LogConfiguration not specified, will use new LogConfiguration.Builder().build()
-                .Builder()                                               // The log configuration used when logging
-                .tag("MY_TAG")                                           // Default: "XLOG"
-                .t()                                                     // Enable thread info, disabled by default
-                .st(1)                                                   // Enable stack trace info, disabled by default
-                .b()                                                     // Enable border, disabled by default
-                .jsonFormatter(new DefaultJsonFormatter())               // Default: DefaultJsonFormatter
-                .xmlFormatter(new DefaultXmlFormatter())                 // Default: DefaultXmlFormatter
-                .throwableFormatter(new DefaultThrowableFormatter())     // Default: DefaultThrowableFormatter
-                .threadFormatter(new DefaultThreadFormatter())           // Default: DefaultThreadFormatter
-                .stackTraceFormatter(new DefaultStackTraceFormatter())   // Default: DefaultStackTraceFormatter
-                .borderFormatter(new DefaultBoardFormatter())            // Default: DefaultBorderFormatter
-                .build(),
-        new AndroidPrinter(),                                            // Print the log using android.util.Log, if no printer is specified, AndroidPrinter will be used by default
-        new SystemPrinter(),                                             // Print the log using System.out.println, if not specified, will not be used
-        new FilePrinter                                                  // Print the log to the file system, if not specified, will not be used
-                .Builder("/sdcard/xlog/")                                // The path to save log file
-                .fileNameGenerator(new DateFileNameGenerator())          // Default: ChangelessFileNameGenerator("log")
-                .backupStrategy(new FileSizeBackupStrategy(1024 * 1024)) // Default: FileSizeBackupStrategy(1024 * 1024)
-                .logFlattener(new DefaultLogFlattener())                 // Default: DefaultLogFlattener
-                .build()
+LogConfiguration config = new LogConfiguration.Builder()
+    .tag("MY_TAG")                                         // Default: "X-LOG"
+    .t()                                                   // Enable thread info, disabled by default
+    .st(2)                                                 // Enable stack trace info with depth 2, disabled by default
+    .b()                                                   // Enable border, disabled by default
+    .jsonFormatter(new MyJsonFormatter())                  // Default: DefaultJsonFormatter
+    .xmlFormatter(new MyXmlFormatter())                    // Default: DefaultXmlFormatter
+    .throwableFormatter(new MyThrowableFormatter())        // Default: DefaultThrowableFormatter
+    .threadFormatter(new MyThreadFormatter())              // Default: DefaultThreadFormatter
+    .stackTraceFormatter(new MyStackTraceFormatter())      // Default: DefaultStackTraceFormatter
+    .borderFormatter(new MyBoardFormatter())               // Default: DefaultBorderFormatter
+    .build();
+
+Printer androidPrinter = new AndroidPrinter();
+Printer SystemPrinter = new SystemPrinter();
+Printer filePrinter = new FilePrinter
+    .Builder("/sdcard/xlog/")                              // The path to save log file
+    .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
+    .backupStrategy(new MyBackupStrategy())                // Default: FileSizeBackupStrategy(1024 * 1024)
+    .logFlattener(new MyLogFlattener())                    // Default: DefaultLogFlattener
+    .build();
+
+XLog.init(LogLevel.ALL,                                    // The log level, logs below this level won't be printed
+    config,                                                // The log configuration, if not specified, will use new LogConfiguration.Builder().build()
+    androidPrinter,                                        // Print the log using android.util.Log, if no printer is specified, AndroidPrinter will be used by default
+    systemPrinter,                                         // Print the log using System.out.println, if not specified, will not be used
+    filePrinter);                                          // Print the log to the file system, if not specified, will not be used
 ```
 For android, a best place to do the initialization is [Application.onCreate()](http://developer.android.com/reference/android/app/Application.html#onCreate()).
 
 ### Global Usage
 ```java
-// Logging a LogLevel.INFO log
-XLog.v(String, Object...);
-XLog.v(String);
-XLog.v(String, Throwable);
-
-// Logging a LogLevel.DEBUG log
-XLog.d(String, Object...);
-XLog.d(String);
-XLog.d(String, Throwable);
-
-// Logging a LogLevel.INFO log
-XLog.i(String, Object...);
-XLog.i(String);
-XLog.i(String, Throwable);
-
-// Logging a LogLevel.WARN log
-XLog.w(String, Object...);
-XLog.w(String);
-XLog.w(String, Throwable);
-
-// Log a LogLevel.ERROR log
-XLog.e(String, Object...);
-XLog.e(String);
-XLog.e(String, Throwable);
-
-// Logging a JSON string
-XLog.json(String);
-
-// Logging a XML string
-XLog.xml(String);
+XLog.d("Simple message")
+XLog.d("My name is %s", "Elvis");
+XLog.d("An exception caught", exception);
+XLog.d(array);
+XLog.json(unformattedJsonString);
+XLog.xml(unformattedXmlString);
+... // Other global usage
 ```
-
-### Custom Usage
-#### 1. Start a customization
-Call any one of
+### Partial usage
+Build a logger.
 ```java
-XLog.tag(String);
-XLog.t();
-XLog.nt();
-XLog.st(int);
-XLog.nst();
-XLog.b();
-XLog.nb();
-XLog.jsonFormatter(JsonFormatter);
-XLog.xmlFormatter(XmlFormatter);
-XLog.throwableFormatter(ThrowableFormatter);
-XLog.threadFormatter(ThreadFormatter);
-XLog.stackTraceFormatter(StackTraceFormatter);
-XLog.borderFormatter(BorderFormatter);
-XLog.printers(Printer...);
+Logger partial = XLog.tag("PARTIAL-LOG")
+    ... // Other configs
+    .build();
 ```
-to create a [Logger].Builder object.
+And use it partially, the logging methods is completely the same as that ones in [XLog].
 
-#### 2. Further customization
-Continue to customize other fields of the [Logger].Builder object.
 ```java
-builer.tag(String);
-builer.t();
-builer.nt();
-builer.st(int);
-builer.nst();
-builer.b();
-builer.nb();
-builer.jsonFormatter(JsonFormatter);
-builer.xmlFormatter(XmlFormatter);
-builer.throwableFormatter(ThrowableFormatter);
-builer.threadFormatter(ThreadFormatter);
-builer.stackTraceFormatter(StackTraceFormatter);
-builer.borderFormatter(BorderFormatter);
-builer.printers(Printer...);
+partial.d("Simple message 1");
+partial.d("Simple message 2");
+... // Other partial usage
 ```
 
-#### 3. Build a customized Logger
-Call the
+### Log based Usage
+Setup log based configs and log immediately, the logging methods is completely the same as that ones in [XLog].
 ```java
-builder.build();
-```
-of the Logger.Builder objetct and then a [Logger] object is built.
+XLog.t()    // Enable thread into
+    .st(3)  // Enable stack trace info with depth 3
+    .b()    // Enable border
+    ...     // Other configs
+    .d("Simple message 1");
 
-#### 4. Start to log.
-The logging methods of a [Logger] is completely same as that ones in [XLog].  
-**As a convenience, you can ignore the step 3, just call the logging methods of [Logger].Builder object, it will automatically build a [Logger] object and call the target logging method, that means the built [Logger] object is kind of one-off.**  
-All logging methods are list in **Global Usage**.
+XLog.tag("TEMP-TAG")
+    .st(0)  // Enable stack trace info without limitation
+    ...     // Other configs
+    .d("Simple message 2");
+
+XLog.nt()   // Disable thread info
+    .nst()  // Disable stack trace info
+    .d("Simple message 3");
+
+XLog.b().d("Simple message 4");
+
+```
 
 ## Comparison
 Let's imagine there are a JSON string and a XML string
 ```java
-String jsonString = "{name:Elvis, age: 18}";
-String xmlString = "<Person name=\"Elvis\" age=\"18\" />";
+String jsonString = "{\"name\": \"Elvis\", \"age\": 18}";
+String xmlString = "<team><member name="Elvis"/><member name="Leon"/></team>";
 ```
 
 ### [Android Log]
 ```java
-Log.d(TAG, "The message");
-Log.d(TAG, String.format("The message with argument: age=%s", 18));
-Log.d(TAG, formatJson(jsonString));
-Log.d(TAG, formatXml(xmlString));
-Log.d(TAG, "testAndroidLog(" + arg1 + ", " + arg2 + ", " + arg3 + ")");
-Log.d(TAG, "Here's the call stack", new Throwable());
+Log.d(TAG, "Message");
+Log.d(TAG, String.format("Message with argument: age=%s", 18));
+Log.d(TAG, jsonString);
+Log.d(TAG, xmlString);
+Log.d(TAG, "Message with stack trace info", new Throwable());
 ```
 <img src='https://github.com/elvishew/XLog/blob/master/images/comparison-android-log.png'/>
 
 ### XLog
 ```java
-XLog.d("The message");
-XLog.d("The message with argument: age=%s", 18);
+XLog.init(LogLevel.ALL);
+XLog.d("Message");
+XLog.d("Message with argument: age=%s", 18);
 XLog.json(jsonString);
 XLog.xml(xmlString);
+XLog.st(5).d("Message with stack trace info");
 ```
 <img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png'/>
 
 ### XLog with border
 ```java
-Logger logger = XLog.b().build();
-logger.d("The message");
-logger.d("The message with argument: age=%s", 18);
-logger.json(jsonString);
-logger.xml(xmlString);
+XLog.init(LogLevel.ALL, new LogConfiguration.Builder().b().build());
+XLog.d("Message");
+XLog.d("Message with argument: age=%s", 18);
+XLog.json(jsonString);
+XLog.xml(xmlString);
+XLog.st(5).d("Message with stack trace info");
 ```
 <img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png'/>
 
@@ -214,7 +193,7 @@ In the menu, click the 'Replace in Path...' option.
 In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
 ## Thanks
-Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give me many ideas of what a logger should look like.  
+Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give me many ideas of what a logger can do.
 Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/zserge/log), it give me the thought of making XLog compatible with [Android Log].
 
 ## License
