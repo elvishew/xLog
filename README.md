@@ -1,29 +1,36 @@
 # XLog
 <img src='https://travis-ci.org/elvishew/xLog.svg?branch=master'/>
 
-Convenient and flexible library for logging in android and java, can concurrently print the log to multiple target like Logcat, System.out and File, or even Server(or anywhere) if you like.
+Simple and pretty, powerful and flexible logger for android and java, can concurrently print the log to multiple target like Logcat, System.out and File, or even Server(or anywhere) if you like.
 
 What XLog can do:
+* Global config(tag, formattors...) or log-based config
+* Array support
+* No 4k limitation
 * XML and JSON formatted
 * Thread information
-* Stack trace information
+* Stack trace information (Configurable call stack depth, with file name, method name, line number)
 * Save logs in file (configurable file naming and backup strategy)
 * Good looking in Android Studio
 * Easy to use, powerful in customization
+
+The differences to other logger library:
+* Pretty source code and document
+* So flexible that you can easily customize or enhance it
 
 ## Dependency
 ```groovy
 compile 'com.elvishew:xlog:1.0.0'
 ```
 
-## Architecture
-<img src='https://github.com/elvishew/XLog/blob/master/images/architecture.png'/>
-
 ## Preview
 * Log with thread information, stack trace information and border
 <img src='https://github.com/elvishew/XLog/blob/master/images/classic_log.png'/>
 * Log files
 <img src='https://github.com/elvishew/XLog/blob/master/images/log_files.png'/>
+
+## Architecture
+<img src='https://github.com/elvishew/XLog/blob/master/images/architecture.png'/>
 
 ## Usage
 ### Initialization
@@ -93,7 +100,7 @@ partial.d("Simple message 2");
 ... // Other partial usage
 ```
 
-### Log based Usage
+### Log-based Usage
 Setup log based configs and log immediately, the logging methods is completely the same as that ones in [XLog].
 ```java
 XLog.t()    // Enable thread into
@@ -192,8 +199,12 @@ In 'Project' pane, switch to the 'Project Files' tab, then right-click on the yo
 In the menu, click the 'Replace in Path...' option.  
 In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
+## TODO
+* [ ] Print any object: XLog.d(Object)
+
 ## Thanks
 Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give me many ideas of what a logger can do.
+
 Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/zserge/log), it give me the thought of making XLog compatible with [Android Log].
 
 ## License
