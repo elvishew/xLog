@@ -1,20 +1,22 @@
 # XLog
 <img src='https://travis-ci.org/elvishew/xLog.svg?branch=master'/>
 
+[简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)
+
 Simple and pretty, powerful and flexible logger for android and java, can concurrently print the log to multiple target like Logcat, System.out and File, or even Server(or anywhere) if you like.
 
 What XLog can do:
-* Global config(tag, formattors...) or log-based config
-* Array support
-* No 4k limitation
+* Global config(tag, formatters...) or log-based config
+* Support array
+* Support long log (No 4K limitation)
 * XML and JSON formatted
-* Thread information
+* Thread information (Thread name etc. Can be customized)
 * Stack trace information (Configurable call stack depth, with file name, method name, line number)
-* Save logs in file (configurable file naming and backup strategy)
+* Save logs in file (Configurable file naming and backup strategy)
 * Good looking in Android Studio
 * Easy to use, powerful in customization
 
-The differences to other logger library:
+The differences to other logger libraries:
 * Pretty source code and document
 * So flexible that you can easily customize or enhance it
 
@@ -46,7 +48,7 @@ XLog.init(BuildConfig.DEBUG ? LogLevel.ALL : LogLevel.NONE);
 #### Advance way
 ```java
 LogConfiguration config = new LogConfiguration.Builder()
-    .tag("MY_TAG")                                         // Default: "X-LOG"
+    .tag("MY_TAG")                                         // Specify TAG, default: "X-LOG"
     .t()                                                   // Enable thread info, disabled by default
     .st(2)                                                 // Enable stack trace info with depth 2, disabled by default
     .b()                                                   // Enable border, disabled by default
@@ -58,20 +60,20 @@ LogConfiguration config = new LogConfiguration.Builder()
     .borderFormatter(new MyBoardFormatter())               // Default: DefaultBorderFormatter
     .build();
 
-Printer androidPrinter = new AndroidPrinter();
-Printer SystemPrinter = new SystemPrinter();
-Printer filePrinter = new FilePrinter
-    .Builder("/sdcard/xlog/")                              // The path to save log file
+Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
+Printer SystemPrinter = new SystemPrinter();               // Printer that print the log using System.out.println
+Printer filePrinter = new FilePrinter                      // Printer that print the log to the file system
+    .Builder("/sdcard/xlog/")                              // Specify the path to save log file
     .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
     .backupStrategy(new MyBackupStrategy())                // Default: FileSizeBackupStrategy(1024 * 1024)
     .logFlattener(new MyLogFlattener())                    // Default: DefaultLogFlattener
     .build();
 
-XLog.init(LogLevel.ALL,                                    // The log level, logs below this level won't be printed
-    config,                                                // The log configuration, if not specified, will use new LogConfiguration.Builder().build()
-    androidPrinter,                                        // Print the log using android.util.Log, if no printer is specified, AndroidPrinter will be used by default
-    systemPrinter,                                         // Print the log using System.out.println, if not specified, will not be used
-    filePrinter);                                          // Print the log to the file system, if not specified, will not be used
+XLog.init(LogLevel.ALL,                                    // Specify the log level, logs below this level won't be printed
+    config,                                                // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
+    androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter will be used by default
+    systemPrinter,
+    filePrinter);
 ```
 For android, a best place to do the initialization is [Application.onCreate()](http://developer.android.com/reference/android/app/Application.html#onCreate()).
 
