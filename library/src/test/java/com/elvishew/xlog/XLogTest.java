@@ -16,6 +16,7 @@
 
 package com.elvishew.xlog;
 
+import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
@@ -189,6 +190,51 @@ public class XLogTest {
                 .st(1)
                 .i(MESSAGE);
         assertLog(INFO, DEFAULT_TAG, formattedStackTrace + "\n" + MESSAGE);
+    }
+
+    @Test
+    public void testCustomBorderFormatter() {
+        XLog.t().threadFormatter(new ThreadFormatter() {
+            @Override
+            public String format(Thread data) {
+                return "T1";
+            }
+        }).b().borderFormatter(new BorderFormatter() {
+            @Override
+            public String format(String[] segments) {
+                return addCustomBorder(segments);
+            }
+        }).i(MESSAGE);
+        assertLog(INFO, DEFAULT_TAG, addCustomBorder(new String[] {"T1", MESSAGE}));
+    }
+
+    private String addCustomBorder(String[] segments) {
+        if (segments == null || segments.length == 0) {
+            return "";
+        }
+
+        String[] nonNullSegments = new String[segments.length];
+        int nonNullCount = 0;
+        for (String segment : segments) {
+            if (segment != null) {
+                nonNullSegments[nonNullCount++] = segment;
+            }
+        }
+        if (nonNullCount == 0) {
+            return "";
+        }
+        StringBuilder msgBuilder = new StringBuilder();
+        msgBuilder.append("<<").append(SystemCompat.lineSeparator);
+        for (int i = 0; i < nonNullCount; i++) {
+            msgBuilder.append(nonNullSegments[i]);
+            if (i != nonNullCount - 1) {
+                msgBuilder.append(SystemCompat.lineSeparator).append("--")
+                        .append(SystemCompat.lineSeparator);
+            } else {
+                msgBuilder.append(SystemCompat.lineSeparator).append(">>");
+            }
+        }
+        return msgBuilder.toString();
     }
 
     @Test

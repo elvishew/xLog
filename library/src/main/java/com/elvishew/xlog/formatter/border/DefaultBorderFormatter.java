@@ -30,7 +30,7 @@ import com.elvishew.xlog.SystemCompat;
  */
 public class DefaultBorderFormatter implements BorderFormatter {
 
-    public static final char DEFAULT_VERTICAL_BORDER_CHAR = '║';
+    private static final char VERTICAL_BORDER_CHAR = '║';
 
     // Length: 100.
     private static final String TOP_HORIZONTAL_BORDER =
@@ -79,10 +79,10 @@ public class DefaultBorderFormatter implements BorderFormatter {
     }
 
     /**
-     * Add {@value #DEFAULT_VERTICAL_BORDER_CHAR} to each line of msg.
+     * Add {@value #VERTICAL_BORDER_CHAR} to each line of msg.
      *
      * @param msg the message to add border
-     * @return the message with {@value #DEFAULT_VERTICAL_BORDER_CHAR} in the start of each line
+     * @return the message with {@value #VERTICAL_BORDER_CHAR} in the start of each line
      */
     private static String appendVerticalBorder(String msg) {
         StringBuilder borderedMsgBuilder = new StringBuilder(msg.length() + 10);
@@ -92,7 +92,7 @@ public class DefaultBorderFormatter implements BorderFormatter {
                 borderedMsgBuilder.append(SystemCompat.lineSeparator);
             }
             String line = lines[i];
-            borderedMsgBuilder.append(DEFAULT_VERTICAL_BORDER_CHAR).append(line);
+            borderedMsgBuilder.append(VERTICAL_BORDER_CHAR).append(line);
         }
         return borderedMsgBuilder.toString();
 
