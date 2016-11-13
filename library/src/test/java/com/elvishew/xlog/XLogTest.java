@@ -18,6 +18,7 @@ package com.elvishew.xlog;
 
 import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
+import com.elvishew.xlog.formatter.message.object.ObjectFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
@@ -27,6 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.elvishew.xlog.LogLevel.DEBUG;
@@ -118,6 +120,20 @@ public class XLogTest {
                 && !logsContainer.get(0).msg.startsWith("╔═══")
                 && !logsContainer.get(0).msg.endsWith("════"));
         assertTrue("Bordered log found", result);
+    }
+
+    @Test
+    public void testObject() {
+        Date date = new Date();
+        XLog.addObjectFormatter(Date.class, new ObjectFormatter<Date>() {
+            @Override
+            public String format(Date date) {
+                return Long.toString(date.getTime());
+            }
+        }).i(date);
+        boolean result = (logsContainer.size() == 1
+                && logsContainer.get(0).msg.equals(Long.toString(date.getTime())));
+        assertTrue("Formatted object log not found", result);
     }
 
     @Test
