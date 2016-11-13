@@ -18,10 +18,14 @@ package com.elvishew.xlog;
 
 import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
+import com.elvishew.xlog.formatter.message.object.ObjectFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The configuration used for logging, always attached to a {@link Logger}, will affect all logs
@@ -87,6 +91,11 @@ public class LogConfiguration {
      */
     public final BorderFormatter borderFormatter;
 
+    /**
+     * The object formatters, used when logging an object.
+     */
+    private final Map<Class<?>, ObjectFormatter<?>> objectFormatters;
+
     /*package*/ LogConfiguration(final Builder builder) {
         tag = builder.tag;
 
@@ -101,6 +110,31 @@ public class LogConfiguration {
         threadFormatter = builder.threadFormatter;
         stackTraceFormatter = builder.stackTraceFormatter;
         borderFormatter = builder.borderFormatter;
+
+        objectFormatters = builder.objectFormatters;
+    }
+
+    /**
+     * Get {@link ObjectFormatter} for specific object.
+     *
+     * @param object the object
+     * @param <T>    the type of object
+     * @return the object formatter for the object, or null if not found
+     */
+    public <T> ObjectFormatter<? super T> getObjectFormatter(T object) {
+        if (objectFormatters == null) {
+            return null;
+        }
+
+        Class<? super T> clazz;
+        Class<? super T> superClazz = (Class<? super T>) object.getClass();
+        ObjectFormatter<? super T> formatter;
+        do {
+            clazz = superClazz;
+            formatter = (ObjectFormatter<? super T>) objectFormatters.get(clazz);
+            superClazz = clazz.getSuperclass();
+        } while (formatter == null && superClazz != null);
+        return formatter;
     }
 
     /**
@@ -167,6 +201,11 @@ public class LogConfiguration {
         private BorderFormatter borderFormatter;
 
         /**
+         * The object formatters, used when logging an object.
+         */
+        private Map<Class<?>, ObjectFormatter<?>> objectFormatters;
+
+        /**
          * Construct a builder with all default configurations.
          */
         public Builder() {
@@ -191,6 +230,10 @@ public class LogConfiguration {
             threadFormatter = logConfiguration.threadFormatter;
             stackTraceFormatter = logConfiguration.stackTraceFormatter;
             borderFormatter = logConfiguration.borderFormatter;
+
+            if (logConfiguration.objectFormatters != null) {
+                objectFormatters = new HashMap<>(logConfiguration.objectFormatters);
+            }
         }
 
         /**
@@ -330,6 +373,34 @@ public class LogConfiguration {
          */
         public Builder borderFormatter(BorderFormatter borderFormatter) {
             this.borderFormatter = borderFormatter;
+            return this;
+        }
+
+        /**
+         * Add a {@link ObjectFormatter} for specific class of object.
+         *
+         * @param objectClass     the class of object
+         * @param objectFormatter the object formatter to add
+         * @param <T>             the type of object
+         * @return the builder
+         */
+        public <T> Builder addObjectFormatter(Class<T> objectClass,
+                                              ObjectFormatter<? super T> objectFormatter) {
+            if (objectFormatters == null) {
+                objectFormatters = new HashMap<>(5);
+            }
+            objectFormatters.put(objectClass, objectFormatter);
+            return this;
+        }
+
+        /**
+         * Copy all object formatters, only for internal usage.
+         *
+         * @param objectFormatters the object formatters to copy
+         * @return the builder
+         */
+        Builder objectFormatters(Map<Class<?>, ObjectFormatter<?>> objectFormatters) {
+            this.objectFormatters = objectFormatters;
             return this;
         }
 

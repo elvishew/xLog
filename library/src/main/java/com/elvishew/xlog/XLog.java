@@ -20,6 +20,7 @@ import android.app.Application;
 
 import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
+import com.elvishew.xlog.formatter.message.object.ObjectFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
@@ -151,7 +152,7 @@ public class XLog {
     /**
      * Initialize log system, should be called only once.
      *
-     * @param logLevel the log level, logs with a lower level than which would not be printed
+     * @param logLevel         the log level, logs with a lower level than which would not be printed
      * @param logConfiguration the log configuration
      */
     public static void init(int logLevel, LogConfiguration logConfiguration) {
@@ -171,9 +172,9 @@ public class XLog {
     /**
      * Initialize log system, should be called only once.
      *
-     * @param logLevel the log level, logs with a lower level than which would not be printed
+     * @param logLevel         the log level, logs with a lower level than which would not be printed
      * @param logConfiguration the log configuration
-     * @param printers the printers, each log would be printed by all of the printers
+     * @param printers         the printers, each log would be printed by all of the printers
      */
     public static void init(int logLevel, LogConfiguration logConfiguration, Printer... printers) {
         if (sIsInitialized) {
@@ -320,6 +321,19 @@ public class XLog {
     }
 
     /**
+     * Start to customize a {@link Logger} and add an object formatter for specific class of object.
+     *
+     * @param objectClass     the class of object
+     * @param objectFormatter the object formatter to add
+     * @param <T>             the type of object
+     * @return the {@link Logger.Builder} to build the a {@link Logger}
+     */
+    public static <T> Logger.Builder addObjectFormatter(Class<T> objectClass,
+                                                        ObjectFormatter<? super T> objectFormatter) {
+        return new Logger.Builder().addObjectFormatter(objectClass, objectFormatter);
+    }
+
+    /**
      * Start to customize a {@link Logger} and set the {@link Printer} array.
      *
      * @param printers the {@link Printer} array to customize
@@ -327,6 +341,15 @@ public class XLog {
      */
     public static Logger.Builder printers(Printer... printers) {
         return new Logger.Builder().printers(printers);
+    }
+
+    /**
+     * Log an object with level {@link LogLevel#VERBOSE}.
+     *
+     * @param object the object to log
+     */
+    public static void v(Object object) {
+        sLogger.v(object);
     }
 
     /**
@@ -368,6 +391,15 @@ public class XLog {
     }
 
     /**
+     * Log an object with level {@link LogLevel#DEBUG}.
+     *
+     * @param object the object to log
+     */
+    public static void d(Object object) {
+        sLogger.d(object);
+    }
+
+    /**
      * Log an array with level {@link LogLevel#DEBUG}.
      *
      * @param array the array to log
@@ -403,6 +435,15 @@ public class XLog {
      */
     public static void d(String msg, Throwable tr) {
         sLogger.d(msg, tr);
+    }
+
+    /**
+     * Log an object with level {@link LogLevel#INFO}.
+     *
+     * @param object the object to log
+     */
+    public static void i(Object object) {
+        sLogger.i(object);
     }
 
     /**
@@ -444,6 +485,15 @@ public class XLog {
     }
 
     /**
+     * Log an object with level {@link LogLevel#WARN}.
+     *
+     * @param object the object to log
+     */
+    public static void w(Object object) {
+        sLogger.w(object);
+    }
+
+    /**
      * Log an array with level {@link LogLevel#WARN}.
      *
      * @param array the array to log
@@ -479,6 +529,15 @@ public class XLog {
      */
     public static void w(String msg, Throwable tr) {
         sLogger.w(msg, tr);
+    }
+
+    /**
+     * Log an object with level {@link LogLevel#ERROR}.
+     *
+     * @param object the object to log
+     */
+    public static void e(Object object) {
+        sLogger.e(object);
     }
 
     /**

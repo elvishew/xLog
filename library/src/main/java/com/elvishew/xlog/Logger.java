@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package com.elvishew.xlog;
 
 import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
+import com.elvishew.xlog.formatter.message.object.ObjectFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
@@ -27,6 +28,8 @@ import com.elvishew.xlog.printer.PrinterSet;
 import com.elvishew.xlog.util.StackTraceUtil;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A logger is used to do the real logging work, can use multiple log printers to print the log.
@@ -114,6 +117,9 @@ public class Logger {
         if (builder.borderFormatter != null) {
             logConfigBuilder.borderFormatter(builder.borderFormatter);
         }
+        if (builder.objectFormatters != null) {
+            logConfigBuilder.objectFormatters(builder.objectFormatters);
+        }
         logConfiguration = logConfigBuilder.build();
 
         if (builder.printer != null) {
@@ -121,6 +127,15 @@ public class Logger {
         } else {
             printer = XLog.sPrinter;
         }
+    }
+
+    /**
+     * Log an object with level {@link LogLevel#VERBOSE}.
+     *
+     * @param object the object to log
+     */
+    public void v(Object object) {
+        println(LogLevel.VERBOSE, object);
     }
 
     /**
@@ -162,6 +177,15 @@ public class Logger {
     }
 
     /**
+     * Log an object with level {@link LogLevel#DEBUG}.
+     *
+     * @param object the object to log
+     */
+    public void d(Object object) {
+        println(LogLevel.DEBUG, object);
+    }
+
+    /**
      * Log an array with level {@link LogLevel#DEBUG}.
      *
      * @param array the array to log
@@ -197,6 +221,15 @@ public class Logger {
      */
     public void d(String msg, Throwable tr) {
         println(LogLevel.DEBUG, msg, tr);
+    }
+
+    /**
+     * Log an object with level {@link LogLevel#INFO}.
+     *
+     * @param object the object to log
+     */
+    public void i(Object object) {
+        println(LogLevel.INFO, object);
     }
 
     /**
@@ -238,6 +271,15 @@ public class Logger {
     }
 
     /**
+     * Log an object with level {@link LogLevel#WARN}.
+     *
+     * @param object the object to log
+     */
+    public void w(Object object) {
+        println(LogLevel.WARN, object);
+    }
+
+    /**
      * Log an array with level {@link LogLevel#WARN}.
      *
      * @param array the array to log
@@ -273,6 +315,15 @@ public class Logger {
      */
     public void w(String msg, Throwable tr) {
         println(LogLevel.WARN, msg, tr);
+    }
+
+    /**
+     * Log an object with level {@link LogLevel#ERROR}.
+     *
+     * @param object the object to log
+     */
+    public void e(Object object) {
+        println(LogLevel.ERROR, object);
     }
 
     /**
@@ -335,6 +386,24 @@ public class Logger {
             return;
         }
         println(LogLevel.DEBUG, logConfiguration.xmlFormatter.format(xml));
+    }
+
+    /**
+     * Print an object in a new line.
+     *
+     * @param logLevel the log level of the printing object
+     * @param object   the object to print
+     */
+    private <T> void println(int logLevel, T object) {
+        if (logLevel < XLog.sLogLevel) {
+            return;
+        }
+        ObjectFormatter<? super T> objectFormatter = logConfiguration.getObjectFormatter(object);
+        if (objectFormatter != null) {
+            printlnInternal(logLevel, objectFormatter.format(object));
+        } else {
+            printlnInternal(logLevel, object.toString());
+        }
     }
 
     /**
@@ -514,6 +583,11 @@ public class Logger {
         private BorderFormatter borderFormatter;
 
         /**
+         * The object formatters, used when {@link Logger} logging an object.
+         */
+        private Map<Class<?>, ObjectFormatter<?>> objectFormatters;
+
+        /**
          * The printer used to print the log when {@link Logger} log.
          */
         private Printer printer;
@@ -672,6 +746,23 @@ public class Logger {
         }
 
         /**
+         * Add a object formatter for specific class of object when {@link Logger} log an object.
+         *
+         * @param objectClass     the class of object
+         * @param objectFormatter the object formatter to add
+         * @param <T>             the type of object
+         * @return the builder
+         */
+        public <T> Builder addObjectFormatter(Class<T> objectClass,
+                                              ObjectFormatter<? super T> objectFormatter) {
+            if (objectFormatters == null) {
+                objectFormatters = new HashMap<>(5);
+            }
+            objectFormatters.put(objectClass, objectFormatter);
+            return this;
+        }
+
+        /**
          * Set the printers used to print the log when {@link Logger} log.
          *
          * @param printers the printers used to print the log when {@link Logger} log
@@ -689,6 +780,13 @@ public class Logger {
                 this.printer = new PrinterSet(printers);
             }
             return this;
+        }
+
+        /**
+         * Convenience of {@link #build()} and {@link Logger#v(Object)}.
+         */
+        public void v(Object object) {
+            build().v(object);
         }
 
         /**
@@ -713,6 +811,13 @@ public class Logger {
         }
 
         /**
+         * Convenience of {@link #build()} and {@link Logger#d(Object)}.
+         */
+        public void d(Object object) {
+            build().d(object);
+        }
+
+        /**
          * Convenience of {@link #build()} and {@link Logger#d(String, Object...)}.
          */
         public void d(String format, Object... args) {
@@ -731,6 +836,13 @@ public class Logger {
          */
         public void d(String msg, Throwable tr) {
             build().d(msg, tr);
+        }
+
+        /**
+         * Convenience of {@link #build()} and {@link Logger#i(Object)}.
+         */
+        public void i(Object object) {
+            build().i(object);
         }
 
         /**
@@ -755,6 +867,13 @@ public class Logger {
         }
 
         /**
+         * Convenience of {@link #build()} and {@link Logger#w(Object)}.
+         */
+        public void w(Object object) {
+            build().w(object);
+        }
+
+        /**
          * Convenience of {@link #build()} and {@link Logger#w(String, Object...)}.
          */
         public void w(String format, Object... args) {
@@ -773,6 +892,13 @@ public class Logger {
          */
         public void w(String msg, Throwable tr) {
             build().w(msg, tr);
+        }
+
+        /**
+         * Convenience of {@link #build()} and {@link Logger#e(Object)}.
+         */
+        public void e(Object object) {
+            build().e(object);
         }
 
         /**
