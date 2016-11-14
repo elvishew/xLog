@@ -22,7 +22,7 @@ XLog 能干什么:
 
 ## 依赖
 ```groovy
-compile 'com.elvishew:xlog:1.0.0'
+compile 'com.elvishew:xlog:1.1.0'
 ```
 
 ## 预览
@@ -58,6 +58,8 @@ LogConfiguration config = new LogConfiguration.Builder()
     .threadFormatter(new MyThreadFormatter())              // 指定线程信息格式化器，默认为 DefaultThreadFormatter
     .stackTraceFormatter(new MyStackTraceFormatter())      // 指定调用栈信息格式化器，默认为 DefaultStackTraceFormatter
     .borderFormatter(new MyBoardFormatter())               // 指定边框格式化器，默认为 DefaultBorderFormatter
+    .addObjectFormatter(AnyClass.class,                    // 为指定类添加格式化器
+            new AnyClassObjectFormatter())                 // 默认使用 Object.toString()
     .build();
 
 Printer androidPrinter = new AndroidPrinter();             // 通过 android.util.Log 打印日志的打印器
@@ -82,6 +84,7 @@ XLog.init(LogLevel.ALL,                                    // 指定日志级别
 XLog.d("Simple message")
 XLog.d("My name is %s", "Elvis");
 XLog.d("An exception caught", exception);
+XLog.d(object);
 XLog.d(array);
 XLog.json(unformattedJsonString);
 XLog.xml(unformattedXmlString);
@@ -200,7 +203,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 在弹出的对话框里，'Text to find' 区域填上 'android.util.Log'，'Replace with' 区域填个 'com.elvishew.xlog.XLog.Log'，然后点击 'Find'。
 
 ## 待开发
-* [ ] 打印任意对象: XLog.d(Object)
+* [x] 打印任意对象: XLog.d(Object)
 
 ## 感谢
 感谢 [Orhan Obut](https://github.com/orhanobut) 的 [logger](https://github.com/orhanobut/logger)，它让我知道一个日志库能做哪些事情

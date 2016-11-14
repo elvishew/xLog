@@ -22,7 +22,7 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.0.0'
+compile 'com.elvishew:xlog:1.1.0'
 ```
 
 ## Preview
@@ -58,6 +58,8 @@ LogConfiguration config = new LogConfiguration.Builder()
     .threadFormatter(new MyThreadFormatter())              // Default: DefaultThreadFormatter
     .stackTraceFormatter(new MyStackTraceFormatter())      // Default: DefaultStackTraceFormatter
     .borderFormatter(new MyBoardFormatter())               // Default: DefaultBorderFormatter
+    .addObjectFormatter(AnyClass.class,                    // Add formatter for specific class of object
+            new AnyClassObjectFormatter())                 // Use Object.toString() by default
     .build();
 
 Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
@@ -82,6 +84,7 @@ For android, a best place to do the initialization is [Application.onCreate()](h
 XLog.d("Simple message")
 XLog.d("My name is %s", "Elvis");
 XLog.d("An exception caught", exception);
+XLog.d(object);
 XLog.d(array);
 XLog.json(unformattedJsonString);
 XLog.xml(unformattedXmlString);
@@ -202,7 +205,7 @@ In the menu, click the 'Replace in Path...' option.
 In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
 ## TODO
-* [ ] Print any object: XLog.d(Object)
+* [x] Print any object: XLog.d(Object)
 
 ## Thanks
 Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give me many ideas of what a logger can do.
