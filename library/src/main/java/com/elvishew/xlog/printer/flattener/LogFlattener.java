@@ -18,7 +18,7 @@ package com.elvishew.xlog.printer.flattener;
 
 /**
  * The log flattener used to flatten log elements(log level, tag and message) to a
- * single string.
+ * single Charsequence.
  */
 public interface LogFlattener {
 
@@ -28,7 +28,7 @@ public interface LogFlattener {
      * @param logLevel  the level of log
      * @param tag       the tag of log
      * @param message   the message of log
-     * @return the formatted final log string
+     * @return the formatted final log Charsequence
      */
-    String flatten(int logLevel, String tag, String message);
+    CharSequence flatten(int logLevel, String tag, String message);
 }

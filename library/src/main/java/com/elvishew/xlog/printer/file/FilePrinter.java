@@ -116,7 +116,7 @@ public class FilePrinter implements Printer {
             }
         }
         try {
-            String flattenedLog = logFlattener.flatten(logLevel, tag, msg);
+            String flattenedLog = logFlattener.flatten(logLevel, tag, msg).toString();
             mBufferedWriter.write(flattenedLog);
             mBufferedWriter.newLine();
             mBufferedWriter.flush();

@@ -47,7 +47,7 @@ public class SystemPrinter implements Printer {
 
     @Override
     public void println(int logLevel, String tag, String msg) {
-        String flattenedLog = logFlattener.flatten(logLevel, tag, msg);
+        String flattenedLog = logFlattener.flatten(logLevel, tag, msg).toString();
         System.out.println(flattenedLog);
     }
 }
