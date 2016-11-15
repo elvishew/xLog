@@ -18,6 +18,10 @@ package com.elvishew.xlog.printer.flattener;
 
 import com.elvishew.xlog.LogLevel;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Simply join the timestamp, log level, tag and message together.
  */
@@ -25,7 +29,11 @@ public class DefaultLogFlattener implements LogFlattener {
 
     @Override
     public CharSequence flatten(int logLevel, String tag, String message) {
-        return Long.toString(System.currentTimeMillis())
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm:ss", Locale.US);
+        Date curDate = new Date(System.currentTimeMillis());
+        formatter.format(curDate);
+
+        return formatter.format(curDate)
                 + '|' + LogLevel.getShortLevelName(logLevel)
                 + '|' + tag
                 + '|' + message;
