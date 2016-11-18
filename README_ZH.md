@@ -7,8 +7,9 @@
 
 XLog 能干什么:
 * 全局配置（TAG，各种格式化器...）或基于单条日志的配置
-* 支持数组
-* 支持无限长的日志（没有 4K 字符的限制）
+* 支持打印任意对象以及可自定义的对象格式化器
+* 支持打印数组
+* 支持打印无限长的日志（没有 4K 字符的限制）
 * XML 和 JSON 格式化输出
 * 线程信息（线程名等，可自定义）
 * 调用栈信息（可配置的调用栈深度，调用栈信息包括类名、方法名文件名和行号）
@@ -19,6 +20,7 @@ XLog 能干什么:
 与其他日志库的不同:
 * 优美的源代码，良好的文档
 * 扩展性高，可轻松扩展和强化功能
+* 轻量级，零依赖
 
 ## 依赖
 ```groovy
@@ -164,6 +166,10 @@ XLog.st(5).d("Message with stack trace info");
 ```
 <img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png'/>
 
+## 类似的库
+* [logger](https://github.com/orhanobut/logger)
+* [KLog](https://github.com/ZhaoKaiQiang/KLog)
+
 ## 兼容性
 为了兼容 [Android Log]，XLog 支持 [Android Log] 里的所有方法。
 请看 [XLog] 里的 Log 类。
@@ -205,8 +211,13 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 ## 待开发
 * [x] 打印任意对象: XLog.d(Object)
 
+## 问题
+如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。
+
+注意：麻烦使用英文提问和回复，方便其他国家的用户看懂并从中受益，谢谢。
+
 ## 感谢
-感谢 [Orhan Obut](https://github.com/orhanobut) 的 [logger](https://github.com/orhanobut/logger)，它让我知道一个日志库能做哪些事情
+感谢 [Orhan Obut](https://github.com/orhanobut) 的 [logger](https://github.com/orhanobut/logger)，它让我知道一个日志库能做哪些事情。
 
 感谢 [Serge Zaitsev](https://github.com/zserge) 的 [log](https://github.com/zserge/log)，让我想到要兼容 [Android Log]。
 
@@ -226,6 +237,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 </pre>
+
+## 关于我
+* 微博：[http://weibo.com/elvishew](http://weibo.com/elvishew)
+* 个人博客：[http://blog.elvishew.com](http://blog.elvishew.com)
+* 简书：[http://www.jianshu.com/users/bc6537653220](http://www.jianshu.com/users/bc6537653220)
 
 [Android Log]: http://developer.android.com/reference/android/util/Log.html
 [XLog]: https://github.com/elvishew/XLog/blob/master/library/src/main/java/com/elvishew/xlog/XLog.java

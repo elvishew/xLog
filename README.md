@@ -7,8 +7,9 @@ Simple and pretty, powerful and flexible logger for android and java, can concur
 
 What XLog can do:
 * Global config(tag, formatters...) or log-based config
-* Support array
-* Support long log (No 4K limitation)
+* Support printing any object and customizable object formatter
+* Support printing array
+* Support printing long log (No 4K limitation)
 * XML and JSON formatted
 * Thread information (Thread name etc. Can be customized)
 * Stack trace information (Configurable call stack depth, with file name, method name, line number)
@@ -19,6 +20,7 @@ What XLog can do:
 The differences to other logger libraries:
 * Pretty source code and document
 * So flexible that you can easily customize or enhance it
+* Lightweight, no other dependencies
 
 ## Dependency
 ```groovy
@@ -105,8 +107,8 @@ partial.d("Simple message 2");
 ... // Other partial usage
 ```
 
-### Log-based Usage
-Setup log based configs and log immediately, the logging methods is completely the same as that ones in [XLog].
+### Log-based usage
+Setup log-based configs and log immediately, the logging methods is completely the same as that ones in [XLog].
 ```java
 XLog.t()    // Enable thread into
     .st(3)  // Enable stack trace info with depth 3
@@ -166,6 +168,10 @@ XLog.st(5).d("Message with stack trace info");
 ```
 <img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png'/>
 
+## Similar libraries
+* [logger](https://github.com/orhanobut/logger)
+* [KLog](https://github.com/ZhaoKaiQiang/KLog)
+
 ## Compatibility
 In order to be compatible with [Android Log], all the methods of [Android Log] are supported here.  
 See the Log class defined in [XLog].
@@ -206,6 +212,9 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 
 ## TODO
 * [x] Print any object: XLog.d(Object)
+
+## Issues
+If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
 
 ## Thanks
 Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give me many ideas of what a logger can do.
