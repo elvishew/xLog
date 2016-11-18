@@ -23,6 +23,7 @@ import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
+import com.elvishew.xlog.internal.DefaultsFactory;
 
 import java.util.HashMap;
 import java.util.Map;

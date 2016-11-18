@@ -25,9 +25,10 @@ import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
+import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.PrinterSet;
-import com.elvishew.xlog.util.StackTraceUtil;
+import com.elvishew.xlog.internal.util.StackTraceUtil;
 
 /**
  * A log tool which can be used in android or java, the most important feature is it can print the

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog;
+package com.elvishew.xlog.internal;
 
 import android.annotation.TargetApi;
 import android.os.Build;

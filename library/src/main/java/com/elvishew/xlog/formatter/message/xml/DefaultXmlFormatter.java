@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog.formatter.message.xml;
 
-import com.elvishew.xlog.SystemCompat;
+import com.elvishew.xlog.internal.SystemCompat;
 import com.elvishew.xlog.formatter.FormatException;
 
 import java.io.StringReader;

@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog.printer.file;
 
-import com.elvishew.xlog.DefaultsFactory;
+import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;

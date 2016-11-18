@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog.formatter.message.throwable;
 
-import com.elvishew.xlog.util.StackTraceUtil;
+import com.elvishew.xlog.internal.util.StackTraceUtil;
 
 /**
  * Simply put each stack trace(method name, source file and line number) of the throwable

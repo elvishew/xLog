@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.util;
+package com.elvishew.xlog.internal.util;
 
 import com.elvishew.xlog.XLog;
 

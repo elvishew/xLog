@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog.formatter.stacktrace;
 
-import com.elvishew.xlog.SystemCompat;
+import com.elvishew.xlog.internal.SystemCompat;
 
 /**
  * Formatted stack trace looks like:

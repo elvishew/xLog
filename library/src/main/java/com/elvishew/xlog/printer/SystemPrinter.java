@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog.printer;
 
-import com.elvishew.xlog.DefaultsFactory;
+import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.printer.flattener.LogFlattener;
 
 /**

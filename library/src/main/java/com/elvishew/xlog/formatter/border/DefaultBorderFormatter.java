@@ -16,7 +16,7 @@
 
 package com.elvishew.xlog.formatter.border;
 
-import com.elvishew.xlog.SystemCompat;
+import com.elvishew.xlog.internal.SystemCompat;
 
 /**
  * String segments wrapped with borders look like:

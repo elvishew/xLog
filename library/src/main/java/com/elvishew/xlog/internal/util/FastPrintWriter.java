@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.util;
+package com.elvishew.xlog.internal.util;
 
 import android.util.Printer;
 
-import com.elvishew.xlog.SystemCompat;
+import com.elvishew.xlog.internal.SystemCompat;
 
 import java.io.IOException;
 import java.io.OutputStream;

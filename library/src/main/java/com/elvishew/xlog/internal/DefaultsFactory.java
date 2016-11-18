@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog;
+package com.elvishew.xlog.internal;
 
 import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.border.DefaultBorderFormatter;
@@ -39,7 +39,7 @@ import com.elvishew.xlog.printer.flattener.DefaultLogFlattener;
 import com.elvishew.xlog.printer.flattener.LogFlattener;
 
 /**
- * Factory for providing default formatter.
+ * Factory for providing default implementation.
  */
 public class DefaultsFactory {
 
