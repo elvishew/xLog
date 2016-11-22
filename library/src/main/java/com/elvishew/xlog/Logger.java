@@ -24,9 +24,9 @@ import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 import com.elvishew.xlog.internal.SystemCompat;
+import com.elvishew.xlog.internal.util.StackTraceUtil;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.PrinterSet;
-import com.elvishew.xlog.internal.util.StackTraceUtil;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -399,12 +399,18 @@ public class Logger {
         if (logLevel < XLog.sLogLevel) {
             return;
         }
-        ObjectFormatter<? super T> objectFormatter = logConfiguration.getObjectFormatter(object);
-        if (objectFormatter != null) {
-            printlnInternal(logLevel, objectFormatter.format(object));
+        String objectString;
+        if (object != null) {
+            ObjectFormatter<? super T> objectFormatter = logConfiguration.getObjectFormatter(object);
+            if (objectFormatter != null) {
+                objectString = objectFormatter.format(object);
+            } else {
+                objectString = object.toString();
+            }
         } else {
-            printlnInternal(logLevel, object.toString());
+            objectString = "null";
         }
+        printlnInternal(logLevel, objectString);
     }
 
     /**
