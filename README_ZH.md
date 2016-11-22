@@ -30,6 +30,10 @@ compile 'com.elvishew:xlog:1.1.0'
 ## 预览
 * 带线程信息、调用栈信息和边框的日志
 <img src='https://github.com/elvishew/XLog/blob/master/images/classic_log.png'/>
+* 格式化后的网络 API 请求
+<img src='https://github.com/elvishew/XLog/blob/master/images/restful_request.png'/>
+* 格式化后的网络 API 响应
+<img src='https://github.com/elvishew/XLog/blob/master/images/restful_response.png'/>
 * 日志文件
 <img src='https://github.com/elvishew/XLog/blob/master/images/log_files.png'/>
 

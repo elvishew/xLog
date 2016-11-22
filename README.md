@@ -30,6 +30,10 @@ compile 'com.elvishew:xlog:1.1.0'
 ## Preview
 * Log with thread information, stack trace information and border
 <img src='https://github.com/elvishew/XLog/blob/master/images/classic_log.png'/>
+* Formatted network API request
+<img src='https://github.com/elvishew/XLog/blob/master/images/restful_request.png'/>
+* Formatted network API response
+<img src='https://github.com/elvishew/XLog/blob/master/images/restful_response.png'/>
 * Log files
 <img src='https://github.com/elvishew/XLog/blob/master/images/log_files.png'/>
 
