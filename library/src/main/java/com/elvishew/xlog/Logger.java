@@ -603,6 +603,7 @@ public class Logger {
          * Construct a builder, which will perform the same as the global one by default.
          */
         public Builder() {
+            XLog.assertInitialization();
         }
 
         /**

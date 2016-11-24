@@ -16,6 +16,8 @@
 
 package com.elvishew.xlog;
 
+import static com.elvishew.xlog.XLog.assertInitialization;
+
 /**
  * Utilities for convenience.
  */
@@ -28,6 +30,7 @@ public class LogUtils {
      * @return the formatted string
      */
     public static String formatJson(String json) {
+        assertInitialization();
         return XLog.sLogConfiguration.jsonFormatter.format(json);
     }
 
@@ -38,6 +41,7 @@ public class LogUtils {
      * @return the formatted string
      */
     public static String formatXml(String xml) {
+        assertInitialization();
         return XLog.sLogConfiguration.xmlFormatter.format(xml);
     }
 
@@ -48,6 +52,7 @@ public class LogUtils {
      * @return the formatted string
      */
     public static String formatThrowable(Throwable throwable) {
+        assertInitialization();
         return XLog.sLogConfiguration.throwableFormatter.format(throwable);
     }
 
@@ -58,6 +63,7 @@ public class LogUtils {
      * @return the formatted string
      */
     public static String formatThread(Thread thread) {
+        assertInitialization();
         return XLog.sLogConfiguration.threadFormatter.format(thread);
     }
 
@@ -68,6 +74,7 @@ public class LogUtils {
      * @return the formatted string
      */
     public static String formatStackTrace(StackTraceElement[] stackTrace) {
+        assertInitialization();
         return XLog.sLogConfiguration.stackTraceFormatter.format(stackTrace);
     }
 
@@ -78,6 +85,7 @@ public class LogUtils {
      * @return the bordered string segments
      */
     public static String addBorder(String[] segments) {
+        assertInitialization();
         return XLog.sLogConfiguration.borderFormatter.format(segments);
     }
 }
