@@ -30,12 +30,12 @@ import com.elvishew.xlog.printer.file.FilePrinter;
  */
 public interface Printer {
 
-    /**
-     * Print log in new line.
-     *
-     * @param logLevel the level of log
-     * @param tag      the tag of log
-     * @param msg      the msg of log
-     */
-    void println(int logLevel, String tag, String msg);
+  /**
+   * Print log in new line.
+   *
+   * @param logLevel the level of log
+   * @param tag      the tag of log
+   * @param msg      the msg of log
+   */
+  void println(int logLevel, String tag, String msg);
 }

@@ -36,404 +36,404 @@ import java.util.Map;
  */
 public class LogConfiguration {
 
+  /**
+   * The tag string.
+   */
+  public final String tag;
+
+  /**
+   * Whether we should log with thread info.
+   */
+  public final boolean withThread;
+
+  /**
+   * Whether we should log with stack trace.
+   */
+  public final boolean withStackTrace;
+
+  /**
+   * The number of stack trace elements we should log when logging with stack trace,
+   * 0 if no limitation.
+   */
+  public final int stackTraceDepth;
+
+  /**
+   * Whether we should log with border.
+   */
+  public final boolean withBorder;
+
+  /**
+   * The JSON formatter used to format the JSON string when log a JSON string.
+   */
+  public final JsonFormatter jsonFormatter;
+
+  /**
+   * The XML formatter used to format the XML string when log a XML string.
+   */
+  public final XmlFormatter xmlFormatter;
+
+  /**
+   * The throwable formatter used to format the throwable when log a message with throwable.
+   */
+  public final ThrowableFormatter throwableFormatter;
+
+  /**
+   * The thread formatter used to format the thread when logging.
+   */
+  public final ThreadFormatter threadFormatter;
+
+  /**
+   * The stack trace formatter used to format the stack trace when logging.
+   */
+  public final StackTraceFormatter stackTraceFormatter;
+
+  /**
+   * The border formatter used to format the border when logging.
+   */
+  public final BorderFormatter borderFormatter;
+
+  /**
+   * The object formatters, used when logging an object.
+   */
+  private final Map<Class<?>, ObjectFormatter<?>> objectFormatters;
+
+  /*package*/ LogConfiguration(final Builder builder) {
+    tag = builder.tag;
+
+    withThread = builder.withThread;
+    withStackTrace = builder.withStackTrace;
+    stackTraceDepth = builder.stackTraceDepth;
+    withBorder = builder.withBorder;
+
+    jsonFormatter = builder.jsonFormatter;
+    xmlFormatter = builder.xmlFormatter;
+    throwableFormatter = builder.throwableFormatter;
+    threadFormatter = builder.threadFormatter;
+    stackTraceFormatter = builder.stackTraceFormatter;
+    borderFormatter = builder.borderFormatter;
+
+    objectFormatters = builder.objectFormatters;
+  }
+
+  /**
+   * Get {@link ObjectFormatter} for specific object.
+   *
+   * @param object the object
+   * @param <T>    the type of object
+   * @return the object formatter for the object, or null if not found
+   */
+  public <T> ObjectFormatter<? super T> getObjectFormatter(T object) {
+    if (objectFormatters == null) {
+      return null;
+    }
+
+    Class<? super T> clazz;
+    Class<? super T> superClazz = (Class<? super T>) object.getClass();
+    ObjectFormatter<? super T> formatter;
+    do {
+      clazz = superClazz;
+      formatter = (ObjectFormatter<? super T>) objectFormatters.get(clazz);
+      superClazz = clazz.getSuperclass();
+    } while (formatter == null && superClazz != null);
+    return formatter;
+  }
+
+  /**
+   * Builder for {@link LogConfiguration}.
+   */
+  public static class Builder {
+
+    private static final String DEFAULT_TAG = "X-LOG";
+
     /**
-     * The tag string.
+     * The tag string used when log.
      */
-    public final String tag;
+    private String tag = DEFAULT_TAG;
 
     /**
      * Whether we should log with thread info.
      */
-    public final boolean withThread;
+    private boolean withThread;
 
     /**
      * Whether we should log with stack trace.
      */
-    public final boolean withStackTrace;
+    private boolean withStackTrace;
 
     /**
      * The number of stack trace elements we should log when logging with stack trace,
      * 0 if no limitation.
      */
-    public final int stackTraceDepth;
+    private int stackTraceDepth;
 
     /**
      * Whether we should log with border.
      */
-    public final boolean withBorder;
+    private boolean withBorder;
 
     /**
      * The JSON formatter used to format the JSON string when log a JSON string.
      */
-    public final JsonFormatter jsonFormatter;
+    private JsonFormatter jsonFormatter;
 
     /**
      * The XML formatter used to format the XML string when log a XML string.
      */
-    public final XmlFormatter xmlFormatter;
+    private XmlFormatter xmlFormatter;
 
     /**
      * The throwable formatter used to format the throwable when log a message with throwable.
      */
-    public final ThrowableFormatter throwableFormatter;
+    private ThrowableFormatter throwableFormatter;
 
     /**
      * The thread formatter used to format the thread when logging.
      */
-    public final ThreadFormatter threadFormatter;
+    private ThreadFormatter threadFormatter;
 
     /**
      * The stack trace formatter used to format the stack trace when logging.
      */
-    public final StackTraceFormatter stackTraceFormatter;
+    private StackTraceFormatter stackTraceFormatter;
 
     /**
      * The border formatter used to format the border when logging.
      */
-    public final BorderFormatter borderFormatter;
+    private BorderFormatter borderFormatter;
 
     /**
      * The object formatters, used when logging an object.
      */
-    private final Map<Class<?>, ObjectFormatter<?>> objectFormatters;
+    private Map<Class<?>, ObjectFormatter<?>> objectFormatters;
 
-    /*package*/ LogConfiguration(final Builder builder) {
-        tag = builder.tag;
-
-        withThread = builder.withThread;
-        withStackTrace = builder.withStackTrace;
-        stackTraceDepth = builder.stackTraceDepth;
-        withBorder = builder.withBorder;
-
-        jsonFormatter = builder.jsonFormatter;
-        xmlFormatter = builder.xmlFormatter;
-        throwableFormatter = builder.throwableFormatter;
-        threadFormatter = builder.threadFormatter;
-        stackTraceFormatter = builder.stackTraceFormatter;
-        borderFormatter = builder.borderFormatter;
-
-        objectFormatters = builder.objectFormatters;
+    /**
+     * Construct a builder with all default configurations.
+     */
+    public Builder() {
     }
 
     /**
-     * Get {@link ObjectFormatter} for specific object.
+     * Construct a builder with all configurations from another {@link LogConfiguration}.
      *
-     * @param object the object
-     * @param <T>    the type of object
-     * @return the object formatter for the object, or null if not found
+     * @param logConfiguration the {@link LogConfiguration} to copy configurations from
      */
-    public <T> ObjectFormatter<? super T> getObjectFormatter(T object) {
-        if (objectFormatters == null) {
-            return null;
-        }
+    public Builder(LogConfiguration logConfiguration) {
+      tag = logConfiguration.tag;
 
-        Class<? super T> clazz;
-        Class<? super T> superClazz = (Class<? super T>) object.getClass();
-        ObjectFormatter<? super T> formatter;
-        do {
-            clazz = superClazz;
-            formatter = (ObjectFormatter<? super T>) objectFormatters.get(clazz);
-            superClazz = clazz.getSuperclass();
-        } while (formatter == null && superClazz != null);
-        return formatter;
+      withThread = logConfiguration.withThread;
+      withStackTrace = logConfiguration.withStackTrace;
+      stackTraceDepth = logConfiguration.stackTraceDepth;
+      withBorder = logConfiguration.withBorder;
+
+      jsonFormatter = logConfiguration.jsonFormatter;
+      xmlFormatter = logConfiguration.xmlFormatter;
+      throwableFormatter = logConfiguration.throwableFormatter;
+      threadFormatter = logConfiguration.threadFormatter;
+      stackTraceFormatter = logConfiguration.stackTraceFormatter;
+      borderFormatter = logConfiguration.borderFormatter;
+
+      if (logConfiguration.objectFormatters != null) {
+        objectFormatters = new HashMap<>(logConfiguration.objectFormatters);
+      }
     }
 
     /**
-     * Builder for {@link LogConfiguration}.
+     * Set the tag string used when log.
+     *
+     * @param tag the tag string used when log
+     * @return the builder
      */
-    public static class Builder {
-
-        private static final String DEFAULT_TAG = "X-LOG";
-
-        /**
-         * The tag string used when log.
-         */
-        private String tag = DEFAULT_TAG;
-
-        /**
-         * Whether we should log with thread info.
-         */
-        private boolean withThread;
-
-        /**
-         * Whether we should log with stack trace.
-         */
-        private boolean withStackTrace;
-
-        /**
-         * The number of stack trace elements we should log when logging with stack trace,
-         * 0 if no limitation.
-         */
-        private int stackTraceDepth;
-
-        /**
-         * Whether we should log with border.
-         */
-        private boolean withBorder;
-
-        /**
-         * The JSON formatter used to format the JSON string when log a JSON string.
-         */
-        private JsonFormatter jsonFormatter;
-
-        /**
-         * The XML formatter used to format the XML string when log a XML string.
-         */
-        private XmlFormatter xmlFormatter;
-
-        /**
-         * The throwable formatter used to format the throwable when log a message with throwable.
-         */
-        private ThrowableFormatter throwableFormatter;
-
-        /**
-         * The thread formatter used to format the thread when logging.
-         */
-        private ThreadFormatter threadFormatter;
-
-        /**
-         * The stack trace formatter used to format the stack trace when logging.
-         */
-        private StackTraceFormatter stackTraceFormatter;
-
-        /**
-         * The border formatter used to format the border when logging.
-         */
-        private BorderFormatter borderFormatter;
-
-        /**
-         * The object formatters, used when logging an object.
-         */
-        private Map<Class<?>, ObjectFormatter<?>> objectFormatters;
-
-        /**
-         * Construct a builder with all default configurations.
-         */
-        public Builder() {
-        }
-
-        /**
-         * Construct a builder with all configurations from another {@link LogConfiguration}.
-         *
-         * @param logConfiguration the {@link LogConfiguration} to copy configurations from
-         */
-        public Builder(LogConfiguration logConfiguration) {
-            tag = logConfiguration.tag;
-
-            withThread = logConfiguration.withThread;
-            withStackTrace = logConfiguration.withStackTrace;
-            stackTraceDepth = logConfiguration.stackTraceDepth;
-            withBorder = logConfiguration.withBorder;
-
-            jsonFormatter = logConfiguration.jsonFormatter;
-            xmlFormatter = logConfiguration.xmlFormatter;
-            throwableFormatter = logConfiguration.throwableFormatter;
-            threadFormatter = logConfiguration.threadFormatter;
-            stackTraceFormatter = logConfiguration.stackTraceFormatter;
-            borderFormatter = logConfiguration.borderFormatter;
-
-            if (logConfiguration.objectFormatters != null) {
-                objectFormatters = new HashMap<>(logConfiguration.objectFormatters);
-            }
-        }
-
-        /**
-         * Set the tag string used when log.
-         *
-         * @param tag the tag string used when log
-         * @return the builder
-         */
-        public Builder tag(String tag) {
-            this.tag = tag;
-            return this;
-        }
-
-        /**
-         * Enable thread info.
-         *
-         * @return the builder
-         */
-        public Builder t() {
-            this.withThread = true;
-            return this;
-        }
-
-        /**
-         * Disable thread info.
-         *
-         * @return the builder
-         */
-        public Builder nt() {
-            this.withThread = false;
-            return this;
-        }
-
-        /**
-         * Enable stack trace.
-         *
-         * @param depth the number of stack trace elements we should log, 0 if no limitation
-         * @return the builder
-         */
-        public Builder st(int depth) {
-            this.withStackTrace = true;
-            this.stackTraceDepth = depth;
-            return this;
-        }
-
-        /**
-         * Disable stack trace.
-         *
-         * @return the builder
-         */
-        public Builder nst() {
-            this.withStackTrace = false;
-            this.stackTraceDepth = 0;
-            return this;
-        }
-
-        /**
-         * Enable border.
-         *
-         * @return the builder
-         */
-        public Builder b() {
-            this.withBorder = true;
-            return this;
-        }
-
-        /**
-         * Disable border.
-         *
-         * @return the builder
-         */
-        public Builder nb() {
-            this.withBorder = false;
-            return this;
-        }
-
-        /**
-         * Set the JSON formatter used when log a JSON string.
-         *
-         * @param jsonFormatter the JSON formatter used when log a JSON string
-         * @return the builder
-         */
-        public Builder jsonFormatter(JsonFormatter jsonFormatter) {
-            this.jsonFormatter = jsonFormatter;
-            return this;
-        }
-
-        /**
-         * Set the XML formatter used when log a XML string.
-         *
-         * @param xmlFormatter the XML formatter used when log a XML string
-         * @return the builder
-         */
-        public Builder xmlFormatter(XmlFormatter xmlFormatter) {
-            this.xmlFormatter = xmlFormatter;
-            return this;
-        }
-
-        /**
-         * Set the throwable formatter used when log a message with throwable.
-         *
-         * @param throwableFormatter the throwable formatter used when log a message with throwable
-         * @return the builder
-         */
-        public Builder throwableFormatter(ThrowableFormatter throwableFormatter) {
-            this.throwableFormatter = throwableFormatter;
-            return this;
-        }
-
-        /**
-         * Set the thread formatter used when logging.
-         *
-         * @param threadFormatter the thread formatter used when logging
-         * @return the builder
-         */
-        public Builder threadFormatter(ThreadFormatter threadFormatter) {
-            this.threadFormatter = threadFormatter;
-            return this;
-        }
-
-        /**
-         * Set the stack trace formatter used when logging.
-         *
-         * @param stackTraceFormatter the stack trace formatter used when logging
-         * @return the builder
-         */
-        public Builder stackTraceFormatter(StackTraceFormatter stackTraceFormatter) {
-            this.stackTraceFormatter = stackTraceFormatter;
-            return this;
-        }
-
-        /**
-         * Set the border formatter used when logging.
-         *
-         * @param borderFormatter the border formatter used when logging
-         * @return the builder
-         */
-        public Builder borderFormatter(BorderFormatter borderFormatter) {
-            this.borderFormatter = borderFormatter;
-            return this;
-        }
-
-        /**
-         * Add a {@link ObjectFormatter} for specific class of object.
-         *
-         * @param objectClass     the class of object
-         * @param objectFormatter the object formatter to add
-         * @param <T>             the type of object
-         * @return the builder
-         */
-        public <T> Builder addObjectFormatter(Class<T> objectClass,
-                                              ObjectFormatter<? super T> objectFormatter) {
-            if (objectFormatters == null) {
-                objectFormatters = new HashMap<>(5);
-            }
-            objectFormatters.put(objectClass, objectFormatter);
-            return this;
-        }
-
-        /**
-         * Copy all object formatters, only for internal usage.
-         *
-         * @param objectFormatters the object formatters to copy
-         * @return the builder
-         */
-        Builder objectFormatters(Map<Class<?>, ObjectFormatter<?>> objectFormatters) {
-            this.objectFormatters = objectFormatters;
-            return this;
-        }
-
-        /**
-         * Builds configured {@link LogConfiguration} object.
-         *
-         * @return the built configured {@link LogConfiguration} object
-         */
-        public LogConfiguration build() {
-            initEmptyFieldsWithDefaultValues();
-            return new LogConfiguration(this);
-        }
-
-        private void initEmptyFieldsWithDefaultValues() {
-            if (jsonFormatter == null) {
-                jsonFormatter = DefaultsFactory.createJsonFormatter();
-            }
-            if (xmlFormatter == null) {
-                xmlFormatter = DefaultsFactory.createXmlFormatter();
-            }
-            if (throwableFormatter == null) {
-                throwableFormatter = DefaultsFactory.createThrowableFormatter();
-            }
-            if (threadFormatter == null) {
-                threadFormatter = DefaultsFactory.createThreadFormatter();
-            }
-            if (stackTraceFormatter == null) {
-                stackTraceFormatter = DefaultsFactory.createStackTraceFormatter();
-            }
-            if (borderFormatter == null) {
-                borderFormatter = DefaultsFactory.createBorderFormatter();
-            }
-        }
+    public Builder tag(String tag) {
+      this.tag = tag;
+      return this;
     }
+
+    /**
+     * Enable thread info.
+     *
+     * @return the builder
+     */
+    public Builder t() {
+      this.withThread = true;
+      return this;
+    }
+
+    /**
+     * Disable thread info.
+     *
+     * @return the builder
+     */
+    public Builder nt() {
+      this.withThread = false;
+      return this;
+    }
+
+    /**
+     * Enable stack trace.
+     *
+     * @param depth the number of stack trace elements we should log, 0 if no limitation
+     * @return the builder
+     */
+    public Builder st(int depth) {
+      this.withStackTrace = true;
+      this.stackTraceDepth = depth;
+      return this;
+    }
+
+    /**
+     * Disable stack trace.
+     *
+     * @return the builder
+     */
+    public Builder nst() {
+      this.withStackTrace = false;
+      this.stackTraceDepth = 0;
+      return this;
+    }
+
+    /**
+     * Enable border.
+     *
+     * @return the builder
+     */
+    public Builder b() {
+      this.withBorder = true;
+      return this;
+    }
+
+    /**
+     * Disable border.
+     *
+     * @return the builder
+     */
+    public Builder nb() {
+      this.withBorder = false;
+      return this;
+    }
+
+    /**
+     * Set the JSON formatter used when log a JSON string.
+     *
+     * @param jsonFormatter the JSON formatter used when log a JSON string
+     * @return the builder
+     */
+    public Builder jsonFormatter(JsonFormatter jsonFormatter) {
+      this.jsonFormatter = jsonFormatter;
+      return this;
+    }
+
+    /**
+     * Set the XML formatter used when log a XML string.
+     *
+     * @param xmlFormatter the XML formatter used when log a XML string
+     * @return the builder
+     */
+    public Builder xmlFormatter(XmlFormatter xmlFormatter) {
+      this.xmlFormatter = xmlFormatter;
+      return this;
+    }
+
+    /**
+     * Set the throwable formatter used when log a message with throwable.
+     *
+     * @param throwableFormatter the throwable formatter used when log a message with throwable
+     * @return the builder
+     */
+    public Builder throwableFormatter(ThrowableFormatter throwableFormatter) {
+      this.throwableFormatter = throwableFormatter;
+      return this;
+    }
+
+    /**
+     * Set the thread formatter used when logging.
+     *
+     * @param threadFormatter the thread formatter used when logging
+     * @return the builder
+     */
+    public Builder threadFormatter(ThreadFormatter threadFormatter) {
+      this.threadFormatter = threadFormatter;
+      return this;
+    }
+
+    /**
+     * Set the stack trace formatter used when logging.
+     *
+     * @param stackTraceFormatter the stack trace formatter used when logging
+     * @return the builder
+     */
+    public Builder stackTraceFormatter(StackTraceFormatter stackTraceFormatter) {
+      this.stackTraceFormatter = stackTraceFormatter;
+      return this;
+    }
+
+    /**
+     * Set the border formatter used when logging.
+     *
+     * @param borderFormatter the border formatter used when logging
+     * @return the builder
+     */
+    public Builder borderFormatter(BorderFormatter borderFormatter) {
+      this.borderFormatter = borderFormatter;
+      return this;
+    }
+
+    /**
+     * Add a {@link ObjectFormatter} for specific class of object.
+     *
+     * @param objectClass     the class of object
+     * @param objectFormatter the object formatter to add
+     * @param <T>             the type of object
+     * @return the builder
+     */
+    public <T> Builder addObjectFormatter(Class<T> objectClass,
+                                          ObjectFormatter<? super T> objectFormatter) {
+      if (objectFormatters == null) {
+        objectFormatters = new HashMap<>(5);
+      }
+      objectFormatters.put(objectClass, objectFormatter);
+      return this;
+    }
+
+    /**
+     * Copy all object formatters, only for internal usage.
+     *
+     * @param objectFormatters the object formatters to copy
+     * @return the builder
+     */
+    Builder objectFormatters(Map<Class<?>, ObjectFormatter<?>> objectFormatters) {
+      this.objectFormatters = objectFormatters;
+      return this;
+    }
+
+    /**
+     * Builds configured {@link LogConfiguration} object.
+     *
+     * @return the built configured {@link LogConfiguration} object
+     */
+    public LogConfiguration build() {
+      initEmptyFieldsWithDefaultValues();
+      return new LogConfiguration(this);
+    }
+
+    private void initEmptyFieldsWithDefaultValues() {
+      if (jsonFormatter == null) {
+        jsonFormatter = DefaultsFactory.createJsonFormatter();
+      }
+      if (xmlFormatter == null) {
+        xmlFormatter = DefaultsFactory.createXmlFormatter();
+      }
+      if (throwableFormatter == null) {
+        throwableFormatter = DefaultsFactory.createThrowableFormatter();
+      }
+      if (threadFormatter == null) {
+        threadFormatter = DefaultsFactory.createThreadFormatter();
+      }
+      if (stackTraceFormatter == null) {
+        stackTraceFormatter = DefaultsFactory.createStackTraceFormatter();
+      }
+      if (borderFormatter == null) {
+        borderFormatter = DefaultsFactory.createBorderFormatter();
+      }
+    }
+  }
 }

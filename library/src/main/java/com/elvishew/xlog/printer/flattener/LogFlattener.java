@@ -22,13 +22,13 @@ package com.elvishew.xlog.printer.flattener;
  */
 public interface LogFlattener {
 
-    /**
-     * Flatten the log.
-     *
-     * @param logLevel  the level of log
-     * @param tag       the tag of log
-     * @param message   the message of log
-     * @return the formatted final log Charsequence
-     */
-    CharSequence flatten(int logLevel, String tag, String message);
+  /**
+   * Flatten the log.
+   *
+   * @param logLevel the level of log
+   * @param tag      the tag of log
+   * @param message  the message of log
+   * @return the formatted final log Charsequence
+   */
+  CharSequence flatten(int logLevel, String tag, String message);
 }

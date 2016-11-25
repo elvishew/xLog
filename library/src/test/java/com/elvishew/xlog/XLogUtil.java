@@ -18,7 +18,7 @@ package com.elvishew.xlog;
 
 public class XLogUtil {
 
-    public static void beforeTest() {
-        XLog.sIsInitialized = false;
-    }
+  public static void beforeTest() {
+    XLog.sIsInitialized = false;
+  }
 }

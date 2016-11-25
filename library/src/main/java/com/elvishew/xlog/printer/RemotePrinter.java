@@ -25,8 +25,8 @@ package com.elvishew.xlog.printer;
  */
 public class RemotePrinter implements Printer {
 
-    @Override
-    public void println(int logLevel, String tag, String msg) {
-        // TODO: Send the log to your server.
-    }
+  @Override
+  public void println(int logLevel, String tag, String msg) {
+    // TODO: Send the log to your server.
+  }
 }

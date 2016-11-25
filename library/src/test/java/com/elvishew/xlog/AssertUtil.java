@@ -22,35 +22,35 @@ import static org.junit.Assert.assertTrue;
 
 public class AssertUtil {
 
-    public static void assertHasLog(List<LogItem> logsContainer, LogItem target) {
-        boolean result = false;
-        for (LogItem log : logsContainer) {
-            if ((log.level == target.level)
-                    && log.tag.equals(target.tag)
-                    && log.msg.equals(target.msg)) {
-                result = true;
-            }
-        }
-        assertTrue("Missing log: " + target, result);
+  public static void assertHasLog(List<LogItem> logsContainer, LogItem target) {
+    boolean result = false;
+    for (LogItem log : logsContainer) {
+      if ((log.level == target.level)
+          && log.tag.equals(target.tag)
+          && log.msg.equals(target.msg)) {
+        result = true;
+      }
     }
+    assertTrue("Missing log: " + target, result);
+  }
 
-    public static void assertHasLog(List<LogItem> logsContainer, String msg) {
-        boolean result = false;
-        for (LogItem log : logsContainer) {
-            if (log.msg.equals(msg)) {
-                result = true;
-            }
-        }
-        assertTrue("Missing log: " + msg, result);
+  public static void assertHasLog(List<LogItem> logsContainer, String msg) {
+    boolean result = false;
+    for (LogItem log : logsContainer) {
+      if (log.msg.equals(msg)) {
+        result = true;
+      }
     }
+    assertTrue("Missing log: " + msg, result);
+  }
 
-    public static void assertHasLog(List<LogItem> logsContainer, int position, String msg) {
-        boolean result = false;
-        if (logsContainer.size() > position
-                && logsContainer.get(position) != null
-                && logsContainer.get(position).msg.equals(msg)) {
-            result = true;
-        }
-        assertTrue("Missing log: " + msg, result);
+  public static void assertHasLog(List<LogItem> logsContainer, int position, String msg) {
+    boolean result = false;
+    if (logsContainer.size() > position
+        && logsContainer.get(position) != null
+        && logsContainer.get(position).msg.equals(msg)) {
+      result = true;
     }
+    assertTrue("Missing log: " + msg, result);
+  }
 }

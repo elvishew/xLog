@@ -43,77 +43,77 @@ import com.elvishew.xlog.printer.flattener.LogFlattener;
  */
 public class DefaultsFactory {
 
-    private static final String DEFAULT_LOG_FILE_NAME = "log";
+  private static final String DEFAULT_LOG_FILE_NAME = "log";
 
-    private static final long DEFAULT_LOG_FILE_MAX_SIZE = 1024 * 1024; // 1M bytes;
+  private static final long DEFAULT_LOG_FILE_MAX_SIZE = 1024 * 1024; // 1M bytes;
 
-    /**
-     * Create the default JSON formatter.
-     */
-    public static JsonFormatter createJsonFormatter() {
-        return new DefaultJsonFormatter();
-    }
+  /**
+   * Create the default JSON formatter.
+   */
+  public static JsonFormatter createJsonFormatter() {
+    return new DefaultJsonFormatter();
+  }
 
-    /**
-     * Create the default XML formatter.
-     */
-    public static XmlFormatter createXmlFormatter() {
-        return new DefaultXmlFormatter();
-    }
+  /**
+   * Create the default XML formatter.
+   */
+  public static XmlFormatter createXmlFormatter() {
+    return new DefaultXmlFormatter();
+  }
 
-    /**
-     * Create the default throwable formatter.
-     */
-    public static ThrowableFormatter createThrowableFormatter() {
-        return new DefaultThrowableFormatter();
-    }
+  /**
+   * Create the default throwable formatter.
+   */
+  public static ThrowableFormatter createThrowableFormatter() {
+    return new DefaultThrowableFormatter();
+  }
 
-    /**
-     * Create the default thread formatter.
-     */
-    public static ThreadFormatter createThreadFormatter() {
-        return new DefaultThreadFormatter();
-    }
+  /**
+   * Create the default thread formatter.
+   */
+  public static ThreadFormatter createThreadFormatter() {
+    return new DefaultThreadFormatter();
+  }
 
-    /**
-     * Create the default stack trace formatter.
-     */
-    public static StackTraceFormatter createStackTraceFormatter() {
-        return new DefaultStackTraceFormatter();
-    }
+  /**
+   * Create the default stack trace formatter.
+   */
+  public static StackTraceFormatter createStackTraceFormatter() {
+    return new DefaultStackTraceFormatter();
+  }
 
-    /**
-     * Create the default border formatter.
-     */
-    public static BorderFormatter createBorderFormatter() {
-        return new DefaultBorderFormatter();
-    }
+  /**
+   * Create the default border formatter.
+   */
+  public static BorderFormatter createBorderFormatter() {
+    return new DefaultBorderFormatter();
+  }
 
-    /**
-     * Create the default log flattener.
-     */
-    public static LogFlattener createLogFlattener() {
-        return new DefaultLogFlattener();
-    }
+  /**
+   * Create the default log flattener.
+   */
+  public static LogFlattener createLogFlattener() {
+    return new DefaultLogFlattener();
+  }
 
-    /**
-     * Create the default printer.
-     */
-    public static Printer createPrinter() {
-        return new AndroidPrinter();
-    }
+  /**
+   * Create the default printer.
+   */
+  public static Printer createPrinter() {
+    return new AndroidPrinter();
+  }
 
-    /**
-     * Create the default file name generator for {@link FilePrinter}.
-     */
-    public static FileNameGenerator createFileNameGenerator() {
-        return new ChangelessFileNameGenerator(DEFAULT_LOG_FILE_NAME);
-    }
+  /**
+   * Create the default file name generator for {@link FilePrinter}.
+   */
+  public static FileNameGenerator createFileNameGenerator() {
+    return new ChangelessFileNameGenerator(DEFAULT_LOG_FILE_NAME);
+  }
 
-    /**
-     * Create the default backup strategy for {@link FilePrinter}.
-     */
-    public static BackupStrategy createBackupStrategy() {
-        return new FileSizeBackupStrategy(DEFAULT_LOG_FILE_MAX_SIZE);
-    }
+  /**
+   * Create the default backup strategy for {@link FilePrinter}.
+   */
+  public static BackupStrategy createBackupStrategy() {
+    return new FileSizeBackupStrategy(DEFAULT_LOG_FILE_MAX_SIZE);
+  }
 }

@@ -18,13 +18,13 @@ package com.elvishew.xlog;
 
 public class LogItem {
 
-    public int level;
-    public String tag;
-    public String msg;
+  public int level;
+  public String tag;
+  public String msg;
 
-    public LogItem(int level, String tag, String msg) {
-        this.level = level;
-        this.tag = tag;
-        this.msg = msg;
-    }
+  public LogItem(int level, String tag, String msg) {
+    this.level = level;
+    this.tag = tag;
+    this.msg = msg;
+  }
 }

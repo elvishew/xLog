@@ -23,16 +23,16 @@ import com.elvishew.xlog.LogLevel;
  */
 public class LevelFileNameGenerator implements FileNameGenerator {
 
-    @Override
-    public boolean isFileNameChangeable() {
-        return true;
-    }
+  @Override
+  public boolean isFileNameChangeable() {
+    return true;
+  }
 
-    /**
-     * Generate a file name which represent a specific log level.
-     */
-    @Override
-    public String generateFileName(int logLevel, long timestamp) {
-        return LogLevel.getLevelName(logLevel);
-    }
+  /**
+   * Generate a file name which represent a specific log level.
+   */
+  @Override
+  public String generateFileName(int logLevel, long timestamp) {
+    return LogLevel.getLevelName(logLevel);
+  }
 }

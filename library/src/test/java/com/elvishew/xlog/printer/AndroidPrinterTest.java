@@ -30,61 +30,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+
 public class AndroidPrinterTest {
 
-    List<LogItem> logContainer = new ArrayList<>();
+  List<LogItem> logContainer = new ArrayList<>();
 
-    @Before
-    public void setup() {
-        XLogUtil.beforeTest();
-        XLog.init(LogLevel.ALL, new AndroidPrinter() {
-            @Override
-            void printChunk(int logLevel, String tag, String msg) {
-                logContainer.add(new LogItem(logLevel, tag, msg));
-            }
-        });
+  @Before
+  public void setup() {
+    XLogUtil.beforeTest();
+    XLog.init(LogLevel.ALL, new AndroidPrinter() {
+      @Override
+      void printChunk(int logLevel, String tag, String msg) {
+        logContainer.add(new LogItem(logLevel, tag, msg));
+      }
+    });
+  }
+
+  @Test
+  public void testPrintShortMessage() throws Exception {
+    String msg = "This is a short message";
+    XLog.d(msg);
+    assertEquals(1, logContainer.size());
+    AssertUtil.assertHasLog(logContainer, msg);
+  }
+
+  @Test
+  public void testPrint4kMessage() throws Exception {
+    int length = AndroidPrinter.MAX_LENGTH_OF_SINGLE_MESSAGE;
+    StringBuilder sb = new StringBuilder(length);
+    for (int i = 0; i < length; i++) {
+      sb.append(RandomUtil.randomAsciiChar());
     }
+    String msg = sb.toString();
+    XLog.d(msg);
+    assertEquals(1, logContainer.size());
+    AssertUtil.assertHasLog(logContainer, msg);
+  }
 
-    @Test
-    public void testPrintShortMessage() throws Exception {
-        String msg = "This is a short message";
-        XLog.d(msg);
-        assertEquals(1, logContainer.size());
-        AssertUtil.assertHasLog(logContainer, msg);
+  @Test
+  public void testPrintLongMessage() throws Exception {
+    int messageChunkLength = AndroidPrinter.MAX_LENGTH_OF_SINGLE_MESSAGE;
+    int length = (int) (3.6 * messageChunkLength);
+    StringBuilder sb = new StringBuilder(length);
+    for (int i = 0; i < length; i++) {
+      sb.append(RandomUtil.randomAsciiChar());
     }
+    String msg = sb.toString();
+    XLog.d(msg);
+    assertEquals(4, logContainer.size());
 
-    @Test
-    public void testPrint4kMessage() throws Exception {
-        int length = AndroidPrinter.MAX_LENGTH_OF_SINGLE_MESSAGE;
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            sb.append(RandomUtil.randomAsciiChar());
-        }
-        String msg = sb.toString();
-        XLog.d(msg);
-        assertEquals(1, logContainer.size());
-        AssertUtil.assertHasLog(logContainer, msg);
-    }
-
-    @Test
-    public void testPrintLongMessage() throws Exception {
-        int messageChunkLength = AndroidPrinter.MAX_LENGTH_OF_SINGLE_MESSAGE;
-        int length = (int) (3.6 * messageChunkLength);
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            sb.append(RandomUtil.randomAsciiChar());
-        }
-        String msg = sb.toString();
-        XLog.d(msg);
-        assertEquals(4, logContainer.size());
-
-        String chunk1 = msg.substring(0, messageChunkLength);
-        String chunk2 = msg.substring(messageChunkLength, 2 * messageChunkLength);
-        String chunk3 = msg.substring(2 * messageChunkLength, 3 * messageChunkLength);
-        String chunk4 = msg.substring(3 * messageChunkLength, length);
-        AssertUtil.assertHasLog(logContainer, 0, chunk1);
-        AssertUtil.assertHasLog(logContainer, 1, chunk2);
-        AssertUtil.assertHasLog(logContainer, 2, chunk3);
-        AssertUtil.assertHasLog(logContainer, 3, chunk4);
-    }
+    String chunk1 = msg.substring(0, messageChunkLength);
+    String chunk2 = msg.substring(messageChunkLength, 2 * messageChunkLength);
+    String chunk3 = msg.substring(2 * messageChunkLength, 3 * messageChunkLength);
+    String chunk4 = msg.substring(3 * messageChunkLength, length);
+    AssertUtil.assertHasLog(logContainer, 0, chunk1);
+    AssertUtil.assertHasLog(logContainer, 1, chunk2);
+    AssertUtil.assertHasLog(logContainer, 2, chunk3);
+    AssertUtil.assertHasLog(logContainer, 3, chunk4);
+  }
 }

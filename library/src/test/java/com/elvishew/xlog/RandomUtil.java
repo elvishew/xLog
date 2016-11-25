@@ -20,9 +20,9 @@ import java.util.Random;
 
 public class RandomUtil {
 
-    private static Random sAsciiCharRandom = new Random();
+  private static Random sAsciiCharRandom = new Random();
 
-    public static char randomAsciiChar() {
-        return (char) sAsciiCharRandom.nextInt(128);
-    }
+  public static char randomAsciiChar() {
+    return (char) sAsciiCharRandom.nextInt(128);
+  }
 }

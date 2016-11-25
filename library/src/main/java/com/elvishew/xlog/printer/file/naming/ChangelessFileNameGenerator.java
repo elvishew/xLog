@@ -21,24 +21,24 @@ package com.elvishew.xlog.printer.file.naming;
  */
 public class ChangelessFileNameGenerator implements FileNameGenerator {
 
-    private final String fileName;
+  private final String fileName;
 
-    /**
-     * Constructor.
-     *
-     * @param fileName the changeless file name
-     */
-    public ChangelessFileNameGenerator(String fileName) {
-        this.fileName = fileName;
-    }
+  /**
+   * Constructor.
+   *
+   * @param fileName the changeless file name
+   */
+  public ChangelessFileNameGenerator(String fileName) {
+    this.fileName = fileName;
+  }
 
-    @Override
-    public boolean isFileNameChangeable() {
-        return false;
-    }
+  @Override
+  public boolean isFileNameChangeable() {
+    return false;
+  }
 
-    @Override
-    public String generateFileName(int logLevel, long timestamp) {
-        return fileName;
-    }
+  @Override
+  public String generateFileName(int logLevel, long timestamp) {
+    return fileName;
+  }
 }

@@ -24,30 +24,30 @@ import com.elvishew.xlog.printer.flattener.LogFlattener;
  */
 public class SystemPrinter implements Printer {
 
-    /**
-     * The log flattener when print a log.
-     */
-    private LogFlattener logFlattener;
+  /**
+   * The log flattener when print a log.
+   */
+  private LogFlattener logFlattener;
 
-    /**
-     * Constructor.
-     */
-    public SystemPrinter() {
-        this.logFlattener = DefaultsFactory.createLogFlattener();
-    }
+  /**
+   * Constructor.
+   */
+  public SystemPrinter() {
+    this.logFlattener = DefaultsFactory.createLogFlattener();
+  }
 
-    /**
-     * Constructor.
-     *
-     * @param logFlattener the log flattener when print a log
-     */
-    public SystemPrinter(LogFlattener logFlattener) {
-        this.logFlattener = logFlattener;
-    }
+  /**
+   * Constructor.
+   *
+   * @param logFlattener the log flattener when print a log
+   */
+  public SystemPrinter(LogFlattener logFlattener) {
+    this.logFlattener = logFlattener;
+  }
 
-    @Override
-    public void println(int logLevel, String tag, String msg) {
-        String flattenedLog = logFlattener.flatten(logLevel, tag, msg).toString();
-        System.out.println(flattenedLog);
-    }
+  @Override
+  public void println(int logLevel, String tag, String msg) {
+    String flattenedLog = logFlattener.flatten(logLevel, tag, msg).toString();
+    System.out.println(flattenedLog);
+  }
 }

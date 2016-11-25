@@ -35,27 +35,27 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class DefaultXmlFormatter implements XmlFormatter {
 
-    private static final int XML_INDENT = 4;
+  private static final int XML_INDENT = 4;
 
-    @Override
-    public String format(String xml) {
-        String formattedString;
-        if (xml == null || xml.trim().length() == 0) {
-            throw new FormatException("XML empty.");
-        }
-        try {
-            Source xmlInput = new StreamSource(new StringReader(xml));
-            StreamResult xmlOutput = new StreamResult(new StringWriter());
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
-                    String.valueOf(XML_INDENT));
-            transformer.transform(xmlInput, xmlOutput);
-            formattedString = xmlOutput.getWriter().toString().replaceFirst(">", ">"
-                    + SystemCompat.lineSeparator);
-        } catch (Exception e) {
-            throw new FormatException("Parse XML error. XML string:" + xml, e);
-        }
-        return formattedString;
+  @Override
+  public String format(String xml) {
+    String formattedString;
+    if (xml == null || xml.trim().length() == 0) {
+      throw new FormatException("XML empty.");
     }
+    try {
+      Source xmlInput = new StreamSource(new StringReader(xml));
+      StreamResult xmlOutput = new StreamResult(new StringWriter());
+      Transformer transformer = TransformerFactory.newInstance().newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount",
+          String.valueOf(XML_INDENT));
+      transformer.transform(xmlInput, xmlOutput);
+      formattedString = xmlOutput.getWriter().toString().replaceFirst(">", ">"
+          + SystemCompat.lineSeparator);
+    } catch (Exception e) {
+      throw new FormatException("Parse XML error. XML string:" + xml, e);
+    }
+    return formattedString;
+  }
 }

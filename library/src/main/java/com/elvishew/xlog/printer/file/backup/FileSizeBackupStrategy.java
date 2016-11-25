@@ -23,19 +23,19 @@ import java.io.File;
  */
 public class FileSizeBackupStrategy implements BackupStrategy {
 
-    private long maxSize;
+  private long maxSize;
 
-    /**
-     * Constructor.
-     *
-     * @param maxSize the max size the file can reach
-     */
-    public FileSizeBackupStrategy(long maxSize) {
-        this.maxSize = maxSize;
-    }
+  /**
+   * Constructor.
+   *
+   * @param maxSize the max size the file can reach
+   */
+  public FileSizeBackupStrategy(long maxSize) {
+    this.maxSize = maxSize;
+  }
 
-    @Override
-    public boolean shouldBackup(File file) {
-        return file.length() > maxSize;
-    }
+  @Override
+  public boolean shouldBackup(File file) {
+    return file.length() > maxSize;
+  }
 }

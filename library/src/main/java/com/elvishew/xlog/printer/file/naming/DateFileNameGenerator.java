@@ -26,26 +26,26 @@ import java.util.TimeZone;
  */
 public class DateFileNameGenerator implements FileNameGenerator {
 
-    ThreadLocal<SimpleDateFormat> mLocalDateFormat = new ThreadLocal<SimpleDateFormat>() {
-
-        @Override
-        protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        }
-    };
+  ThreadLocal<SimpleDateFormat> mLocalDateFormat = new ThreadLocal<SimpleDateFormat>() {
 
     @Override
-    public boolean isFileNameChangeable() {
-        return true;
+    protected SimpleDateFormat initialValue() {
+      return new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     }
+  };
 
-    /**
-     * Generate a file name which represent a specific date.
-     */
-    @Override
-    public String generateFileName(int logLevel, long timestamp) {
-        SimpleDateFormat sdf = mLocalDateFormat.get();
-        sdf.setTimeZone(TimeZone.getDefault());
-        return sdf.format(new Date(timestamp));
-    }
+  @Override
+  public boolean isFileNameChangeable() {
+    return true;
+  }
+
+  /**
+   * Generate a file name which represent a specific date.
+   */
+  @Override
+  public String generateFileName(int logLevel, long timestamp) {
+    SimpleDateFormat sdf = mLocalDateFormat.get();
+    sdf.setTimeZone(TimeZone.getDefault());
+    return sdf.format(new Date(timestamp));
+  }
 }

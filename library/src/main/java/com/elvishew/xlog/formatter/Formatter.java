@@ -24,11 +24,11 @@ package com.elvishew.xlog.formatter;
  */
 public interface Formatter<T> {
 
-    /**
-     * Format the data to a readable and loggable string.
-     *
-     * @param data the data to format
-     * @return the formatted string data
-     */
-    String format(T data);
+  /**
+   * Format the data to a readable and loggable string.
+   *
+   * @param data the data to format
+   * @return the formatted string data
+   */
+  String format(T data);
 }

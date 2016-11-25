@@ -23,23 +23,23 @@ import java.util.List;
 
 public class ContainerPrinter implements Printer {
 
-    private List<LogItem> logsContainers = new ArrayList<>();
+  private List<LogItem> logsContainers = new ArrayList<>();
 
-    public ContainerPrinter(List<LogItem> logsContainer) {
-        this.logsContainers = logsContainer;
-    }
+  public ContainerPrinter(List<LogItem> logsContainer) {
+    this.logsContainers = logsContainer;
+  }
 
-    @Override
-    public void println(int logLevel, String tag, String msg) {
-        LogItem log = onPrint(new LogItem(logLevel, tag, msg));
-        afterPrint(log);
-    }
+  @Override
+  public void println(int logLevel, String tag, String msg) {
+    LogItem log = onPrint(new LogItem(logLevel, tag, msg));
+    afterPrint(log);
+  }
 
-    protected LogItem onPrint(LogItem logItem) {
-        return logItem;
-    }
+  protected LogItem onPrint(LogItem logItem) {
+    return logItem;
+  }
 
-    private void afterPrint(LogItem log) {
-        logsContainers.add(log);
-    }
+  private void afterPrint(LogItem log) {
+    logsContainers.add(log);
+  }
 }

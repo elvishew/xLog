@@ -23,11 +23,11 @@ import java.io.File;
  */
 public interface BackupStrategy {
 
-    /**
-     * Whether we should backup a specified log file.
-     *
-     * @param file the log file
-     * @return true is we should backup the log file
-     */
-    boolean shouldBackup(File file);
+  /**
+   * Whether we should backup a specified log file.
+   *
+   * @param file the log file
+   * @return true is we should backup the log file
+   */
+  boolean shouldBackup(File file);
 }
