@@ -55,7 +55,7 @@ public class StackTraceUtil {
     }
 
     StringWriter sw = new StringWriter();
-    PrintWriter pw = new FastPrintWriter(sw, false, 256);
+    PrintWriter pw = new PrintWriter(sw);
     tr.printStackTrace(pw);
     pw.flush();
     return sw.toString();
