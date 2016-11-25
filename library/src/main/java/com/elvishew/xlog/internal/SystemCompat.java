@@ -32,13 +32,12 @@ public class SystemCompat {
   @TargetApi(Build.VERSION_CODES.KITKAT)
   private static String lineSeparator() {
     try { // No need to detect whether current platform is android, just do it with catching.
+      Class.forName("android.os.Build");
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
         return System.lineSeparator();
-      } else {
-        return "\n";
       }
-    } catch (Exception e) {
-      return "\n";
+    } catch (Exception ignored) {
     }
+    return "\n";
   }
 }
