@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "com.elvishew.xlogsample"
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
     }

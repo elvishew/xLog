@@ -17,6 +17,8 @@
 <resources>
     <string name="app_name">XLog Sample</string>
 
+    <string name="global_tag" translatable="false">XLog</string>
+
     <string name="label_tag">Tag</string>
     <string name="label_level">Level</string>
     <string name="label_thread_info">Thread info</string>
@@ -24,7 +26,10 @@
     <string name="label_stack_trace_depth">Stack trace depth</string>
     <string name="label_border">Border</string>
 
-    <string name="change_tag">Change tag</string>
+    <string name="permission_request">Permission request</string>
+    <string name="permission_explanation">Logging to file need the write-external-storage permission.</string>
+    <string name="allow">Allow</string>
+    <string name="go_to_settings">Go to settings</string>
 
-    <string name="global_tag" translatable="false">XLog</string>
+    <string name="change_tag">Change tag</string>
 </resources>

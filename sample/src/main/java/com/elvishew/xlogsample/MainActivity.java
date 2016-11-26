@@ -16,9 +16,16 @@
 
 package com.elvishew.xlogsample;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
   private static final int[] STACK_TRACE_DEPTHS = new int[]{0, 1, 2, 3, 4, 5};
 
+  private static final int PERMISSIONS_REQUEST_EXTERNAL_STORAGE = 1;
+
   private TextView tagView;
   private Spinner levelView;
   private CheckedTextView threadInfo;
@@ -54,9 +63,10 @@ public class MainActivity extends AppCompatActivity {
   private Spinner stackTraceDepth;
   private CheckedTextView border;
 
-  private FloatingActionButton print;
-
   private Printer viewPrinter;
+
+  // Manifest.permission.WRITE_EXTERNAL_STORAGE
+  private boolean hasPermission;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -104,18 +114,107 @@ public class MainActivity extends AppCompatActivity {
       }
     });
 
-    print = (FloatingActionButton) findViewById(R.id.print);
-    print.setOnClickListener(new View.OnClickListener() {
+    // Setup print button.
+    findViewById(R.id.print).setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         printLog();
       }
     });
 
+    // Setup view printer.
     RecyclerView logContainer = (RecyclerView) findViewById(R.id.log_container);
     viewPrinter = new RecyclerViewPrinter(logContainer);
 
+    // Print welcome message.
     XLog.printers(viewPrinter).i("XLog is ready.\nPrint your log now!");
+
+    // Check permission.
+    hasPermission = hasPermission();
+    if (!hasPermission) {
+      if (shouldShowRequestPermissionRationale()) {
+        showPermissionRequestDialog(false);
+      } else {
+        requestPermission();
+      }
+    }
+  }
+
+  private boolean hasPermission() {
+    return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        == PackageManager.PERMISSION_GRANTED;
+  }
+
+  private boolean shouldShowRequestPermissionRationale() {
+    return ActivityCompat.shouldShowRequestPermissionRationale(this,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE);
+  }
+
+  private void requestPermission() {
+    ActivityCompat.requestPermissions(this,
+        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+        PERMISSIONS_REQUEST_EXTERNAL_STORAGE);
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    String message;
+    hasPermission = hasPermission();
+    if (hasPermission) {
+      message = "Permission granted.\nLog to file.";
+    } else {
+      message = "Permission not granted.\nCan not log to file.";
+    }
+    XLog.printers(viewPrinter).i(message);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode,
+                                         @NonNull String permissions[],
+                                         @NonNull int[] grantResults) {
+    switch (requestCode) {
+      case PERMISSIONS_REQUEST_EXTERNAL_STORAGE: {
+        // If request is cancelled, the result arrays are empty.
+        hasPermission = grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+        if (!hasPermission) {
+          if (shouldShowRequestPermissionRationale()) {
+            showPermissionRequestDialog(false);
+          } else {
+            showPermissionRequestDialog(true);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Show a dialog for user to explain about the permission.
+   */
+  private void showPermissionRequestDialog(final boolean gotoSettings) {
+    new AlertDialog.Builder(this)
+        .setTitle(R.string.permission_request)
+        .setMessage(R.string.permission_explanation)
+        .setNegativeButton(android.R.string.cancel, null)
+        .setPositiveButton(gotoSettings ? R.string.go_to_settings : R.string.allow,
+            new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                if (gotoSettings) {
+                  startAppSettings();
+                } else {
+                  requestPermission();
+                }
+              }
+            })
+        .show();
+  }
+
+  private void startAppSettings() {
+    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+    intent.setData(Uri.parse("package:" + getPackageName()));
+    startActivity(intent);
   }
 
   /**
@@ -186,10 +285,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Print the log to view, logcat and file.
-    builder.printers(
-        viewPrinter,
-        new AndroidPrinter(),
-        XLogSampleApplication.globalFilePrinter);
+    if (hasPermission) {
+      builder.printers(
+          viewPrinter,
+          new AndroidPrinter(),
+          XLogSampleApplication.globalFilePrinter);
+    } else {
+      builder.printers(
+          viewPrinter,
+          new AndroidPrinter());
+    }
 
     Logger logger = builder.build();
 
