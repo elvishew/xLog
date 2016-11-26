@@ -134,6 +134,7 @@ public class Logger {
    * Log an object with level {@link LogLevel#VERBOSE}.
    *
    * @param object the object to log
+   * @see Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public void v(Object object) {
     println(LogLevel.VERBOSE, object);
@@ -181,6 +182,7 @@ public class Logger {
    * Log an object with level {@link LogLevel#DEBUG}.
    *
    * @param object the object to log
+   * @see Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public void d(Object object) {
     println(LogLevel.DEBUG, object);
@@ -228,6 +230,7 @@ public class Logger {
    * Log an object with level {@link LogLevel#INFO}.
    *
    * @param object the object to log
+   * @see Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public void i(Object object) {
     println(LogLevel.INFO, object);
@@ -275,6 +278,7 @@ public class Logger {
    * Log an object with level {@link LogLevel#WARN}.
    *
    * @param object the object to log
+   * @see Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public void w(Object object) {
     println(LogLevel.WARN, object);
@@ -322,6 +326,7 @@ public class Logger {
    * Log an object with level {@link LogLevel#ERROR}.
    *
    * @param object the object to log
+   * @see Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public void e(Object object) {
     println(LogLevel.ERROR, object);

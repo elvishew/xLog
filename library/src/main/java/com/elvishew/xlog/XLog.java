@@ -51,17 +51,19 @@ import com.elvishew.xlog.printer.PrinterSet;
  * <p>
  * <b>2. Start to log.</b>
  * <br>{@link #v(String, Object...)}, {@link #v(String)} and {@link #v(String, Throwable)} are for
- * logging a {@link LogLevel#INFO} log.
+ * logging a {@link LogLevel#INFO} message.
  * <br>{@link #d(String, Object...)}, {@link #d(String)} and {@link #d(String, Throwable)} are for
- * logging a {@link LogLevel#DEBUG} log.
+ * logging a {@link LogLevel#DEBUG} message.
  * <br>{@link #i(String, Object...)}, {@link #i(String)} and {@link #i(String, Throwable)} are for
- * logging a {@link LogLevel#INFO} log.
+ * logging a {@link LogLevel#INFO} message.
  * <br>{@link #w(String, Object...)}, {@link #w(String)} and {@link #w(String, Throwable)} are for
- * logging a {@link LogLevel#WARN} log.
+ * logging a {@link LogLevel#WARN} message.
  * <br>{@link #e(String, Object...)}, {@link #e(String)} and {@link #e(String, Throwable)} are for
- * logging a {@link LogLevel#ERROR} log.
- * <br>{@link #json(String)} is for logging a {@link LogLevel#DEBUG} JSON log.
- * <br>{@link #xml(String)} is for logging a {@link LogLevel#DEBUG} XML log.
+ * logging a {@link LogLevel#ERROR} message.
+ * <br>{@link #json(String)} is for logging a {@link LogLevel#DEBUG} JSON string.
+ * <br>{@link #xml(String)} is for logging a {@link LogLevel#DEBUG} XML string.
+ * <br> Also, you can directly log any object with specific log level, like {@link #v(Object)},
+ * and any object array with specific log level, like {@link #v(Object[])}.
  * <p>
  * <b>How to use in a dynamically customizing way after initializing the log system:</b>
  * <p>
@@ -80,6 +82,7 @@ import com.elvishew.xlog.printer.PrinterSet;
  * <br>{@link #stackTraceFormatter(StackTraceFormatter)},
  * <br>{@link #throwableFormatter(ThrowableFormatter)}
  * <br>{@link #borderFormatter(BorderFormatter)}
+ * <br>{@link #addObjectFormatter(Class, ObjectFormatter)}
  * <br>{@link #printers(Printer...)},
  * <br>it will return a {@link Logger.Builder} object.
  * <p>
@@ -92,7 +95,7 @@ import com.elvishew.xlog.printer.PrinterSet;
  * <b>4. Start to log.</b>
  * <br>The logging methods of a {@link Logger} is completely same as that ones in {@link XLog}.
  * <br>As a convenience, you can ignore the step 3, just call the logging methods of
- * {@link Logger.Builder#build()}, it will automatically build a {@link Logger} and call the target
+ * {@link Logger.Builder}, it will automatically build a {@link Logger} and call the target
  * logging method.
  * <p>
  * <b>Compatibility:</b>
@@ -356,6 +359,7 @@ public class XLog {
    * Log an object with level {@link LogLevel#VERBOSE}.
    *
    * @param object the object to log
+   * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public static void v(Object object) {
     assertInitialization();
@@ -408,6 +412,7 @@ public class XLog {
    * Log an object with level {@link LogLevel#DEBUG}.
    *
    * @param object the object to log
+   * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public static void d(Object object) {
     assertInitialization();
@@ -460,6 +465,7 @@ public class XLog {
    * Log an object with level {@link LogLevel#INFO}.
    *
    * @param object the object to log
+   * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public static void i(Object object) {
     assertInitialization();
@@ -512,6 +518,7 @@ public class XLog {
    * Log an object with level {@link LogLevel#WARN}.
    *
    * @param object the object to log
+   * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public static void w(Object object) {
     assertInitialization();
@@ -564,6 +571,7 @@ public class XLog {
    * Log an object with level {@link LogLevel#ERROR}.
    *
    * @param object the object to log
+   * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
    */
   public static void e(Object object) {
     assertInitialization();
