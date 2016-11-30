@@ -216,6 +216,8 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 
 ## TODO
 * [x] Print any object: XLog.d(Object)
+* [ ] Add Interceptor(similar to [okhttp]'s [Interceptor], here we use it for intercepting log)
+* [ ] Add PatternLogFlattener(mostly used when logging to file), e.g: "{time} {level}/{tag}: {msg}" means "2016-10-30 13:00:00,000 W/my_tag: Simple message"
 
 ## Issues
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
@@ -245,3 +247,5 @@ limitations under the License.
 [Android Log]: http://developer.android.com/reference/android/util/Log.html
 [XLog]: https://github.com/elvishew/XLog/blob/master/library/src/main/java/com/elvishew/xlog/XLog.java
 [Logger]: https://github.com/elvishew/XLog/blob/master/library/src/main/java/com/elvishew/xlog/Logger.java
+[okhttp]: https://github.com/square/okhttp
+[Interceptor]: https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/Interceptor.java

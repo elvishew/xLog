@@ -214,6 +214,8 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 
 ## 待开发
 * [x] 打印任意对象: XLog.d(Object)
+* [ ] 添加 Interceptor（类似于 [okhttp] 的 [Interceptor]，这里用来拦截 log）
+* [ ] 添加 PatternLogFlattener（主要用在向文件打印 log 时），如: "{time} {level}/{tag}: {msg}" 表示 "2016-10-30 13:00:00,000 W/my_tag: Simple message"
 
 ## 问题
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。
@@ -250,3 +252,5 @@ limitations under the License.
 [Android Log]: http://developer.android.com/reference/android/util/Log.html
 [XLog]: https://github.com/elvishew/XLog/blob/master/library/src/main/java/com/elvishew/xlog/XLog.java
 [Logger]: https://github.com/elvishew/XLog/blob/master/library/src/main/java/com/elvishew/xlog/Logger.java
+[okhttp]: https://github.com/square/okhttp
+[Interceptor]: https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/Interceptor.java
