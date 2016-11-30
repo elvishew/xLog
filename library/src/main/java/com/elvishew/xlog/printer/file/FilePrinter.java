@@ -234,7 +234,7 @@ public class FilePrinter implements Printer {
      * @param logFlattener the log flattener when print a log
      * @return the builder
      */
-    public Builder logFormatter(LogFlattener logFlattener) {
+    public Builder logFlattener(LogFlattener logFlattener) {
       this.logFlattener = logFlattener;
       return this;
     }
