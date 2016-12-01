@@ -339,6 +339,7 @@ public class XLog {
    * @param objectFormatter the object formatter to add
    * @param <T>             the type of object
    * @return the {@link Logger.Builder} to build the a {@link Logger}
+   * @since 1.1.0
    */
   public static <T> Logger.Builder addObjectFormatter(Class<T> objectClass,
                                                       ObjectFormatter<? super T> objectFormatter) {
@@ -360,6 +361,7 @@ public class XLog {
    *
    * @param object the object to log
    * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public static void v(Object object) {
     assertInitialization();
@@ -413,6 +415,7 @@ public class XLog {
    *
    * @param object the object to log
    * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public static void d(Object object) {
     assertInitialization();
@@ -466,6 +469,7 @@ public class XLog {
    *
    * @param object the object to log
    * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public static void i(Object object) {
     assertInitialization();
@@ -519,6 +523,7 @@ public class XLog {
    *
    * @param object the object to log
    * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public static void w(Object object) {
     assertInitialization();
@@ -572,6 +577,7 @@ public class XLog {
    *
    * @param object the object to log
    * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public static void e(Object object) {
     assertInitialization();

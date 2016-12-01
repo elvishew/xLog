@@ -765,6 +765,7 @@ public class Logger {
      * @param objectFormatter the object formatter to add
      * @param <T>             the type of object
      * @return the builder
+     * @since 1.1.0
      */
     public <T> Builder addObjectFormatter(Class<T> objectClass,
                                           ObjectFormatter<? super T> objectFormatter) {

@@ -20,6 +20,8 @@ import static com.elvishew.xlog.XLog.assertInitialization;
 
 /**
  * Utilities for convenience.
+ *
+ * @since 1.2.0
  */
 public class LogUtils {
 
