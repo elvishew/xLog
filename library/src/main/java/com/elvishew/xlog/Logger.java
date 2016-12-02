@@ -23,13 +23,16 @@ import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
+import com.elvishew.xlog.interceptor.Interceptor;
 import com.elvishew.xlog.internal.SystemCompat;
 import com.elvishew.xlog.internal.util.StackTraceUtil;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.PrinterSet;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -120,6 +123,9 @@ public class Logger {
     }
     if (builder.objectFormatters != null) {
       logConfigBuilder.objectFormatters(builder.objectFormatters);
+    }
+    if (builder.interceptors != null) {
+      logConfigBuilder.interceptors(builder.interceptors);
     }
     logConfiguration = logConfigBuilder.build();
 
@@ -481,6 +487,7 @@ public class Logger {
    * @param msg      the message you would like to log
    */
   private void printlnInternal(int logLevel, String msg) {
+    String tag = logConfiguration.tag;
     String thread = logConfiguration.withThread
         ? logConfiguration.threadFormatter.format(Thread.currentThread())
         : null;
@@ -489,7 +496,34 @@ public class Logger {
         StackTraceUtil.getCroppedRealStackTrack(new Throwable().getStackTrace(),
             logConfiguration.stackTraceDepth))
         : null;
-    printer.println(logLevel, logConfiguration.tag, logConfiguration.withBorder
+
+    if (logConfiguration.interceptors != null) {
+      LogItem log = new LogItem(logLevel, tag, thread, stackTrace, msg);
+      for (Interceptor interceptor : logConfiguration.interceptors) {
+        log = interceptor.intercept(log);
+        if (log == null) {
+          // Log is eaten, don't print this log.
+          return;
+        }
+
+        // Check if the log still healthy.
+        if (log.tag == null || log.msg == null) {
+          throw new IllegalStateException("Interceptor " + interceptor
+              + " should not remove the tag or message of an log,"
+              + " if you don't want to print this log,"
+              + " just return a null when intercept.");
+        }
+      }
+
+      // Use fields after interception.
+      logLevel = log.level;
+      tag = log.tag;
+      thread = log.threadInfo;
+      stackTrace = log.stackTraceInfo;
+      msg = log.msg;
+    }
+
+    printer.println(logLevel, tag, logConfiguration.withBorder
         ? logConfiguration.borderFormatter.format(new String[]{thread, stackTrace, msg})
         : ((thread != null ? (thread + SystemCompat.lineSeparator) : "")
         + (stackTrace != null ? (stackTrace + SystemCompat.lineSeparator) : "")
@@ -598,6 +632,11 @@ public class Logger {
      * The object formatters, used when {@link Logger} logging an object.
      */
     private Map<Class<?>, ObjectFormatter<?>> objectFormatters;
+
+    /**
+     * The intercepts, used when {@link Logger} logging.
+     */
+    private List<Interceptor> interceptors;
 
     /**
      * The printer used to print the log when {@link Logger} log.
@@ -759,7 +798,7 @@ public class Logger {
     }
 
     /**
-     * Add a object formatter for specific class of object when {@link Logger} log an object.
+     * Add an object formatter for specific class of object when {@link Logger} log an object.
      *
      * @param objectClass     the class of object
      * @param objectFormatter the object formatter to add
@@ -773,6 +812,21 @@ public class Logger {
         objectFormatters = new HashMap<>(5);
       }
       objectFormatters.put(objectClass, objectFormatter);
+      return this;
+    }
+
+    /**
+     * Add an interceptor when {@link Logger} logging.
+     *
+     * @param interceptor the intercept to add
+     * @return the builder
+     * @since 1.3.0
+     */
+    public Builder addInterceptor(Interceptor interceptor) {
+      if (interceptors == null) {
+        interceptors = new ArrayList<>();
+      }
+      interceptors.add(interceptor);
       return this;
     }
 

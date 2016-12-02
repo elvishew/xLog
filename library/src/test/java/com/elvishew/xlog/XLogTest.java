@@ -23,6 +23,7 @@ import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
+import com.elvishew.xlog.interceptor.Interceptor;
 import com.elvishew.xlog.internal.SystemCompat;
 
 import org.junit.Before;
@@ -135,6 +136,76 @@ public class XLogTest {
     boolean result = (logsContainer.size() == 1
         && logsContainer.get(0).msg.equals(Long.toString(date.getTime())));
     assertTrue("Formatted object log not found", result);
+  }
+
+  @Test
+  public void testModifyingInterceptor() {
+    XLog.addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        log.tag = CUSTOM_TAG;
+        return log;
+      }
+    }).addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        log.msg = log.msg + "[i1]";
+        return log;
+      }
+    }).addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        log.msg = log.msg + "[i2]";
+        return log;
+      }
+    }).addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        log.level = DEBUG;
+        return log;
+      }
+    }).i(MESSAGE);
+    assertLog(DEBUG, CUSTOM_TAG, MESSAGE + "[i1][i2]");
+  }
+
+  @Test
+  public void testReplacingInterceptor() {
+    XLog.addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        return new LogItem(LogLevel.VERBOSE, "tag1", "msg1");
+      }
+    }).addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        return new LogItem(LogLevel.DEBUG, "tag2", "msg2");
+      }
+    }).i(MESSAGE);
+    assertLog(DEBUG, "tag2", "msg2");
+  }
+
+  @Test
+  public void testBlockingInterceptor() {
+    XLog.addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        log.msg = "i1";
+        return log;
+      }
+    }).addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        // Block the log.
+        return null;
+      }
+    }).addInterceptor(new Interceptor() {
+      @Override
+      public LogItem intercept(LogItem log) {
+        log.msg = "i2";
+        return log;
+      }
+    }).i(MESSAGE);
+    AssertUtil.assertNoLog(logsContainer);
   }
 
   @Test

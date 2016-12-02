@@ -23,9 +23,12 @@ import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
+import com.elvishew.xlog.interceptor.Interceptor;
 import com.elvishew.xlog.internal.DefaultsFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -97,6 +100,13 @@ public class LogConfiguration {
    */
   private final Map<Class<?>, ObjectFormatter<?>> objectFormatters;
 
+  /**
+   * The interceptors, used to intercept the log when logging.
+   *
+   * @since 1.3.0
+   */
+  public final List<Interceptor> interceptors;
+
   /*package*/ LogConfiguration(final Builder builder) {
     tag = builder.tag;
 
@@ -113,6 +123,8 @@ public class LogConfiguration {
     borderFormatter = builder.borderFormatter;
 
     objectFormatters = builder.objectFormatters;
+
+    interceptors = builder.interceptors;
   }
 
   /**
@@ -121,6 +133,7 @@ public class LogConfiguration {
    * @param object the object
    * @param <T>    the type of object
    * @return the object formatter for the object, or null if not found
+   * @since 1.1.0
    */
   public <T> ObjectFormatter<? super T> getObjectFormatter(T object) {
     if (objectFormatters == null) {
@@ -207,6 +220,11 @@ public class LogConfiguration {
     private Map<Class<?>, ObjectFormatter<?>> objectFormatters;
 
     /**
+     * The interceptors, used to intercept the log when logging.
+     */
+    private List<Interceptor> interceptors;
+
+    /**
      * Construct a builder with all default configurations.
      */
     public Builder() {
@@ -234,6 +252,10 @@ public class LogConfiguration {
 
       if (logConfiguration.objectFormatters != null) {
         objectFormatters = new HashMap<>(logConfiguration.objectFormatters);
+      }
+
+      if (logConfiguration.interceptors != null) {
+        interceptors = new ArrayList<>(logConfiguration.interceptors);
       }
     }
 
@@ -401,8 +423,34 @@ public class LogConfiguration {
      * @param objectFormatters the object formatters to copy
      * @return the builder
      */
-    Builder objectFormatters(Map<Class<?>, ObjectFormatter<?>> objectFormatters) {
+    /*package*/ Builder objectFormatters(Map<Class<?>, ObjectFormatter<?>> objectFormatters) {
       this.objectFormatters = objectFormatters;
+      return this;
+    }
+
+    /**
+     * Add an interceptor.
+     *
+     * @param interceptor the interceptor to add
+     * @return the builder
+     * @since 1.3.0
+     */
+    public Builder addInterceptor(Interceptor interceptor) {
+      if (interceptors == null) {
+        interceptors = new ArrayList<>();
+      }
+      interceptors.add(interceptor);
+      return this;
+    }
+
+    /**
+     * Copy all interceptors, only for internal usage.
+     *
+     * @param interceptors the interceptors to copy
+     * @return the builder
+     */
+    /*package*/ Builder interceptors(List<Interceptor> interceptors) {
+      this.interceptors = interceptors;
       return this;
     }
 

@@ -53,4 +53,9 @@ public class AssertUtil {
     }
     assertTrue("Missing log: " + msg, result);
   }
+
+  public static void assertNoLog(List<LogItem> logsContainer) {
+    boolean result = logsContainer.size() == 0;
+    assertTrue("Unexpected log found", result);
+  }
 }

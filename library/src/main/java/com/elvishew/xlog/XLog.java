@@ -25,6 +25,7 @@ import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
 import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
+import com.elvishew.xlog.interceptor.Interceptor;
 import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.internal.util.StackTraceUtil;
 import com.elvishew.xlog.printer.Printer;
@@ -344,6 +345,17 @@ public class XLog {
   public static <T> Logger.Builder addObjectFormatter(Class<T> objectClass,
                                                       ObjectFormatter<? super T> objectFormatter) {
     return new Logger.Builder().addObjectFormatter(objectClass, objectFormatter);
+  }
+
+  /**
+   * Start to customize a {@link Logger} and add an interceptor.
+   *
+   * @param interceptor the interceptor to add
+   * @return the {@link Logger.Builder} to build the a {@link Logger}
+   * @since 1.3.0
+   */
+  public static Logger.Builder addInterceptor(Interceptor interceptor) {
+    return new Logger.Builder().addInterceptor(interceptor);
   }
 
   /**
