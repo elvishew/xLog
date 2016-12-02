@@ -215,8 +215,8 @@ In the menu, click the 'Replace in Path...' option.
 In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
 ## TODO
-* [x] Print any object: XLog.d(Object)
-* [ ] Add Interceptor(similar to [okhttp]'s [Interceptor], here we use it for intercepting log)
+* [x] Print any object: XLog.d(Object) (since 1.1.0)
+* [x] Add Interceptor(similar to [okhttp]'s [Interceptor], here we use it for intercepting log) (since 1.3.0)
 * [ ] Add PatternLogFlattener(mostly used when logging to file), e.g: "{time} {level}/{tag}: {msg}" means "2016-10-30 13:00:00,000 W/my_tag: Simple message"
 
 ## Issues
