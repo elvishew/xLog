@@ -385,7 +385,7 @@ public class Logger {
     if (LogLevel.DEBUG < XLog.sLogLevel) {
       return;
     }
-    println(LogLevel.DEBUG, logConfiguration.jsonFormatter.format(json));
+    printlnInternal(LogLevel.DEBUG, logConfiguration.jsonFormatter.format(json));
   }
 
   /**
@@ -397,7 +397,7 @@ public class Logger {
     if (LogLevel.DEBUG < XLog.sLogLevel) {
       return;
     }
-    println(LogLevel.DEBUG, logConfiguration.xmlFormatter.format(xml));
+    printlnInternal(LogLevel.DEBUG, logConfiguration.xmlFormatter.format(xml));
   }
 
   /**
