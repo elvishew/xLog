@@ -16,9 +16,6 @@
 
 package com.elvishew.xlog.internal;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-
 /**
  * System environment.
  */
@@ -27,17 +24,5 @@ public class SystemCompat {
   /**
    * The line separator of system.
    */
-  public static String lineSeparator = lineSeparator();
-
-  @TargetApi(Build.VERSION_CODES.KITKAT)
-  private static String lineSeparator() {
-    try { // No need to detect whether current platform is android, just do it with catching.
-      Class.forName("android.os.Build");
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-        return System.lineSeparator();
-      }
-    } catch (Exception ignored) {
-    }
-    return "\n";
-  }
+  public static String lineSeparator = Platform.get().lineSeparator();
 }

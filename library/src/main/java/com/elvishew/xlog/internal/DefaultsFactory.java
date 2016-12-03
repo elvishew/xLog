@@ -28,7 +28,6 @@ import com.elvishew.xlog.formatter.stacktrace.DefaultStackTraceFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.DefaultThreadFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
-import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
@@ -100,7 +99,7 @@ public class DefaultsFactory {
    * Create the default printer.
    */
   public static Printer createPrinter() {
-    return new AndroidPrinter();
+    return Platform.get().defaultPrinter();
   }
 
   /**
