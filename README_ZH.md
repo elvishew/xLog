@@ -215,6 +215,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 ## 待开发
 * [x] 打印任意对象: XLog.d(Object) （v1.1.0 开始支持）
 * [x] 添加 Interceptor（类似于 [okhttp] 的 [Interceptor]，这里用来拦截 log）（v1.3.0 开始支持）
+* [ ] 添加 TagFilterInterceptor(白名单过滤和黑名单过滤)
 * [ ] 添加 PatternLogFlattener（主要用在向文件打印 log 时），如: "{time} {level}/{tag}: {msg}" 表示 "2016-10-30 13:00:00,000 W/my_tag: Simple message"
 
 ## 问题
