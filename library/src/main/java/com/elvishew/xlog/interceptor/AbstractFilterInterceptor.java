@@ -21,6 +21,8 @@ import com.elvishew.xlog.LogItem;
 /**
  * An filter interceptor is used to filter some specific logs out, this filtered logs won't be
  * printed by any printer.
+ *
+ * @since 1.3.0
  */
 public abstract class AbstractFilterInterceptor implements Interceptor {
 

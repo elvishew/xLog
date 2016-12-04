@@ -22,6 +22,8 @@ import java.util.Arrays;
 
 /**
  * Filter out the logs with a tag that is NOT in the whitelist.
+ *
+ * @since 1.3.0
  */
 public class WhitelistTagsFilterInterceptor extends AbstractFilterInterceptor {
 
