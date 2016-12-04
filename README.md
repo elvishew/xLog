@@ -216,8 +216,8 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 
 ## TODO
 * [x] Print any object: XLog.d(Object) (since 1.1.0)
-* [x] Add Interceptor(similar to [okhttp]'s [Interceptor], here we use it for intercepting log) (since 1.3.0)
-* [ ] Add TagFilterInterceptor(blacklist filter and whitelist filter)
+* [x] Support log interceptors(similar to [okhttp]'s [Interceptor], here we use it for intercepting log) (since 1.3.0)
+* [x] Add tags filter (blacklist filter and whitelist filter) (since 1.3.0)
 * [ ] Add PatternLogFlattener(mostly used when logging to file), e.g: "{time} {level}/{tag}: {msg}" means "2016-10-30 13:00:00,000 W/my_tag: Simple message"
 
 ## Issues
