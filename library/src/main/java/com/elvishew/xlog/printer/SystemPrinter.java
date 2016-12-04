@@ -17,7 +17,7 @@
 package com.elvishew.xlog.printer;
 
 import com.elvishew.xlog.internal.DefaultsFactory;
-import com.elvishew.xlog.printer.flattener.LogFlattener;
+import com.elvishew.xlog.flattener.Flattener;
 
 /**
  * Log {@link Printer} using {@code System.out.println(String)}.
@@ -27,27 +27,27 @@ public class SystemPrinter implements Printer {
   /**
    * The log flattener when print a log.
    */
-  private LogFlattener logFlattener;
+  private Flattener flattener;
 
   /**
    * Constructor.
    */
   public SystemPrinter() {
-    this.logFlattener = DefaultsFactory.createLogFlattener();
+    this.flattener = DefaultsFactory.createFlattener();
   }
 
   /**
    * Constructor.
    *
-   * @param logFlattener the log flattener when print a log
+   * @param flattener the log flattener when print a log
    */
-  public SystemPrinter(LogFlattener logFlattener) {
-    this.logFlattener = logFlattener;
+  public SystemPrinter(Flattener flattener) {
+    this.flattener = flattener;
   }
 
   @Override
   public void println(int logLevel, String tag, String msg) {
-    String flattenedLog = logFlattener.flatten(logLevel, tag, msg).toString();
+    String flattenedLog = flattener.flatten(logLevel, tag, msg).toString();
     System.out.println(flattenedLog);
   }
 }

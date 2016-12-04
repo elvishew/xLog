@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2016 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package com.elvishew.xlog.printer.flattener;
+package com.elvishew.xlog.flattener;
 
-import com.elvishew.xlog.flattener.Flattener;
+import com.elvishew.xlog.LogLevel;
 
 /**
- * @deprecated use {@link Flattener} instead, since 1.3.0
+ * Simply join the timestamp, log level, tag and message together.
+ *
+ * @since 1.3.0
  */
-@Deprecated
-public interface LogFlattener extends Flattener {
+public class DefaultFlattener implements Flattener {
+
+  @Override
+  public CharSequence flatten(int logLevel, String tag, String message) {
+    return Long.toString(System.currentTimeMillis())
+        + '|' + LogLevel.getShortLevelName(logLevel)
+        + '|' + tag
+        + '|' + message;
+  }
 }

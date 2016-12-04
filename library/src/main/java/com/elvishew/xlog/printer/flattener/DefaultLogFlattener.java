@@ -16,18 +16,11 @@
 
 package com.elvishew.xlog.printer.flattener;
 
-import com.elvishew.xlog.LogLevel;
+import com.elvishew.xlog.flattener.DefaultFlattener;
 
 /**
- * Simply join the timestamp, log level, tag and message together.
+ * @deprecated use {@link DefaultFlattener} instead, since 1.3.0
  */
-public class DefaultLogFlattener implements LogFlattener {
-
-  @Override
-  public CharSequence flatten(int logLevel, String tag, String message) {
-    return Long.toString(System.currentTimeMillis())
-        + '|' + LogLevel.getShortLevelName(logLevel)
-        + '|' + tag
-        + '|' + message;
-  }
+@Deprecated
+public class DefaultLogFlattener extends DefaultFlattener {
 }

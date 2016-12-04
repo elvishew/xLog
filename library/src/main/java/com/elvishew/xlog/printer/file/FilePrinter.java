@@ -20,7 +20,7 @@ import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
-import com.elvishew.xlog.printer.flattener.LogFlattener;
+import com.elvishew.xlog.flattener.Flattener;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -54,7 +54,7 @@ public class FilePrinter implements Printer {
   /**
    * The log flattener when print a log.
    */
-  private LogFlattener logFlattener;
+  private Flattener flattener;
 
   /**
    * Log writer.
@@ -75,7 +75,7 @@ public class FilePrinter implements Printer {
     folderPath = builder.folderPath;
     fileNameGenerator = builder.fileNameGenerator;
     backupStrategy = builder.backupStrategy;
-    logFlattener = builder.logFlattener;
+    flattener = builder.flattener;
 
     checkLogFolder();
   }
@@ -115,7 +115,7 @@ public class FilePrinter implements Printer {
       }
     }
     try {
-      String flattenedLog = logFlattener.flatten(logLevel, tag, msg).toString();
+      String flattenedLog = flattener.flatten(logLevel, tag, msg).toString();
       mBufferedWriter.write(flattenedLog);
       mBufferedWriter.newLine();
       mBufferedWriter.flush();
@@ -195,7 +195,7 @@ public class FilePrinter implements Printer {
     /**
      * The log flattener when print a log.
      */
-    LogFlattener logFlattener;
+    Flattener flattener;
 
     /**
      * Construct a builder.
@@ -231,11 +231,11 @@ public class FilePrinter implements Printer {
     /**
      * Set the log flattener when print a log.
      *
-     * @param logFlattener the log flattener when print a log
+     * @param flattener the log flattener when print a log
      * @return the builder
      */
-    public Builder logFlattener(LogFlattener logFlattener) {
-      this.logFlattener = logFlattener;
+    public Builder logFlattener(Flattener flattener) {
+      this.flattener = flattener;
       return this;
     }
 
@@ -256,8 +256,8 @@ public class FilePrinter implements Printer {
       if (backupStrategy == null) {
         backupStrategy = DefaultsFactory.createBackupStrategy();
       }
-      if (logFlattener == null) {
-        logFlattener = DefaultsFactory.createLogFlattener();
+      if (flattener == null) {
+        flattener = DefaultsFactory.createFlattener();
       }
     }
   }

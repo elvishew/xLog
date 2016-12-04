@@ -16,6 +16,8 @@
 
 package com.elvishew.xlog.internal;
 
+import com.elvishew.xlog.flattener.DefaultFlattener;
+import com.elvishew.xlog.flattener.Flattener;
 import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.border.DefaultBorderFormatter;
 import com.elvishew.xlog.formatter.message.json.DefaultJsonFormatter;
@@ -34,8 +36,6 @@ import com.elvishew.xlog.printer.file.backup.BackupStrategy;
 import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
-import com.elvishew.xlog.printer.flattener.DefaultLogFlattener;
-import com.elvishew.xlog.printer.flattener.LogFlattener;
 
 /**
  * Factory for providing default implementation.
@@ -91,8 +91,8 @@ public class DefaultsFactory {
   /**
    * Create the default log flattener.
    */
-  public static LogFlattener createLogFlattener() {
-    return new DefaultLogFlattener();
+  public static Flattener createFlattener() {
+    return new DefaultFlattener();
   }
 
   /**
