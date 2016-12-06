@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * <p>
  * Supported parameters:
  * <blockquote>
- * <table border=0 cellspacing=3 cellpadding=0>
+ * <table border=0 cellspacing=3 cellpadding=0 summary="Supported parameters">
  *   <tr bgcolor="#ccccff">
  *     <th align=left>Parameter
  *     <th align=left>Represents
@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
  * Imagine there is a log, with {@link LogLevel#DEBUG} level, "my_tag" tag and "Simple message"
  * message, the flattened log would be as below.
  * <blockquote>
- * <table border=0 cellspacing=3 cellpadding=0>
+ * <table border=0 cellspacing=3 cellpadding=0 summary="Examples of patterns and flattened logs">
  *   <tr bgcolor="#ccccff">
  *     <th align=left>Pattern
  *     <th align=left>Flattened log
