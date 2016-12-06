@@ -218,7 +218,8 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Print any object: XLog.d(Object) (since 1.1.0)
 * [x] Support log interceptors(similar to [okhttp]'s [Interceptor], here we use it for intercepting log) (since 1.3.0)
 * [x] Add tags filter (blacklist filter and whitelist filter) (since 1.3.0)
-* [ ] Add PatternLogFlattener(mostly used when logging to file), e.g: "{time} {level}/{tag}: {msg}" means "2016-10-30 13:00:00,000 W/my_tag: Simple message"
+* [x] Add PatternFlattener(mostly used when logging to file), e.g: use pattern "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}" and the flattened log would be "2016-10-30 13:00:00,000 W/my_tag: Simple message" (since 1.3.0)
+* [ ] Log to file asynchronously
 
 ## Issues
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
