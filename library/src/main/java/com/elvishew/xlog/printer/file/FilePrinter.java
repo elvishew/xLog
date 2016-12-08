@@ -16,18 +16,18 @@
 
 package com.elvishew.xlog.printer.file;
 
+import com.elvishew.xlog.flattener.Flattener;
 import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
-import com.elvishew.xlog.flattener.Flattener;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Log {@link Printer} using file system. When print a log, it will print it to the specified file.
@@ -35,6 +35,11 @@ import java.io.OutputStreamWriter;
  * Use the {@link Builder} to construct a {@link FilePrinter} object.
  */
 public class FilePrinter implements Printer {
+
+  /**
+   * Use worker, write logs asynchronously.
+   */
+  private static final boolean USE_WORKER = true;
 
   /**
    * The folder path of log file.
@@ -59,17 +64,9 @@ public class FilePrinter implements Printer {
   /**
    * Log writer.
    */
-  private BufferedWriter mBufferedWriter;
+  private Writer writer;
 
-  /**
-   * The file name of last used log file.
-   */
-  private String lastFileName;
-
-  /**
-   * The currently using log file.
-   */
-  private File logFile;
+  private volatile Worker worker;
 
   /*package*/ FilePrinter(Builder builder) {
     folderPath = builder.folderPath;
@@ -77,51 +74,12 @@ public class FilePrinter implements Printer {
     backupStrategy = builder.backupStrategy;
     flattener = builder.flattener;
 
+    writer = new Writer();
+    if (USE_WORKER) {
+      worker = new Worker();
+    }
+
     checkLogFolder();
-  }
-
-  @Override
-  public void println(int logLevel, String tag, String msg) {
-    if (lastFileName == null || fileNameGenerator.isFileNameChangeable()) {
-      String newFileName = fileNameGenerator.generateFileName(logLevel, System.currentTimeMillis());
-      if (newFileName == null || newFileName.trim().length() == 0) {
-        throw new IllegalArgumentException("File name should not be empty.");
-      }
-      if (!newFileName.equals(lastFileName)) {
-        if (mBufferedWriter != null) {
-          closeLogWriter();
-        }
-        lastFileName = newFileName;
-        openLogWriter();
-      }
-    }
-
-    // If some how the writer is not opened, just give up logging.
-    if (mBufferedWriter == null) {
-      return;
-    }
-
-    if (backupStrategy.shouldBackup(logFile)) {
-      // Backup the log file, and create a new log file.
-      closeLogWriter();
-      File backupFile = new File(folderPath, lastFileName + ".bak");
-      if (backupFile.exists()) {
-        backupFile.delete();
-      }
-      logFile.renameTo(backupFile);
-      openLogWriter();
-      if (mBufferedWriter == null) {
-        return;
-      }
-    }
-    try {
-      String flattenedLog = flattener.flatten(logLevel, tag, msg).toString();
-      mBufferedWriter.write(flattenedLog);
-      mBufferedWriter.newLine();
-      mBufferedWriter.flush();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   /**
@@ -134,42 +92,54 @@ public class FilePrinter implements Printer {
     }
   }
 
-  private void openLogWriter() {
-    logFile = new File(folderPath, lastFileName);
-    if (!logFile.exists()) {
-      try {
-        File parent = logFile.getParentFile();
-        if (!parent.exists()) {
-          parent.mkdirs();
-        }
-        logFile.createNewFile();
-      } catch (IOException e) {
-        e.printStackTrace();
-        lastFileName = null;
-        logFile = null;
-        return;
+  @Override
+  public void println(int logLevel, String tag, String msg) {
+    if (USE_WORKER) {
+      if (!worker.isStarted()) {
+        worker.start();
       }
-    }
-    try {
-      FileOutputStream fos = new FileOutputStream(logFile, true);
-      OutputStreamWriter osw = new OutputStreamWriter(fos);
-      mBufferedWriter = new BufferedWriter(osw);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      lastFileName = null;
-      logFile = null;
+      worker.enqueue(new LogItem(logLevel, tag, msg));
+    } else {
+      doPrintln(logLevel, tag, msg);
     }
   }
 
-  private void closeLogWriter() {
-    try {
-      if (mBufferedWriter != null) {
-        mBufferedWriter.close();
-        mBufferedWriter = null;
+  /**
+   * Do the real job of writing log to file.
+   */
+  void doPrintln(int logLevel, String tag, String msg) {
+    String lastFileName = writer.getLastFileName();
+    if (lastFileName == null || fileNameGenerator.isFileNameChangeable()) {
+      String newFileName = fileNameGenerator.generateFileName(logLevel, System.currentTimeMillis());
+      if (newFileName == null || newFileName.trim().length() == 0) {
+        throw new IllegalArgumentException("File name should not be empty.");
       }
-    } catch (IOException e) {
-      e.printStackTrace();
+      if (!newFileName.equals(lastFileName)) {
+        if (writer.isOpened()) {
+          writer.close();
+        }
+        if (!writer.open(newFileName)) {
+          return;
+        }
+        lastFileName = newFileName;
+      }
     }
+
+    File lastFile = writer.getFile();
+    if (backupStrategy.shouldBackup(lastFile)) {
+      // Backup the log file, and create a new log file.
+      writer.close();
+      File backupFile = new File(folderPath, lastFileName + ".bak");
+      if (backupFile.exists()) {
+        backupFile.delete();
+      }
+      lastFile.renameTo(backupFile);
+      if (!writer.open(lastFileName)) {
+        return;
+      }
+    }
+    String flattenedLog = flattener.flatten(logLevel, tag, msg).toString();
+    writer.appendLog(flattenedLog);
   }
 
   /**
@@ -258,6 +228,195 @@ public class FilePrinter implements Printer {
       }
       if (flattener == null) {
         flattener = DefaultsFactory.createFlattener();
+      }
+    }
+  }
+
+  private class LogItem {
+
+    int level;
+    String tag;
+    String msg;
+
+    LogItem(int level, String tag, String msg) {
+      this.level = level;
+      this.tag = tag;
+      this.msg = msg;
+    }
+  }
+
+  /**
+   * Work in background, we can enqueue the logs, and the worker will dispatch them.
+   */
+  private class Worker implements Runnable {
+
+    private BlockingQueue<LogItem> logs = new LinkedBlockingQueue<>();
+
+    private volatile boolean started;
+
+    /**
+     * Enqueue the log.
+     *
+     * @param log the log to be written to file
+     */
+    void enqueue(LogItem log) {
+      try {
+        logs.put(log);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+
+    /**
+     * Whether the worker is started.
+     *
+     * @return true if started, false otherwise
+     */
+    boolean isStarted() {
+      synchronized (this) {
+        return started;
+      }
+    }
+
+    /**
+     * Start the worker.
+     */
+    void start() {
+      synchronized (this) {
+        new Thread(this).start();
+        started = true;
+      }
+    }
+
+    @Override
+    public void run() {
+      LogItem log;
+      try {
+        while ((log = logs.take()) != null) {
+          doPrintln(log.level, log.tag, log.msg);
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+        synchronized (this) {
+          started = false;
+        }
+      }
+    }
+  }
+
+  /**
+   * Used to write the flattened logs to the log file.
+   */
+  private class Writer {
+
+    /**
+     * The file name of last used log file.
+     */
+    private String lastFileName;
+
+    /**
+     * The current log file.
+     */
+    private File logFile;
+
+    private BufferedWriter bufferedWriter;
+
+    /**
+     * Whether the log file is opened.
+     *
+     * @return true if opened, false otherwise
+     */
+    boolean isOpened() {
+      return bufferedWriter != null;
+    }
+
+    /**
+     * Get the name of last used log file.
+     * @return the name of last used log file, maybe null
+     */
+    String getLastFileName() {
+      return lastFileName;
+    }
+
+    /**
+     * Get the current log file.
+     *
+     * @return the current log file, maybe null
+     */
+    File getFile() {
+      return logFile;
+    }
+
+    /**
+     * Open the file of specific name to be written into.
+     *
+     * @param newFileName the specific file name
+     * @return true if opened successfully, false otherwise
+     */
+    boolean open(String newFileName) {
+      lastFileName = newFileName;
+      logFile = new File(folderPath, newFileName);
+
+      // Create log file if not exists.
+      if (!logFile.exists()) {
+        try {
+          File parent = logFile.getParentFile();
+          if (!parent.exists()) {
+            parent.mkdirs();
+          }
+          logFile.createNewFile();
+        } catch (IOException e) {
+          e.printStackTrace();
+          lastFileName = null;
+          logFile = null;
+          return false;
+        }
+      }
+
+      // Create buffered writer.
+      try {
+        bufferedWriter = new BufferedWriter(new FileWriter(logFile, true));
+      } catch (Exception e) {
+        e.printStackTrace();
+        lastFileName = null;
+        logFile = null;
+        return false;
+      }
+      return true;
+    }
+
+    /**
+     * Close the current log file if it is opened.
+     *
+     * @return true if closed successfully, false otherwise
+     */
+    boolean close() {
+      if (bufferedWriter != null) {
+        try {
+          bufferedWriter.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+          return false;
+        } finally {
+          bufferedWriter = null;
+          lastFileName = null;
+          logFile = null;
+        }
+      }
+      return true;
+    }
+
+    /**
+     * Append the flattened log to the end of current opened log file.
+     *
+     * @param flattenedLog the flattened log
+     */
+    void appendLog(String flattenedLog) {
+      try {
+        bufferedWriter.write(flattenedLog);
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
+      } catch (IOException e) {
       }
     }
   }
