@@ -39,6 +39,12 @@ import java.util.Map;
  */
 public class LogConfiguration {
 
+
+  /**
+   * The log level, the logs below of which would not be printed.
+   */
+  public final int logLevel;
+
   /**
    * The tag string.
    */
@@ -108,6 +114,8 @@ public class LogConfiguration {
   public final List<Interceptor> interceptors;
 
   /*package*/ LogConfiguration(final Builder builder) {
+    logLevel = builder.logLevel;
+
     tag = builder.tag;
 
     withThread = builder.withThread;
@@ -152,11 +160,28 @@ public class LogConfiguration {
   }
 
   /**
+   * Whether logs with specific level is loggable.
+   *
+   * @param level the specific level
+   * @return true if loggable, false otherwise
+   */
+  /*package*/ boolean isLoggable(int level) {
+    return level >= logLevel;
+  }
+
+  /**
    * Builder for {@link LogConfiguration}.
    */
   public static class Builder {
 
+    private static final int DEFAULT_LOG_LEVEL = LogLevel.ALL;
+
     private static final String DEFAULT_TAG = "X-LOG";
+
+    /**
+     * The log level, the logs below of which would not be printed.
+     */
+    private int logLevel = DEFAULT_LOG_LEVEL;
 
     /**
      * The tag string used when log.
@@ -236,6 +261,8 @@ public class LogConfiguration {
      * @param logConfiguration the {@link LogConfiguration} to copy configurations from
      */
     public Builder(LogConfiguration logConfiguration) {
+      logLevel = logConfiguration.logLevel;
+
       tag = logConfiguration.tag;
 
       withThread = logConfiguration.withThread;
@@ -257,6 +284,18 @@ public class LogConfiguration {
       if (logConfiguration.interceptors != null) {
         interceptors = new ArrayList<>(logConfiguration.interceptors);
       }
+    }
+
+    /**
+     * Set the log level, the logs below of which would not be printed.
+     *
+     * @param logLevel the log level
+     * @return the builder
+     * @since 1.3.0
+     */
+    public Builder logLevel(int logLevel) {
+      this.logLevel = logLevel;
+      return this;
     }
 
     /**

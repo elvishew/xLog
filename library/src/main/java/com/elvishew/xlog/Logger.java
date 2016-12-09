@@ -77,6 +77,10 @@ public class Logger {
     LogConfiguration.Builder logConfigBuilder = new LogConfiguration.Builder(
         XLog.sLogConfiguration);
 
+    if (builder.logLevel != 0) {
+      logConfigBuilder.logLevel(builder.logLevel);
+    }
+
     if (builder.tag != null) {
       logConfigBuilder.tag(builder.tag);
     }
@@ -382,7 +386,7 @@ public class Logger {
    * @param json the JSON string to log
    */
   public void json(String json) {
-    if (LogLevel.DEBUG < XLog.sLogLevel) {
+    if (LogLevel.DEBUG < logConfiguration.logLevel) {
       return;
     }
     printlnInternal(LogLevel.DEBUG, logConfiguration.jsonFormatter.format(json));
@@ -394,7 +398,7 @@ public class Logger {
    * @param xml the XML string to log
    */
   public void xml(String xml) {
-    if (LogLevel.DEBUG < XLog.sLogLevel) {
+    if (LogLevel.DEBUG < logConfiguration.logLevel) {
       return;
     }
     printlnInternal(LogLevel.DEBUG, logConfiguration.xmlFormatter.format(xml));
@@ -407,7 +411,7 @@ public class Logger {
    * @param object   the object to print
    */
   private <T> void println(int logLevel, T object) {
-    if (logLevel < XLog.sLogLevel) {
+    if (logLevel < logConfiguration.logLevel) {
       return;
     }
     String objectString;
@@ -431,7 +435,7 @@ public class Logger {
    * @param array    the array to print
    */
   private void println(int logLevel, Object[] array) {
-    if (logLevel < XLog.sLogLevel) {
+    if (logLevel < logConfiguration.logLevel) {
       return;
     }
     printlnInternal(logLevel, Arrays.deepToString(array));
@@ -445,7 +449,7 @@ public class Logger {
    * @param args     the arguments of the printing log
    */
   private void println(int logLevel, String format, Object... args) {
-    if (logLevel < XLog.sLogLevel) {
+    if (logLevel < logConfiguration.logLevel) {
       return;
     }
     printlnInternal(logLevel, formatArgs(format, args));
@@ -458,7 +462,7 @@ public class Logger {
    * @param msg      the message you would like to log
    */
     /*package*/ void println(int logLevel, String msg) {
-    if (logLevel < XLog.sLogLevel) {
+    if (logLevel < logConfiguration.logLevel) {
       return;
     }
     printlnInternal(logLevel, msg);
@@ -472,7 +476,7 @@ public class Logger {
    * @param tr       an throwable object to log
    */
   private void println(int logLevel, String msg, Throwable tr) {
-    if (logLevel < XLog.sLogLevel) {
+    if (logLevel < logConfiguration.logLevel) {
       return;
     }
     printlnInternal(logLevel, ((msg == null || msg.length() == 0)
@@ -556,6 +560,11 @@ public class Logger {
    * Builder for {@link Logger}.
    */
   public static class Builder {
+
+    /**
+     * The log level, the logs below of which would not be printed.
+     */
+    private int logLevel;
 
     /**
      * The tag string when {@link Logger} log.
@@ -648,6 +657,18 @@ public class Logger {
      */
     public Builder() {
       XLog.assertInitialization();
+    }
+
+    /**
+     * Set the log level, the logs below of which would not be printed.
+     *
+     * @param logLevel the log level
+     * @return the builder
+     * @since 1.3.0
+     */
+    public Builder logLevel(int logLevel) {
+      this.logLevel = logLevel;
+      return this;
     }
 
     /**

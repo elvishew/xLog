@@ -33,9 +33,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.elvishew.xlog.LogLevel.ALL;
 import static com.elvishew.xlog.LogLevel.DEBUG;
+import static com.elvishew.xlog.LogLevel.ERROR;
 import static com.elvishew.xlog.LogLevel.INFO;
-import static com.elvishew.xlog.LogLevel.VERBOSE;
+import static com.elvishew.xlog.LogLevel.WARN;
 import static org.junit.Assert.assertTrue;
 
 public class XLogTest {
@@ -53,7 +55,7 @@ public class XLogTest {
   @Before
   public void setup() {
     XLogUtil.beforeTest();
-    XLog.init(VERBOSE,
+    XLog.init(ALL,
         new LogConfiguration.Builder().tag(DEFAULT_TAG).build(),
         new ContainerPrinter(logsContainer));
   }
@@ -62,6 +64,23 @@ public class XLogTest {
   public void testSimpleLogging() {
     XLog.i(MESSAGE);
     assertLog(INFO, DEFAULT_TAG, MESSAGE);
+  }
+
+  @Test
+  public void testLogLevel() {
+    XLog.i(MESSAGE);
+    assertLog(INFO, DEFAULT_TAG, MESSAGE);
+
+    Logger logger = XLog.logLevel(WARN).build();
+    logsContainer.clear();
+    logger.i(MESSAGE);
+    AssertUtil.assertNoLog(logsContainer);
+    logsContainer.clear();
+    logger.w(MESSAGE);
+    assertLog(WARN, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.e(MESSAGE);
+    assertLog(ERROR, DEFAULT_TAG, MESSAGE);
   }
 
   @Test
