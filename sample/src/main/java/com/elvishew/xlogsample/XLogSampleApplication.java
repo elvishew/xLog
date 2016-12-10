@@ -22,6 +22,8 @@ import android.os.Environment;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.XLog;
+import com.elvishew.xlog.flattener.ClassicFlattener;
+import com.elvishew.xlog.interceptor.BlacklistTagsFilterInterceptor;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
@@ -45,6 +47,8 @@ public class XLogSampleApplication extends Application {
    */
   private void initXlog() {
     LogConfiguration config = new LogConfiguration.Builder()
+        .logLevel(BuildConfig.DEBUG ? LogLevel.ALL             // Specify log level, logs below this level won't be printed, default: LogLevel.ALL
+            : LogLevel.NONE)
         .tag(getString(R.string.global_tag))                   // Specify TAG, default: "X-LOG"
         // .t()                                                // Enable thread info, disabled by default
         // .st(2)                                              // Enable stack trace info with depth 2, disabled by default
@@ -57,6 +61,11 @@ public class XLogSampleApplication extends Application {
         // .borderFormatter(new MyBoardFormatter())            // Default: DefaultBorderFormatter
         // .addObjectFormatter(AnyClass.class,                 // Add formatter for specific class of object
         //     new AnyClassObjectFormatter())                  // Use Object.toString() by default
+        .addInterceptor(new BlacklistTagsFilterInterceptor(    // Add blacklist tags filter
+            "blacklist1", "blacklist2", "blacklist3"))
+        // .addInterceptor(new WhitelistTagsFilterInterceptor( // Add whitelist tags filter
+        //     "whitelist1", "whitelist2", "whitelist3"))
+        // .addInterceptor(new MyInterceptor())                // Add a log interceptor
         .build();
 
     Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
@@ -64,12 +73,12 @@ public class XLogSampleApplication extends Application {
         .Builder(new File(Environment.getExternalStorageDirectory(), "xlogsample").getPath())       // Specify the path to save log file
         .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
         // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
-        // .logFlattener(new MyLogFlattener())                 // Default: DefaultLogFlattener
+        .logFlattener(new ClassicFlattener())                  // Default: DefaultFlattener
         .build();
 
-    XLog.init(BuildConfig.DEBUG ? LogLevel.ALL : LogLevel.NONE,// Specify the log level, logs below this level won't be printed
+    XLog.init(                                                 // Initialize XLog
         config,                                                // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
-        androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter will be used by default
+        androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter(for Android)/ConsolePrinter(for java) will be used.
         filePrinter);
 
     // For future usage: partial usage in MainActivity.
