@@ -33,18 +33,22 @@ import com.elvishew.xlog.printer.PrinterSet;
 
 /**
  * A log tool which can be used in android or java, the most important feature is it can print the
- * logs to multiple place in the same time, such as android shell, terminal and file system, you can
+ * logs to multiple place in the same time, such as android shell, console and file, you can
  * even print the log to the remote server if you want, all of these can be done just within one
  * calling.
+ * <br>Also, XLog is very flexible, almost every component is replaceable.
  * <p>
  * <b>How to use in a general way:</b>
  * <p>
  * <b>1. Initial the log system.</b>
  * <br>Using one of
+ * <br>{@link XLog#init()}
  * <br>{@link XLog#init(int)},
- * <br>{@link XLog#init(int, LogConfiguration)}
- * <br>{@link XLog#init(int, LogConfiguration, Printer...)},
- * <br>that will setup a {@link LogConfiguration} for a global usage.
+ * <br>{@link XLog#init(LogConfiguration)}
+ * <br>{@link XLog#init(Printer...)},
+ * <br>{@link XLog#init(int, Printer...)},
+ * <br>{@link XLog#init(LogConfiguration, Printer...)},
+ * <br>that will setup a {@link Logger} for a global usage.
  * If you want to use a customized configuration instead of the global one to log something, you can
  * start a customization logging.
  * <p>
@@ -70,6 +74,7 @@ import com.elvishew.xlog.printer.PrinterSet;
  * <p>
  * <b>1. Start a customization.</b>
  * <br>Call any of
+ * <br>{@link #logLevel(int)}
  * <br>{@link #tag(String)},
  * <br>{@link #t()},
  * <br>{@link #nt()},
@@ -84,6 +89,7 @@ import com.elvishew.xlog.printer.PrinterSet;
  * <br>{@link #throwableFormatter(ThrowableFormatter)}
  * <br>{@link #borderFormatter(BorderFormatter)}
  * <br>{@link #addObjectFormatter(Class, ObjectFormatter)}
+ * <br>{@link #addInterceptor(Interceptor)}
  * <br>{@link #printers(Printer...)},
  * <br>it will return a {@link Logger.Builder} object.
  * <p>
@@ -142,6 +148,8 @@ public class XLog {
 
   /**
    * Initialize log system, should be called only once.
+   *
+   * @since 1.3.0
    */
   public static void init() {
     init(new LogConfiguration.Builder().build(), DefaultsFactory.createPrinter());
@@ -174,6 +182,7 @@ public class XLog {
    * Initialize log system, should be called only once.
    *
    * @param logConfiguration the log configuration
+   * @since 1.3.0
    */
   public static void init(LogConfiguration logConfiguration) {
     init(logConfiguration, DefaultsFactory.createPrinter());
@@ -183,6 +192,7 @@ public class XLog {
    * Initialize log system, should be called only once.
    *
    * @param printers the printers, each log would be printed by all of the printers
+   * @since 1.3.0
    */
   public static void init(Printer... printers) {
     init(new LogConfiguration.Builder().build(), printers);
@@ -217,6 +227,7 @@ public class XLog {
    *
    * @param logConfiguration the log configuration
    * @param printers         the printers, each log would be printed by all of the printers
+   * @since 1.3.0
    */
   public static void init(LogConfiguration logConfiguration, Printer... printers) {
     if (sIsInitialized) {
