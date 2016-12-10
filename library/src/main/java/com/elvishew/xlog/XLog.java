@@ -162,7 +162,10 @@ public class XLog {
    *
    * @param logLevel         the log level, logs with a lower level than which would not be printed
    * @param logConfiguration the log configuration
+   * @deprecated the log level is part of log configuration now, use {@link #init(LogConfiguration)}
+   * instead, since 1.3.0
    */
+  @Deprecated
   public static void init(int logLevel, LogConfiguration logConfiguration) {
     init(new LogConfiguration.Builder(logConfiguration).logLevel(logLevel).build());
   }
@@ -179,6 +182,15 @@ public class XLog {
   /**
    * Initialize log system, should be called only once.
    *
+   * @param printers the printers, each log would be printed by all of the printers
+   */
+  public static void init(Printer... printers) {
+    init(new LogConfiguration.Builder().build(), printers);
+  }
+
+  /**
+   * Initialize log system, should be called only once.
+   *
    * @param logLevel the log level, logs with a lower level than which would not be printed
    * @param printers the printers, each log would be printed by all of the printers
    */
@@ -189,19 +201,13 @@ public class XLog {
   /**
    * Initialize log system, should be called only once.
    *
-   * @param printers the printers, each log would be printed by all of the printers
-   */
-  public static void init(Printer... printers) {
-    init(new LogConfiguration.Builder().build(), printers);
-  }
-
-  /**
-   * Initialize log system, should be called only once.
-   *
    * @param logLevel         the log level, logs with a lower level than which would not be printed
    * @param logConfiguration the log configuration
    * @param printers         the printers, each log would be printed by all of the printers
+   * @deprecated the log level is part of log configuration now,
+   * use {@link #init(LogConfiguration, Printer...)} instead, since 1.3.0
    */
+  @Deprecated
   public static void init(int logLevel, LogConfiguration logConfiguration, Printer... printers) {
     init(new LogConfiguration.Builder(logConfiguration).logLevel(logLevel).build(), printers);
   }
