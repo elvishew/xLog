@@ -20,8 +20,8 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 
 import com.elvishew.xlog.printer.AndroidPrinter;
+import com.elvishew.xlog.printer.ConsolePrinter;
 import com.elvishew.xlog.printer.Printer;
-import com.elvishew.xlog.printer.SystemPrinter;
 
 class Platform {
 
@@ -37,7 +37,7 @@ class Platform {
   }
 
   Printer defaultPrinter() {
-    return new SystemPrinter();
+    return new ConsolePrinter();
   }
 
   private static Platform findPlatform() {

@@ -16,38 +16,9 @@
 
 package com.elvishew.xlog.printer;
 
-import com.elvishew.xlog.internal.DefaultsFactory;
-import com.elvishew.xlog.flattener.Flattener;
-
 /**
- * Log {@link Printer} using {@code System.out.println(String)}.
+ * @deprecated use {@link ConsolePrinter} instead, since 1.3.0
  */
-public class SystemPrinter implements Printer {
-
-  /**
-   * The log flattener when print a log.
-   */
-  private Flattener flattener;
-
-  /**
-   * Constructor.
-   */
-  public SystemPrinter() {
-    this.flattener = DefaultsFactory.createFlattener();
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param flattener the log flattener when print a log
-   */
-  public SystemPrinter(Flattener flattener) {
-    this.flattener = flattener;
-  }
-
-  @Override
-  public void println(int logLevel, String tag, String msg) {
-    String flattenedLog = flattener.flatten(logLevel, tag, msg).toString();
-    System.out.println(flattenedLog);
-  }
+@Deprecated
+public class SystemPrinter extends ConsolePrinter {
 }

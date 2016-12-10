@@ -24,7 +24,7 @@ import com.elvishew.xlog.printer.file.FilePrinter;
  * <p>
  * There are 4 main implementation of Printer.
  * <br>{@link AndroidPrinter}, print log to android shell terminal.
- * <br>{@link SystemPrinter}, print log to system terminal.
+ * <br>{@link ConsolePrinter}, print log to console via System.out.
  * <br>{@link FilePrinter}, print log to file system.
  * <br>{@link RemotePrinter}, print log to remote server, this is empty implementation yet.
  */
