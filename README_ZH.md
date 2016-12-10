@@ -217,8 +217,8 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 支持日志拦截器（类似于 [okhttp] 的 [Interceptor]，这里用来拦截日志）（v1.3.0 开始支持）
 * [x] 添加 tags 过滤器 (白名单过滤和黑名单过滤)（v1.3.0 开始支持）
 * [x] 添加 PatternLogFlattener（主要用在向文件打印日志时），如: 使用模式 "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}"，平铺后的日志将会是 "2016-10-30 13:00:00,000 W/my_tag: Simple message" (v1.3.0 开始支持)
-* [x] 打印日志到文件时，采用异步方式 （v1.3.0 开始支持）
-* [ ] Logger 粒度的日志级别控制，取代当前的全局控制
+* [x] 打印日志到文件时，采用异步方式（v1.3.0 开始支持）
+* [x] Logger 粒度的日志级别控制，取代当前的全局控制（v1.3.0 开始支持）
 
 ## 问题
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。

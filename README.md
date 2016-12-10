@@ -220,7 +220,7 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Add tags filter (blacklist filter and whitelist filter) (since 1.3.0)
 * [x] Add PatternFlattener(mostly used when logging to file), e.g: use pattern "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}" and the flattened log would be "2016-10-30 13:00:00,000 W/my_tag: Simple message" (since 1.3.0)
 * [x] Log to file asynchronously (since 1.3.0)
-* [ ] Logger-based log level control rather than current global one
+* [x] Logger-based log level control rather than current global one (since 1.3.0)
 
 ## Issues
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
