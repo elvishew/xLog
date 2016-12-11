@@ -3,7 +3,7 @@
 
 [English](https://github.com/elvishew/XLog/blob/master/README.md)
 
-简单、美观、强大、可扩展的 Android 和 Java 日志库，可同时在多个通道打印日志，如 Logcat、System.out 和文件。如果你愿意，甚至可以打印到远程服务器（或其他任何地方）。
+简单、美观、强大、可扩展的 Android 和 Java 日志库，可同时在多个通道打印日志，如 Logcat、Console 和文件。如果你愿意，甚至可以打印到远程服务器（或其他任何地方）。
 
 XLog 能干什么:
 * 全局配置（TAG，各种格式化器...）或基于单条日志的配置
@@ -13,6 +13,7 @@ XLog 能干什么:
 * XML 和 JSON 格式化输出
 * 线程信息（线程名等，可自定义）
 * 调用栈信息（可配置的调用栈深度，调用栈信息包括类名、方法名文件名和行号）
+* 支持日志拦截器
 * 保存日志文件（文件名和自动备份策略可灵活配置）
 * 在 Android Studio 中的日志样式美观
 * 简单易用，扩展性高
@@ -24,7 +25,7 @@ XLog 能干什么:
 
 ## 依赖
 ```groovy
-compile 'com.elvishew:xlog:1.2.1'
+compile 'com.elvishew:xlog:1.3.0'
 ```
 
 ## 预览
@@ -54,6 +55,8 @@ XLog.init(BuildConfig.DEBUG ? LogLevel.ALL : LogLevel.NONE);
 #### 高级方式
 ```java
 LogConfiguration config = new LogConfiguration.Builder()
+    .logLevel(BuildConfig.DEBUG ? LogLevel.ALL             // 指定日志级别，低于该级别的日志将不会被打印，默认为 LogLevel.ALL
+        : LogLevel.NONE)
     .tag("MY_TAG")                                         // 指定 TAG，默认为 "X-LOG"
     .t()                                                   // 允许打印线程信息，默认禁止
     .st(2)                                                 // 允许打印深度为2的调用栈信息，默认禁止
@@ -65,7 +68,10 @@ LogConfiguration config = new LogConfiguration.Builder()
     .stackTraceFormatter(new MyStackTraceFormatter())      // 指定调用栈信息格式化器，默认为 DefaultStackTraceFormatter
     .borderFormatter(new MyBoardFormatter())               // 指定边框格式化器，默认为 DefaultBorderFormatter
     .addObjectFormatter(AnyClass.class,                    // 为指定类添加格式化器
-            new AnyClassObjectFormatter())                 // 默认使用 Object.toString()
+        new AnyClassObjectFormatter())                     // 默认使用 Object.toString()
+    .addInterceptor(new BlacklistTagsFilterInterceptor(    // 添加黑名单 TAG 过滤器
+        "blacklist1", "blacklist2", "blacklist3"))
+    .addInterceptor(new MyInterceptor())                   // 添加一个日志拦截器
     .build();
 
 Printer androidPrinter = new AndroidPrinter();             // 通过 android.util.Log 打印日志的打印器
@@ -77,7 +83,7 @@ Printer filePrinter = new FilePrinter                      // 打印日志到文
     .logFlattener(new MyLogFlattener())                    // 指定日志平铺器，默认为 DefaultLogFlattener
     .build();
 
-XLog.init(LogLevel.ALL,                                    // 指定日志级别，低于该级别的日志将不会被打印
+XLog.init(                                                 // 初始化 XLog
     config,                                                // 指定日志配置，如果不指定，会默认使用 new LogConfiguration.Builder().build()
     androidPrinter,                                        // 添加任意多的打印器。如果没有添加任何打印器，会默认使用 AndroidPrinter
     systemPrinter,
@@ -219,6 +225,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 添加 PatternLogFlattener（主要用在向文件打印日志时），如: 使用模式 "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}"，平铺后的日志将会是 "2016-10-30 13:00:00,000 W/my_tag: Simple message" (v1.3.0 开始支持)
 * [x] 打印日志到文件时，采用异步方式（v1.3.0 开始支持）
 * [x] Logger 粒度的日志级别控制，取代当前的全局控制（v1.3.0 开始支持）
+* [ ] 为 Intent 类添加默认的格式化器
 
 ## 问题
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。

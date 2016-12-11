@@ -3,7 +3,7 @@
 
 [简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)
 
-Simple and pretty, powerful and flexible logger for android and java, can concurrently print the log to multiple target like Logcat, System.out and File, or even Server(or anywhere) if you like.
+Simple and pretty, powerful and flexible logger for android and java, can concurrently print the log to multiple target like Logcat, Console and File, or even Server(or anywhere) if you like.
 
 What XLog can do:
 * Global config(tag, formatters...) or log-based config
@@ -13,6 +13,7 @@ What XLog can do:
 * XML and JSON formatted
 * Thread information (Thread name etc. Can be customized)
 * Stack trace information (Configurable call stack depth, with file name, method name, line number)
+* Support log interceptors
 * Save logs in file (Configurable file naming and backup strategy)
 * Good looking in Android Studio
 * Easy to use, powerful in customization
@@ -24,7 +25,7 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.2.1'
+compile 'com.elvishew:xlog:1.3.0'
 ```
 
 ## Preview
@@ -54,6 +55,8 @@ XLog.init(BuildConfig.DEBUG ? LogLevel.ALL : LogLevel.NONE);
 #### Advance way
 ```java
 LogConfiguration config = new LogConfiguration.Builder()
+    .logLevel(BuildConfig.DEBUG ? LogLevel.ALL             // Specify log level, logs below this level won't be printed, default: LogLevel.ALL
+        : LogLevel.NONE)
     .tag("MY_TAG")                                         // Specify TAG, default: "X-LOG"
     .t()                                                   // Enable thread info, disabled by default
     .st(2)                                                 // Enable stack trace info with depth 2, disabled by default
@@ -65,7 +68,10 @@ LogConfiguration config = new LogConfiguration.Builder()
     .stackTraceFormatter(new MyStackTraceFormatter())      // Default: DefaultStackTraceFormatter
     .borderFormatter(new MyBoardFormatter())               // Default: DefaultBorderFormatter
     .addObjectFormatter(AnyClass.class,                    // Add formatter for specific class of object
-            new AnyClassObjectFormatter())                 // Use Object.toString() by default
+        new AnyClassObjectFormatter())                     // Use Object.toString() by default
+    .addInterceptor(new BlacklistTagsFilterInterceptor(    // Add blacklist tags filter
+        "blacklist1", "blacklist2", "blacklist3"))
+    .addInterceptor(new MyInterceptor())                   // Add a log interceptor
     .build();
 
 Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
@@ -77,7 +83,7 @@ Printer filePrinter = new FilePrinter                      // Printer that print
     .logFlattener(new MyLogFlattener())                    // Default: DefaultLogFlattener
     .build();
 
-XLog.init(LogLevel.ALL,                                    // Specify the log level, logs below this level won't be printed
+XLog.init(                                                 // Initialize XLog
     config,                                                // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
     androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter will be used by default
     systemPrinter,
@@ -221,6 +227,7 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Add PatternFlattener(mostly used when logging to file), e.g: use pattern "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}" and the flattened log would be "2016-10-30 13:00:00,000 W/my_tag: Simple message" (since 1.3.0)
 * [x] Log to file asynchronously (since 1.3.0)
 * [x] Logger-based log level control rather than current global one (since 1.3.0)
+* [ ] Add built-in ObjectFormatter for Intent class
 
 ## Issues
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
