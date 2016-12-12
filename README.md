@@ -79,8 +79,8 @@ Printer SystemPrinter = new SystemPrinter();               // Printer that print
 Printer filePrinter = new FilePrinter                      // Printer that print the log to the file system
     .Builder("/sdcard/xlog/")                              // Specify the path to save log file
     .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
-    .backupStrategy(new MyBackupStrategy())                // Default: FileSizeBackupStrategy(1024 * 1024)
-    .logFlattener(new MyLogFlattener())                    // Default: DefaultLogFlattener
+    .backupStrategy(new NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
+    .logFlattener(new MyFlattener())                       // Default: DefaultFlattener
     .build();
 
 XLog.init(                                                 // Initialize XLog
@@ -228,8 +228,12 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Log to file asynchronously (since 1.3.0)
 * [x] Logger-based log level control rather than current global one (since 1.3.0)
 * [ ] Add built-in ObjectFormatter for Intent class
+* [ ] Export log files to a .zip
 
-## Issues
+## [Releases](https://github.com/elvishew/xLog/releases)
+Latest release: 1.3.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.3.0)
+
+## [Issues](https://github.com/elvishew/xLog/issues)
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
 
 ## Thanks

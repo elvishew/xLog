@@ -79,8 +79,8 @@ Printer SystemPrinter = new SystemPrinter();               // 通过 System.out.
 Printer filePrinter = new FilePrinter                      // 打印日志到文件的打印器
     .Builder("/sdcard/xlog/")                              // 指定保存日志文件的路径
     .fileNameGenerator(new DateFileNameGenerator())        // 指定日志文件名生成器，默认为 ChangelessFileNameGenerator("log")
-    .backupStrategy(new MyBackupStrategy())                // 指定日志文件备份策略，默认为 FileSizeBackupStrategy(1024 * 1024)
-    .logFlattener(new MyLogFlattener())                    // 指定日志平铺器，默认为 DefaultLogFlattener
+    .backupStrategy(new NeverBackupStrategy()              // 指定日志文件备份策略，默认为 FileSizeBackupStrategy(1024 * 1024)
+    .logFlattener(new MyFlattener())                       // 指定日志平铺器，默认为 DefaultFlattener
     .build();
 
 XLog.init(                                                 // 初始化 XLog
@@ -226,8 +226,12 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 打印日志到文件时，采用异步方式（v1.3.0 开始支持）
 * [x] Logger 粒度的日志级别控制，取代当前的全局控制（v1.3.0 开始支持）
 * [ ] 为 Intent 类添加默认的格式化器
+* [ ] 导出日志文件为 .zip
 
-## 问题
+## [版本](https://github.com/elvishew/xLog/releases)
+最新版本：1.3.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.3.0)
+
+## [问题](https://github.com/elvishew/xLog/issues)
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。
 
 注意：麻烦使用英文提问和回复，方便其他国家的用户看懂并从中受益，谢谢。
