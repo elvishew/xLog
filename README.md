@@ -75,7 +75,7 @@ LogConfiguration config = new LogConfiguration.Builder()
     .build();
 
 Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
-Printer SystemPrinter = new SystemPrinter();               // Printer that print the log using System.out.println
+Printer consolePrinter = new ConsolePrinter();             // Printer that print the log to console using System.out
 Printer filePrinter = new FilePrinter                      // Printer that print the log to the file system
     .Builder("/sdcard/xlog/")                              // Specify the path to save log file
     .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
@@ -85,8 +85,8 @@ Printer filePrinter = new FilePrinter                      // Printer that print
 
 XLog.init(                                                 // Initialize XLog
     config,                                                // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
-    androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter will be used by default
-    systemPrinter,
+    androidPrinter,                                        // Specify printers, if no printer is specified, AndroidPrinter(for Android)/ConsolePrinter(for java) will be used.
+    consolePrinter,
     filePrinter);
 ```
 For android, a best place to do the initialization is [Application.onCreate()](http://developer.android.com/reference/android/app/Application.html#onCreate()).
