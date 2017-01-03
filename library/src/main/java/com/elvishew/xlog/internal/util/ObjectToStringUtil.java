@@ -222,7 +222,8 @@ public class ObjectToStringUtil {
   private static String uriToSafeString(Uri uri) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
       try {
-        Method toSafeString = Uri.class.getDeclaredMethod("toSafeString", Void.class);
+        Method toSafeString = Uri.class.getDeclaredMethod("toSafeString");
+        toSafeString.setAccessible(true);
         return (String) toSafeString.invoke(uri);
       } catch (NoSuchMethodException e) {
         e.printStackTrace();
