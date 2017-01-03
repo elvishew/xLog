@@ -24,6 +24,7 @@ import com.elvishew.xlog.formatter.message.xml.XmlFormatter;
 import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 import com.elvishew.xlog.interceptor.Interceptor;
+import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.internal.SystemCompat;
 import com.elvishew.xlog.internal.util.StackTraceUtil;
 import com.elvishew.xlog.printer.Printer;
@@ -830,7 +831,7 @@ public class Logger {
     public <T> Builder addObjectFormatter(Class<T> objectClass,
                                           ObjectFormatter<? super T> objectFormatter) {
       if (objectFormatters == null) {
-        objectFormatters = new HashMap<>(5);
+        objectFormatters = new HashMap<>(DefaultsFactory.builtinObjectFormatters());
       }
       objectFormatters.put(objectClass, objectFormatter);
       return this;

@@ -450,7 +450,7 @@ public class LogConfiguration {
     public <T> Builder addObjectFormatter(Class<T> objectClass,
                                           ObjectFormatter<? super T> objectFormatter) {
       if (objectFormatters == null) {
-        objectFormatters = new HashMap<>(5);
+        objectFormatters = new HashMap<>(DefaultsFactory.builtinObjectFormatters());
       }
       objectFormatters.put(objectClass, objectFormatter);
       return this;
@@ -521,6 +521,9 @@ public class LogConfiguration {
       }
       if (borderFormatter == null) {
         borderFormatter = DefaultsFactory.createBorderFormatter();
+      }
+      if (objectFormatters == null) {
+        objectFormatters = new HashMap<>(DefaultsFactory.builtinObjectFormatters());
       }
     }
   }
