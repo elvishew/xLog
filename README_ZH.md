@@ -225,7 +225,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 添加 PatternLogFlattener（主要用在向文件打印日志时），如: 使用模式 "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}"，平铺后的日志将会是 "2016-10-30 13:00:00,000 W/my_tag: Simple message" (v1.3.0 开始支持)
 * [x] 打印日志到文件时，采用异步方式（v1.3.0 开始支持）
 * [x] Logger 粒度的日志级别控制，取代当前的全局控制（v1.3.0 开始支持）
-* [ ] 为 Intent 类添加默认的格式化器
+* [x] 为 Bundle 和 Intent 对象添加默认的格式化器（v1.4.0 开始支持）
 * [ ] 导出日志文件为 .zip
 
 ## [版本](https://github.com/elvishew/xLog/releases)

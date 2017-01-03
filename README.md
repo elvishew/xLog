@@ -227,7 +227,7 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Add PatternFlattener(mostly used when logging to file), e.g: use pattern "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}" and the flattened log would be "2016-10-30 13:00:00,000 W/my_tag: Simple message" (since 1.3.0)
 * [x] Log to file asynchronously (since 1.3.0)
 * [x] Logger-based log level control rather than current global one (since 1.3.0)
-* [ ] Add built-in ObjectFormatter for Intent class
+* [x] Add builtin formatter for Bundle and Intent object (since 1.4.0)
 * [ ] Export log files to a .zip
 
 ## [Releases](https://github.com/elvishew/xLog/releases)
