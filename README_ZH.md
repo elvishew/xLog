@@ -226,7 +226,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 打印日志到文件时，采用异步方式（v1.3.0 开始支持）
 * [x] Logger 粒度的日志级别控制，取代当前的全局控制（v1.3.0 开始支持）
 * [x] 为 Bundle 和 Intent 对象添加默认的格式化器（v1.4.0 开始支持）
-* [ ] 导出日志文件为 .zip
+* [x] 导出日志文件为 .zip（v1.4.0 开始支持）
 
 ## [版本](https://github.com/elvishew/xLog/releases)
 最新版本：1.3.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.3.0)

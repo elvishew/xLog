@@ -228,7 +228,7 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Log to file asynchronously (since 1.3.0)
 * [x] Logger-based log level control rather than current global one (since 1.3.0)
 * [x] Add builtin formatter for Bundle and Intent object (since 1.4.0)
-* [ ] Export log files to a .zip
+* [x] Export log files to a .zip (since 1.4.0)
 
 ## [Releases](https://github.com/elvishew/xLog/releases)
 Latest release: 1.3.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.3.0)
