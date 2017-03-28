@@ -100,8 +100,6 @@ public class LogUtils {
     return XLog.sLogConfiguration.borderFormatter.format(segments);
   }
 
-  private static final int BUFFER_SIZE = 8 * 1024; // 8K
-
   /**
    * Compress all files under the specific folder to a single zip file.
    * <p>
@@ -135,6 +133,7 @@ public class LogUtils {
     ZipOutputStream zos = new ZipOutputStream(
         new BufferedOutputStream(new FileOutputStream(zipFile)));
     try {
+      final int BUFFER_SIZE = 8 * 1024; // 8K
       byte buffer[] = new byte[BUFFER_SIZE];
       for (String fileName : folder.list()) {
         if (fileName.equals(".") || fileName.equals("..")) {
@@ -159,6 +158,7 @@ public class LogUtils {
           try {
             bis.close();
           } catch (IOException e) {
+            // Ignore
           }
         }
       }
@@ -166,6 +166,7 @@ public class LogUtils {
       try {
         zos.close();
       } catch (IOException e) {
+        // Ignore
       }
     }
   }
