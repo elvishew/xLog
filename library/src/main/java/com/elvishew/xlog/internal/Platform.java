@@ -23,11 +23,11 @@ import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.ConsolePrinter;
 import com.elvishew.xlog.printer.Printer;
 
-class Platform {
+public class Platform {
 
   private static final Platform PLATFORM = findPlatform();
 
-  static Platform get() {
+  public static Platform get() {
     return PLATFORM;
   }
 
@@ -38,6 +38,10 @@ class Platform {
 
   Printer defaultPrinter() {
     return new ConsolePrinter();
+  }
+
+  public void warn(String msg) {
+    System.out.println(msg);
   }
 
   private static Platform findPlatform() {
@@ -63,6 +67,11 @@ class Platform {
     @Override
     Printer defaultPrinter() {
       return new AndroidPrinter();
+    }
+
+    @Override
+    public void warn(String msg) {
+      android.util.Log.w("XLog", msg);
     }
   }
 }

@@ -27,6 +27,7 @@ import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 import com.elvishew.xlog.interceptor.Interceptor;
 import com.elvishew.xlog.internal.DefaultsFactory;
+import com.elvishew.xlog.internal.Platform;
 import com.elvishew.xlog.internal.util.StackTraceUtil;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.PrinterSet;
@@ -231,7 +232,7 @@ public class XLog {
    */
   public static void init(LogConfiguration logConfiguration, Printer... printers) {
     if (sIsInitialized) {
-      throw new IllegalStateException("XLog is already initialized, do not initialize again");
+      Platform.get().warn("XLog is already initialized, do not initialize again");
     }
     sIsInitialized = true;
 
