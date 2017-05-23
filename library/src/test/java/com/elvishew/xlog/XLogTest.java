@@ -37,6 +37,8 @@ import static com.elvishew.xlog.LogLevel.ALL;
 import static com.elvishew.xlog.LogLevel.DEBUG;
 import static com.elvishew.xlog.LogLevel.ERROR;
 import static com.elvishew.xlog.LogLevel.INFO;
+import static com.elvishew.xlog.LogLevel.NONE;
+import static com.elvishew.xlog.LogLevel.VERBOSE;
 import static com.elvishew.xlog.LogLevel.WARN;
 import static org.junit.Assert.assertTrue;
 
@@ -71,6 +73,7 @@ public class XLogTest {
     XLog.i(MESSAGE);
     assertLog(INFO, DEFAULT_TAG, MESSAGE);
 
+    // Test WARN
     Logger logger = XLog.logLevel(WARN).build();
     logsContainer.clear();
     logger.i(MESSAGE);
@@ -81,6 +84,59 @@ public class XLogTest {
     logsContainer.clear();
     logger.e(MESSAGE);
     assertLog(ERROR, DEFAULT_TAG, MESSAGE);
+
+    // Test NONE
+    logger = XLog.logLevel(NONE).build();
+    logsContainer.clear();
+    logger.log(-1, MESSAGE);
+    logger.log(0, MESSAGE);
+    logger.log(1, MESSAGE);
+    logger.v(MESSAGE);
+    logger.d(MESSAGE);
+    logger.i(MESSAGE);
+    logger.w(MESSAGE);
+    logger.e(MESSAGE);
+    logger.log(7, MESSAGE);
+    logger.log(8, MESSAGE);
+    logger.log(9, MESSAGE);
+    AssertUtil.assertNoLog(logsContainer);
+
+
+    // Test ALL
+    logger = XLog.logLevel(ALL).build();
+    logsContainer.clear();
+    logger.log(-1, MESSAGE);
+    assertLog(-1, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.log(0, MESSAGE);
+    assertLog(0, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.log(1, MESSAGE);
+    assertLog(1, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.v(MESSAGE);
+    assertLog(VERBOSE, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.d(MESSAGE);
+    assertLog(DEBUG, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.i(MESSAGE);
+    assertLog(INFO, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.w(MESSAGE);
+    assertLog(WARN, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.e(MESSAGE);
+    assertLog(ERROR, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.log(7, MESSAGE);
+    assertLog(7, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.log(8, MESSAGE);
+    assertLog(8, DEFAULT_TAG, MESSAGE);
+    logsContainer.clear();
+    logger.log(9, MESSAGE);
+    assertLog(9, DEFAULT_TAG, MESSAGE);
   }
 
   @Test

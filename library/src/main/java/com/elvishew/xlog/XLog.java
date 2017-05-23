@@ -66,6 +66,8 @@ import com.elvishew.xlog.printer.PrinterSet;
  * logging a {@link LogLevel#WARN} message.
  * <br>{@link #e(String, Object...)}, {@link #e(String)} and {@link #e(String, Throwable)} are for
  * logging a {@link LogLevel#ERROR} message.
+ * <br>{@link #log(int, String, Object...)}, {@link #log(int, String)} and
+ * {@link #log(int, String, Throwable)} are for logging a specific level message.
  * <br>{@link #json(String)} is for logging a {@link LogLevel#DEBUG} JSON string.
  * <br>{@link #xml(String)} is for logging a {@link LogLevel#DEBUG} XML string.
  * <br> Also, you can directly log any object with specific log level, like {@link #v(Object)},
@@ -694,6 +696,69 @@ public class XLog {
   public static void e(String msg, Throwable tr) {
     assertInitialization();
     sLogger.e(msg, tr);
+  }
+
+  /**
+   * Log an object with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param object   the object to log
+   * @see LogConfiguration.Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.4.0
+   */
+  public static void log(int logLevel, Object object) {
+    assertInitialization();
+    sLogger.log(logLevel, object);
+  }
+
+  /**
+   * Log an array with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param array    the array to log
+   * @since 1.4.0
+   */
+  public static void log(int logLevel, Object[] array) {
+    assertInitialization();
+    sLogger.log(logLevel, array);
+  }
+
+  /**
+   * Log a message with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param format   the format of the message to log
+   * @param args     the arguments of the message to log
+   * @since 1.4.0
+   */
+  public static void log(int logLevel, String format, Object... args) {
+    assertInitialization();
+    sLogger.log(logLevel, format, args);
+  }
+
+  /**
+   * Log a message with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param msg      the message to log
+   * @since 1.4.0
+   */
+  public static void log(int logLevel, String msg) {
+    assertInitialization();
+    sLogger.log(logLevel, msg);
+  }
+
+  /**
+   * Log a message and a throwable with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param msg      the message to log
+   * @param tr       the throwable to be log
+   * @since 1.4.0
+   */
+  public static void log(int logLevel, String msg, Throwable tr) {
+    assertInitialization();
+    sLogger.log(logLevel, msg, tr);
   }
 
   /**

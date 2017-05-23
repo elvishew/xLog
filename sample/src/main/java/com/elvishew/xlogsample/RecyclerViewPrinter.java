@@ -155,7 +155,8 @@ public class RecyclerViewPrinter implements Printer {
           hightlightColor = 0xffff6b68;
           break;
         default:
-          throw new IllegalArgumentException("Invalid log level: " + logLevel);
+          hightlightColor = 0xffffff00;
+          break;
       }
       return hightlightColor;
     }

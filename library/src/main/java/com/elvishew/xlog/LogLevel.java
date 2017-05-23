@@ -40,45 +40,53 @@ package com.elvishew.xlog;
 public class LogLevel {
 
   /**
-   * Log level for Log.v.
+   * Log level for XLog.v.
    */
-  public static final int VERBOSE = android.util.Log.VERBOSE;
+  public static final int VERBOSE = 2;
 
   /**
-   * Log level for Log.d.
+   * Log level for XLog.d.
    */
-  public static final int DEBUG = android.util.Log.DEBUG;
+  public static final int DEBUG = 3;
 
   /**
-   * Log level for Log.i.
+   * Log level for XLog.i.
    */
-  public static final int INFO = android.util.Log.INFO;
+  public static final int INFO = 4;
 
   /**
-   * Log level for Log.w.
+   * Log level for XLog.w.
    */
-  public static final int WARN = android.util.Log.WARN;
+  public static final int WARN = 5;
 
   /**
-   * Log level for Log.e.
+   * Log level for XLog.e.
    */
-  public static final int ERROR = android.util.Log.ERROR;
+  public static final int ERROR = 6;
 
   /**
-   * Log level for Log#init, printing all logs.
+   * Log level for XLog#init, printing all logs.
    */
-  public static final int ALL = VERBOSE;
+  public static final int ALL = Integer.MIN_VALUE;
 
   /**
-   * Log level for Log#init, printing no log.
+   * Log level for XLog#init, printing no log.
    */
-  public static final int NONE = ERROR + 1;
+  public static final int NONE = Integer.MAX_VALUE;
 
   /**
    * Get a name representing the specified log level.
    * <p>
-   * The returned name may be one of "VERBOSE", "DEBUG", "INFO", "WARN" and "ERROR".
-   * <br>e.g. "VERBOSE" is the name of {@link #VERBOSE}.
+   * The returned name may be<br>
+   * Level less than {@link LogLevel#VERBOSE}: "VERBOSE-N", N means levels below
+   * {@link LogLevel#VERBOSE}<br>
+   * {@link LogLevel#VERBOSE}: "VERBOSE"<br>
+   * {@link LogLevel#DEBUG}: "DEBUG"<br>
+   * {@link LogLevel#INFO}: "INFO"<br>
+   * {@link LogLevel#WARN}: "WARN"<br>
+   * {@link LogLevel#ERROR}: "ERROR"<br>
+   * Level greater than {@link LogLevel#ERROR}: "ERROR+N", N means levels above
+   * {@link LogLevel#ERROR}
    *
    * @param logLevel the log level to get name for
    * @return the name
@@ -102,7 +110,12 @@ public class LogLevel {
         levelName = "ERROR";
         break;
       default:
-        throw new IllegalArgumentException("Invalid log level: " + logLevel);
+        if (logLevel < VERBOSE) {
+          levelName = "VERBOSE-" + (VERBOSE - logLevel);
+        } else {
+          levelName = "ERROR+" + (logLevel - ERROR);
+        }
+        break;
     }
     return levelName;
   }
@@ -110,8 +123,16 @@ public class LogLevel {
   /**
    * Get a short name representing the specified log level.
    * <p>
-   * The returned name may be one of "V", "D", "I", "W" and "E".
-   * <br>e.g. "V" is the short name of {@link #VERBOSE}.
+   * The returned name may be<br>
+   * Level less than {@link LogLevel#VERBOSE}: "V-N", N means levels below
+   * {@link LogLevel#VERBOSE}<br>
+   * {@link LogLevel#VERBOSE}: "V"<br>
+   * {@link LogLevel#DEBUG}: "D"<br>
+   * {@link LogLevel#INFO}: "I"<br>
+   * {@link LogLevel#WARN}: "W"<br>
+   * {@link LogLevel#ERROR}: "E"<br>
+   * Level greater than {@link LogLevel#ERROR}: "E+N", N means levels above
+   * {@link LogLevel#ERROR}
    *
    * @param logLevel the log level to get short name for
    * @return the short name
@@ -135,7 +156,12 @@ public class LogLevel {
         levelName = "E";
         break;
       default:
-        throw new IllegalArgumentException("Invalid log level: " + logLevel);
+        if (logLevel < VERBOSE) {
+          levelName = "V-" + (VERBOSE - logLevel);
+        } else {
+          levelName = "E+" + (logLevel - ERROR);
+        }
+        break;
     }
     return levelName;
   }

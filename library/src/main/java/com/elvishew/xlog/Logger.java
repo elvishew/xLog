@@ -382,6 +382,64 @@ public class Logger {
   }
 
   /**
+   * Log an object with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param object   the object to log
+   * @see Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.4.0
+   */
+  public void log(int logLevel, Object object) {
+    println(logLevel, object);
+  }
+
+  /**
+   * Log an array with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param array    the array to log
+   * @since 1.4.0
+   */
+  public void log(int logLevel, Object[] array) {
+    println(logLevel, array);
+  }
+
+  /**
+   * Log a message with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param format   the format of the message to log, null if just need to concat arguments
+   * @param args     the arguments of the message to log
+   * @since 1.4.0
+   */
+  public void log(int logLevel, String format, Object... args) {
+    println(logLevel, format, args);
+  }
+
+  /**
+   * Log a message with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param msg      the message to log
+   * @since 1.4.0
+   */
+  public void log(int logLevel, String msg) {
+    println(logLevel, msg);
+  }
+
+  /**
+   * Log a message and a throwable with specific log level.
+   *
+   * @param logLevel the specific log level
+   * @param msg      the message to log
+   * @param tr       the throwable to be log
+   * @since 1.4.0
+   */
+  public void log(int logLevel, String msg, Throwable tr) {
+    println(logLevel, msg, tr);
+  }
+
+  /**
    * Log a JSON string, with level {@link LogLevel#DEBUG} by default.
    *
    * @param json the JSON string to log
@@ -1010,6 +1068,42 @@ public class Logger {
      */
     public void e(String msg, Throwable tr) {
       build().e(msg, tr);
+    }
+
+    /**
+     * Convenience of {@link #build()} and {@link Logger#log(int, Object)}.
+     *
+     * @since 1.4.0
+     */
+    public void log(int logLevel, Object object) {
+      build().log(logLevel, object);
+    }
+
+    /**
+     * Convenience of {@link #build()} and {@link Logger#log(int, String, Object...)}.
+     *
+     * @since 1.4.0
+     */
+    public void log(int logLevel, String format, Object... args) {
+      build().log(logLevel, format, args);
+    }
+
+    /**
+     * Convenience of {@link #build()} and {@link Logger#log(int, String)}.
+     *
+     * @since 1.4.0
+     */
+    public void log(int logLevel, String msg) {
+      build().log(logLevel, msg);
+    }
+
+    /**
+     * Convenience of {@link #build()} and {@link Logger#log(int, String, Throwable)}.
+     *
+     * @since 1.4.0
+     */
+    public void log(int logLevel, String msg, Throwable tr) {
+      build().log(logLevel, msg, tr);
     }
 
     /**
