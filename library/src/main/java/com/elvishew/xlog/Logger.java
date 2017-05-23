@@ -146,6 +146,7 @@ public class Logger {
    *
    * @param object the object to log
    * @see Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public void v(Object object) {
     println(LogLevel.VERBOSE, object);
@@ -194,6 +195,7 @@ public class Logger {
    *
    * @param object the object to log
    * @see Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public void d(Object object) {
     println(LogLevel.DEBUG, object);
@@ -242,6 +244,7 @@ public class Logger {
    *
    * @param object the object to log
    * @see Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public void i(Object object) {
     println(LogLevel.INFO, object);
@@ -290,6 +293,7 @@ public class Logger {
    *
    * @param object the object to log
    * @see Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public void w(Object object) {
     println(LogLevel.WARN, object);
@@ -338,6 +342,7 @@ public class Logger {
    *
    * @param object the object to log
    * @see Builder#addObjectFormatter(Class, ObjectFormatter)
+   * @since 1.1.0
    */
   public void e(Object object) {
     println(LogLevel.ERROR, object);
@@ -932,6 +937,8 @@ public class Logger {
 
     /**
      * Convenience of {@link #build()} and {@link Logger#v(Object)}.
+     *
+     * @since 1.1.0
      */
     public void v(Object object) {
       build().v(object);
@@ -960,6 +967,8 @@ public class Logger {
 
     /**
      * Convenience of {@link #build()} and {@link Logger#d(Object)}.
+     *
+     * @since 1.1.0
      */
     public void d(Object object) {
       build().d(object);
@@ -988,6 +997,8 @@ public class Logger {
 
     /**
      * Convenience of {@link #build()} and {@link Logger#i(Object)}.
+     *
+     * @since 1.1.0
      */
     public void i(Object object) {
       build().i(object);
@@ -1016,6 +1027,8 @@ public class Logger {
 
     /**
      * Convenience of {@link #build()} and {@link Logger#w(Object)}.
+     *
+     * @since 1.1.0
      */
     public void w(Object object) {
       build().w(object);
@@ -1044,13 +1057,15 @@ public class Logger {
 
     /**
      * Convenience of {@link #build()} and {@link Logger#e(Object)}.
+     *
+     * @since 1.1.0
      */
     public void e(Object object) {
       build().e(object);
     }
 
     /**
-     * Convenience of {@link #build()} and {@link Logger#d(String, Object...)}.
+     * Convenience of {@link #build()} and {@link Logger#e(String, Object...)}.
      */
     public void e(String format, Object... args) {
       build().e(format, args);
