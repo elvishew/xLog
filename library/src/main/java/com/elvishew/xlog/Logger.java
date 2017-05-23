@@ -945,6 +945,15 @@ public class Logger {
     }
 
     /**
+     * Convenience of {@link #build()} and {@link Logger#v(Object[])}.
+     *
+     * @since 1.4.0
+     */
+    public void v(Object[] array) {
+      build().v(array);
+    }
+
+    /**
      * Convenience of {@link #build()} and {@link Logger#v(String, Object...)}.
      */
     public void v(String format, Object... args) {
@@ -972,6 +981,15 @@ public class Logger {
      */
     public void d(Object object) {
       build().d(object);
+    }
+
+    /**
+     * Convenience of {@link #build()} and {@link Logger#d(Object[])}.
+     *
+     * @since 1.4.0
+     */
+    public void d(Object[] array) {
+      build().d(array);
     }
 
     /**
@@ -1005,6 +1023,15 @@ public class Logger {
     }
 
     /**
+     * Convenience of {@link #build()} and {@link Logger#i(Object[])}.
+     *
+     * @since 1.4.0
+     */
+    public void i(Object[] array) {
+      build().i(array);
+    }
+
+    /**
      * Convenience of {@link #build()} and {@link Logger#i(String, Object...)}.
      */
     public void i(String format, Object... args) {
@@ -1032,6 +1059,15 @@ public class Logger {
      */
     public void w(Object object) {
       build().w(object);
+    }
+
+    /**
+     * Convenience of {@link #build()} and {@link Logger#w(Object[])}.
+     *
+     * @since 1.4.0
+     */
+    public void w(Object[] array) {
+      build().w(array);
     }
 
     /**
@@ -1065,6 +1101,15 @@ public class Logger {
     }
 
     /**
+     * Convenience of {@link #build()} and {@link Logger#e(Object[])}.
+     *
+     * @since 1.4.0
+     */
+    public void e(Object[] array) {
+      build().e(array);
+    }
+
+    /**
      * Convenience of {@link #build()} and {@link Logger#e(String, Object...)}.
      */
     public void e(String format, Object... args) {
@@ -1092,6 +1137,15 @@ public class Logger {
      */
     public void log(int logLevel, Object object) {
       build().log(logLevel, object);
+    }
+
+    /**
+     * Convenience of {@link #build()} and {@link Logger#log(int, Object[])}.
+     *
+     * @since 1.4.0
+     */
+    public void log(int logLevel, Object[] array) {
+      build().log(logLevel, array);
     }
 
     /**
