@@ -61,6 +61,17 @@ public class LogConfiguration {
   public final boolean withStackTrace;
 
   /**
+   * The origin of stack trace elements from which we should not log when logging with stack trace,
+   * it can be a package name like "com.elvishew.xlog", a class name like "com.yourdomain.logWrapper",
+   * or something else between package name and class name, like "com.yourdomain.".
+   * <p>
+   * It is mostly used when you are using a logger wrapper.
+   *
+   * @since 1.4.0
+   */
+  public final String stackTraceOrigin;
+
+  /**
    * The number of stack trace elements we should log when logging with stack trace,
    * 0 if no limitation.
    */
@@ -120,6 +131,7 @@ public class LogConfiguration {
 
     withThread = builder.withThread;
     withStackTrace = builder.withStackTrace;
+    stackTraceOrigin = builder.stackTraceOrigin;
     stackTraceDepth = builder.stackTraceDepth;
     withBorder = builder.withBorder;
 
@@ -199,6 +211,15 @@ public class LogConfiguration {
     private boolean withStackTrace;
 
     /**
+     * The origin of stack trace elements from which we should NOT log when logging with stack trace,
+     * it can be a package name like "com.elvishew.xlog", a class name like "com.yourdomain.logWrapper",
+     * or something else between package name and class name, like "com.yourdomain.".
+     * <p>
+     * It is mostly used when you are using a logger wrapper.
+     */
+    private String stackTraceOrigin;
+
+    /**
      * The number of stack trace elements we should log when logging with stack trace,
      * 0 if no limitation.
      */
@@ -267,6 +288,7 @@ public class LogConfiguration {
 
       withThread = logConfiguration.withThread;
       withStackTrace = logConfiguration.withStackTrace;
+      stackTraceOrigin = logConfiguration.stackTraceOrigin;
       stackTraceDepth = logConfiguration.stackTraceDepth;
       withBorder = logConfiguration.withBorder;
 
@@ -336,7 +358,25 @@ public class LogConfiguration {
      * @return the builder
      */
     public Builder st(int depth) {
+      st(null, depth);
+      return this;
+    }
+
+    /**
+     * Enable stack trace.
+     *
+     * @param stackTraceOrigin the origin of stack trace elements from which we should NOT log when
+     *                         logging with stack trace, it can be a package name like
+     *                         "com.elvishew.xlog", a class name like "com.yourdomain.logWrapper",
+     *                         or something else between package name and class name, like "com.yourdomain.".
+     *                         It is mostly used when you are using a logger wrapper
+     * @param depth            the number of stack trace elements we should log, 0 if no limitation
+     * @return the builder
+     * @since 1.4.0
+     */
+    public Builder st(String stackTraceOrigin, int depth) {
       this.withStackTrace = true;
+      this.stackTraceOrigin = stackTraceOrigin;
       this.stackTraceDepth = depth;
       return this;
     }
@@ -348,6 +388,7 @@ public class LogConfiguration {
      */
     public Builder nst() {
       this.withStackTrace = false;
+      this.stackTraceOrigin = null;
       this.stackTraceDepth = 0;
       return this;
     }

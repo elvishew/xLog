@@ -95,7 +95,7 @@ public class Logger {
     }
     if (builder.stackTraceSet) {
       if (builder.withStackTrace) {
-        logConfigBuilder.st(builder.stackTraceDepth);
+        logConfigBuilder.st(builder.stackTraceOrigin, builder.stackTraceDepth);
       } else {
         logConfigBuilder.nst();
       }
@@ -562,6 +562,7 @@ public class Logger {
     String stackTrace = logConfiguration.withStackTrace
         ? logConfiguration.stackTraceFormatter.format(
         StackTraceUtil.getCroppedRealStackTrack(new Throwable().getStackTrace(),
+            logConfiguration.stackTraceOrigin,
             logConfiguration.stackTraceDepth))
         : null;
 
@@ -649,6 +650,15 @@ public class Logger {
      * Whether we should log with stack trace.
      */
     private boolean withStackTrace;
+
+    /**
+     * The origin of stack trace elements from which we should NOT log when logging with stack trace,
+     * it can be a package name like "com.elvishew.xlog", a class name like "com.yourdomain.logWrapper",
+     * or something else between package name and class name, like "com.yourdomain.".
+     * <p>
+     * It is mostly used when you are using a logger wrapper.
+     */
+    private String stackTraceOrigin;
 
     /**
      * The number of stack trace elements we should log when logging with stack trace,
@@ -782,12 +792,33 @@ public class Logger {
     }
 
     /**
+     * Enable stack trace.
+     *
+     * @param stackTraceOrigin the origin of stack trace elements from which we should NOT log when
+     *                         logging with stack trace, it can be a package name like
+     *                         "com.elvishew.xlog", a class name like "com.yourdomain.logWrapper",
+     *                         or something else between package name and class name, like "com.yourdomain.".
+     *                         It is mostly used when you are using a logger wrapper
+     * @param depth            the number of stack trace elements we should log, 0 if no limitation
+     * @return the builder
+     * @since 1.4.0
+     */
+    public Builder st(String stackTraceOrigin, int depth) {
+      this.withStackTrace = true;
+      this.stackTraceOrigin = stackTraceOrigin;
+      this.stackTraceDepth = depth;
+      this.stackTraceSet = true;
+      return this;
+    }
+
+    /**
      * Disable stack trace.
      *
      * @return the builder
      */
     public Builder nst() {
       this.withStackTrace = false;
+      this.stackTraceOrigin = null;
       this.stackTraceDepth = 0;
       this.stackTraceSet = true;
       return this;

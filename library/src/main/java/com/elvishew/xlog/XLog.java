@@ -307,6 +307,22 @@ public class XLog {
   }
 
   /**
+   * Start to customize a {@link Logger} and enable stack trace.
+   *
+   * @param stackTraceOrigin the origin of stack trace elements from which we should NOT log,
+   *                         it can be a package name like "com.elvishew.xlog", a class name
+   *                         like "com.yourdomain.logWrapper", or something else between
+   *                         package name and class name, like "com.yourdomain.".
+   *                         It is mostly used when you are using a logger wrapper
+   * @param depth            the number of stack trace elements we should log, 0 if no limitation
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @since 1.4.0
+   */
+  public static Logger.Builder st(String stackTraceOrigin, int depth) {
+    return new Logger.Builder().st(stackTraceOrigin, depth);
+  }
+
+  /**
    * Start to customize a {@link Logger} and disable stack trace.
    *
    * @return the {@link Logger.Builder} to build the {@link Logger}

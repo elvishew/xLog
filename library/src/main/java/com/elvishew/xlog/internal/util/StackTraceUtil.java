@@ -27,11 +27,12 @@ import java.net.UnknownHostException;
  */
 public class StackTraceUtil {
 
-  private static final String XLOG_CLASS_PREFIX;
+  private static final String XLOG_STACK_TRACE_ORIGIN;
 
   static {
+    // Let's start from xlog library.
     String xlogClassName = XLog.class.getName();
-    XLOG_CLASS_PREFIX = xlogClassName.substring(0, xlogClassName.lastIndexOf('.') + 1);
+    XLOG_STACK_TRACE_ORIGIN = xlogClassName.substring(0, xlogClassName.lastIndexOf('.') + 1);
   }
 
   /**
@@ -69,8 +70,9 @@ public class StackTraceUtil {
    * @return the cropped real stack trace
    */
   public static StackTraceElement[] getCroppedRealStackTrack(StackTraceElement[] stackTrace,
+                                                             String stackTraceOrigin,
                                                              int maxDepth) {
-    return cropStackTrace(getRealStackTrack(stackTrace), maxDepth);
+    return cropStackTrace(getRealStackTrack(stackTrace, stackTraceOrigin), maxDepth);
   }
 
   /**
@@ -79,12 +81,16 @@ public class StackTraceUtil {
    * @param stackTrace the full stack trace
    * @return the real stack trace, all elements come from system and library user
    */
-  private static StackTraceElement[] getRealStackTrack(StackTraceElement[] stackTrace) {
+  private static StackTraceElement[] getRealStackTrack(StackTraceElement[] stackTrace,
+                                                       String stackTraceOrigin) {
     int ignoreDepth = 0;
     int allDepth = stackTrace.length;
-    for (int i = 0; i < allDepth; i++) {
-      if (!stackTrace[i].getClassName().startsWith(XLOG_CLASS_PREFIX)) {
-        ignoreDepth = i;
+    String className;
+    for (int i = allDepth - 1; i >= 0; i--) {
+      className = stackTrace[i].getClassName();
+      if (className.startsWith(XLOG_STACK_TRACE_ORIGIN)
+          || (stackTraceOrigin != null && className.startsWith(stackTraceOrigin))) {
+        ignoreDepth = i + 1;
         break;
       }
     }
