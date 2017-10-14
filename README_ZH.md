@@ -25,7 +25,7 @@ XLog 能干什么:
 
 ## 依赖
 ```groovy
-compile 'com.elvishew:xlog:1.3.0'
+compile 'com.elvishew:xlog:1.4.0'
 ```
 
 ## 预览

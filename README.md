@@ -25,7 +25,7 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.3.0'
+compile 'com.elvishew:xlog:1.4.0'
 ```
 
 ## Preview
