@@ -21,7 +21,7 @@ package com.elvishew.xlog.formatter;
  */
 public class FormatException extends RuntimeException {
   /**
-   * Constructs an <code>FormatException</code> with no
+   * Constructs a <code>FormatException</code> with no
    * detail message.
    */
   public FormatException() {
@@ -29,7 +29,7 @@ public class FormatException extends RuntimeException {
   }
 
   /**
-   * Constructs an <code>FormatException</code> with the
+   * Constructs a <code>FormatException</code> with the
    * specified detail message.
    *
    * @param s the detail message.

@@ -537,7 +537,7 @@ public class Logger {
    *
    * @param logLevel the log level of the printing log
    * @param msg      the message you would like to log
-   * @param tr       an throwable object to log
+   * @param tr       a throwable object to log
    */
   private void println(int logLevel, String msg, Throwable tr) {
     if (logLevel < logConfiguration.logLevel) {
@@ -578,7 +578,7 @@ public class Logger {
         // Check if the log still healthy.
         if (log.tag == null || log.msg == null) {
           throw new IllegalStateException("Interceptor " + interceptor
-              + " should not remove the tag or message of an log,"
+              + " should not remove the tag or message of a log,"
               + " if you don't want to print this log,"
               + " just return a null when intercept.");
         }

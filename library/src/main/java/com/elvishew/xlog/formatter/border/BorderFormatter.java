@@ -29,7 +29,7 @@ import com.elvishew.xlog.formatter.Formatter;
  * <br>║	├ com.elvishew.xlog.SampleClassB.sampleMethodB(SampleClassB.java:100)
  * <br>║	└ com.elvishew.xlog.SampleClassA.sampleMethodA(SampleClassA.java:50)
  * <br>╟────────────────────────────────────────────────────────────────────────────
- * <br>║Hear is a simple message
+ * <br>║Here is a simple message
  * <br>╚════════════════════════════════════════════════════════════════════════════
  */
 public interface BorderFormatter extends Formatter<String[]> {
