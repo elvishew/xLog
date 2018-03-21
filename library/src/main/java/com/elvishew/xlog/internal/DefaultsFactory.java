@@ -40,6 +40,8 @@ import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
 import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
+import com.elvishew.xlog.printer.file.clean.CleanStrategy;
+import com.elvishew.xlog.printer.file.clean.NeverCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
 
@@ -133,6 +135,13 @@ public class DefaultsFactory {
    */
   public static BackupStrategy createBackupStrategy() {
     return new FileSizeBackupStrategy(DEFAULT_LOG_FILE_MAX_SIZE);
+  }
+
+  /**
+   * Create the default clean strategy for {@link FilePrinter}.
+   */
+  public static CleanStrategy createCleanStrategy() {
+    return new NeverCleanStrategy();
   }
 
   /**
