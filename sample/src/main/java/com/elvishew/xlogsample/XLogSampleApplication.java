@@ -27,6 +27,8 @@ import com.elvishew.xlog.interceptor.BlacklistTagsFilterInterceptor;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
+import com.elvishew.xlog.printer.file.clean.NeverCleanStrategy;
+import com.elvishew.xlog.printer.file.clean.TimeCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
 
 import java.io.File;
@@ -73,8 +75,10 @@ public class XLogSampleApplication extends Application {
         .Builder(new File(Environment.getExternalStorageDirectory(), "xlogsample").getPath())       // Specify the path to save log file
         .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
         // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
+        .cleanStrategy(new NeverCleanStrategy())               // Default: NeverCleanStrategy()
         .logFlattener(new ClassicFlattener())                  // Default: DefaultFlattener
         .build();
+
 
     XLog.init(                                                 // Initialize XLog
         config,                                                // Specify the log configuration, if not specified, will use new LogConfiguration.Builder().build()
