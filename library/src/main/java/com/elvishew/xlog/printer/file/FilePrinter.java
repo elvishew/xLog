@@ -20,6 +20,7 @@ import com.elvishew.xlog.flattener.Flattener;
 import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
+import com.elvishew.xlog.printer.file.clean.CleanStrategy;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
 
 import java.io.BufferedWriter;
@@ -57,6 +58,11 @@ public class FilePrinter implements Printer {
   private final BackupStrategy backupStrategy;
 
   /**
+   * The clean strategy for log file.
+   */
+  private final CleanStrategy cleanStrategy;
+
+  /**
    * The log flattener when print a log.
    */
   private Flattener flattener;
@@ -72,6 +78,7 @@ public class FilePrinter implements Printer {
     folderPath = builder.folderPath;
     fileNameGenerator = builder.fileNameGenerator;
     backupStrategy = builder.backupStrategy;
+    cleanStrategy = builder.cleanStrategy;
     flattener = builder.flattener;
 
     writer = new Writer();
@@ -118,6 +125,7 @@ public class FilePrinter implements Printer {
         if (writer.isOpened()) {
           writer.close();
         }
+        checkFileClean();
         if (!writer.open(newFileName)) {
           return;
         }
@@ -143,6 +151,19 @@ public class FilePrinter implements Printer {
   }
 
   /**
+   * Check weather file should be clean
+   */
+  void checkFileClean() {
+    File logDir = new File(folderPath);
+    File[] files = logDir.listFiles();
+    for (File file : files) {
+      if (cleanStrategy.shouldClean(file)) {
+          file.delete();
+      }
+    }
+  }
+
+  /**
    * Builder for {@link FilePrinter}.
    */
   public static class Builder {
@@ -161,6 +182,11 @@ public class FilePrinter implements Printer {
      * The backup strategy for log file.
      */
     BackupStrategy backupStrategy;
+
+    /**
+     * The clean strategy for log file.
+     */
+    CleanStrategy cleanStrategy;
 
     /**
      * The log flattener when print a log.
@@ -199,6 +225,17 @@ public class FilePrinter implements Printer {
     }
 
     /**
+     * Set the clean strategy for log file.
+     *
+     * @param cleanStrategy the clean strategy for log file
+     * @return the builder
+     */
+    public Builder cleanStrategy(CleanStrategy cleanStrategy) {
+      this.cleanStrategy = cleanStrategy;
+      return this;
+    }
+
+    /**
      * Set the log flattener when print a log.
      *
      * @param flattener the log flattener when print a log
@@ -225,6 +262,9 @@ public class FilePrinter implements Printer {
       }
       if (backupStrategy == null) {
         backupStrategy = DefaultsFactory.createBackupStrategy();
+      }
+      if (cleanStrategy == null) {
+        cleanStrategy = DefaultsFactory.createCleanStrategy();
       }
       if (flattener == null) {
         flattener = DefaultsFactory.createFlattener();
