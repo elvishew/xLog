@@ -77,7 +77,7 @@ public class XLogSampleApplication extends Application {
         .Builder(new File(Environment.getExternalStorageDirectory(), "xlogsample").getPath())       // Specify the path to save log file
         .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
         // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
-        .cleanStrategy(new TimeCleanStrategy(MAX_TIME))        // Default: NeverCleanStrategy()
+        // .cleanStrategy(new TimeCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
         .logFlattener(new ClassicFlattener())                  // Default: DefaultFlattener
         .build();
 
