@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * Limit the file life of a max time.
  */
-public class TimeCleanStrategy implements CleanStrategy {
+public class FileLastModifiedCleanStrategy implements CleanStrategy {
 
   private long maxTimeMillis;
 
@@ -14,14 +14,14 @@ public class TimeCleanStrategy implements CleanStrategy {
    *
    * @param maxTimeMillis the max time the file can keep
    */
-  public TimeCleanStrategy(long maxTimeMillis) {
+  public FileLastModifiedCleanStrategy(long maxTimeMillis) {
     this.maxTimeMillis = maxTimeMillis;
   }
 
   @Override
   public boolean shouldClean(File file) {
     long currentTimeMillis = System.currentTimeMillis();
-    long fileTimeMillis = file.lastModified();
-    return (Math.abs(currentTimeMillis - fileTimeMillis) > maxTimeMillis);
+    long lastModified = file.lastModified();
+    return (currentTimeMillis - lastModified > maxTimeMillis);
   }
 }

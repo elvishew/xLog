@@ -114,7 +114,7 @@ public class FilePrinter implements Printer {
   /**
    * Do the real job of writing log to file.
    */
-  void doPrintln(int logLevel, String tag, String msg) {
+  private void doPrintln(int logLevel, String tag, String msg) {
     String lastFileName = writer.getLastFileName();
     if (lastFileName == null || fileNameGenerator.isFileNameChangeable()) {
       String newFileName = fileNameGenerator.generateFileName(logLevel, System.currentTimeMillis());
@@ -125,7 +125,7 @@ public class FilePrinter implements Printer {
         if (writer.isOpened()) {
           writer.close();
         }
-        checkFileClean();
+        cleanLogFilesIfNecessary();
         if (!writer.open(newFileName)) {
           return;
         }
@@ -151,9 +151,9 @@ public class FilePrinter implements Printer {
   }
 
   /**
-   * Check weather file should be clean
+   * Clean log files if should clean follow strategy
    */
-  void checkFileClean() {
+  private void cleanLogFilesIfNecessary() {
     File logDir = new File(folderPath);
     File[] files = logDir.listFiles();
     for (File file : files) {
