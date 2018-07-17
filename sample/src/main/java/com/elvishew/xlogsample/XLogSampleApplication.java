@@ -35,6 +35,8 @@ public class XLogSampleApplication extends Application {
 
   public static Printer globalFilePrinter;
 
+  private static final long MAX_TIME = 1000 * 60 * 60 * 24 * 2; // two days
+
   @Override
   public void onCreate() {
     super.onCreate();
@@ -73,6 +75,7 @@ public class XLogSampleApplication extends Application {
         .Builder(new File(Environment.getExternalStorageDirectory(), "xlogsample").getPath())       // Specify the path to save log file
         .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
         // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
+        // .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
         .logFlattener(new ClassicFlattener())                  // Default: DefaultFlattener
         .build();
 
