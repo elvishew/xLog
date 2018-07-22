@@ -1,5 +1,5 @@
 # XLog
-<img src='https://travis-ci.org/elvishew/xLog.svg?branch=master'/>
+![](https://travis-ci.org/elvishew/xLog.svg?branch=master)
 
 [简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)
 
@@ -25,21 +25,21 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.4.0'
+compile 'com.elvishew:xlog:1.4.1'
 ```
 
 ## Preview
 * Log with thread information, stack trace information and border
-<img src='https://github.com/elvishew/XLog/blob/master/images/classic_log.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/classic_log.png)
 * Formatted network API request
-<img src='https://github.com/elvishew/XLog/blob/master/images/restful_request.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/restful_request.png)
 * Formatted network API response
-<img src='https://github.com/elvishew/XLog/blob/master/images/restful_response.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/restful_response.png)
 * Log files
-<img src='https://github.com/elvishew/XLog/blob/master/images/log_files.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/log_files.png)
 
 ## Architecture
-<img src='https://github.com/elvishew/XLog/blob/master/images/architecture.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/architecture.png)
 
 ## Usage
 ### Initialization
@@ -154,7 +154,7 @@ Log.d(TAG, jsonString);
 Log.d(TAG, xmlString);
 Log.d(TAG, "Message with stack trace info", new Throwable());
 ```
-<img src='https://github.com/elvishew/XLog/blob/master/images/comparison-android-log.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/comparison-android-log.png)
 
 ### XLog
 ```java
@@ -165,7 +165,7 @@ XLog.json(jsonString);
 XLog.xml(xmlString);
 XLog.st(5).d("Message with stack trace info");
 ```
-<img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png)
 
 ### XLog with border
 ```java
@@ -176,7 +176,7 @@ XLog.json(jsonString);
 XLog.xml(xmlString);
 XLog.st(5).d("Message with stack trace info");
 ```
-<img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png)
 
 ## Similar libraries
 * [logger](https://github.com/orhanobut/logger)
@@ -231,7 +231,7 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Export log files to a .zip (since 1.4.0)
 
 ## [Releases](https://github.com/elvishew/xLog/releases)
-Latest release: 1.3.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.3.0)
+Latest release: 1.4.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.4.1)
 
 ## [Issues](https://github.com/elvishew/xLog/issues)
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
@@ -243,7 +243,7 @@ Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/
 
 ## License
 <pre>
-Copyright 2016 Elvis Hew
+Copyright 2018 Elvis Hew
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

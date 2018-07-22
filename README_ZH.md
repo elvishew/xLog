@@ -1,5 +1,5 @@
 # XLog
-<img src='https://travis-ci.org/elvishew/xLog.svg?branch=master'/>
+![](https://travis-ci.org/elvishew/xLog.svg?branch=master)
 
 [English](https://github.com/elvishew/XLog/blob/master/README.md)
 
@@ -25,21 +25,21 @@ XLog 能干什么:
 
 ## 依赖
 ```groovy
-compile 'com.elvishew:xlog:1.4.0'
+compile 'com.elvishew:xlog:1.4.1'
 ```
 
 ## 预览
 * 带线程信息、调用栈信息和边框的日志
-<img src='https://github.com/elvishew/XLog/blob/master/images/classic_log.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/classic_log.png)
 * 格式化后的网络 API 请求
-<img src='https://github.com/elvishew/XLog/blob/master/images/restful_request.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/restful_request.png)
 * 格式化后的网络 API 响应
-<img src='https://github.com/elvishew/XLog/blob/master/images/restful_response.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/restful_response.png)
 * 日志文件
-<img src='https://github.com/elvishew/XLog/blob/master/images/log_files.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/log_files.png)
 
 ## 架构
-<img src='https://github.com/elvishew/XLog/blob/master/images/architecture.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/architecture.png)
 
 ## 用法
 ### 初始化
@@ -152,7 +152,7 @@ Log.d(TAG, jsonString);
 Log.d(TAG, xmlString);
 Log.d(TAG, "Message with stack trace info", new Throwable());
 ```
-<img src='https://github.com/elvishew/XLog/blob/master/images/comparison-android-log.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/comparison-android-log.png)
 
 ### XLog
 ```java
@@ -163,7 +163,7 @@ XLog.json(jsonString);
 XLog.xml(xmlString);
 XLog.st(5).d("Message with stack trace info");
 ```
-<img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png)
 
 ### 带边框的 XLog
 ```java
@@ -174,7 +174,7 @@ XLog.json(jsonString);
 XLog.xml(xmlString);
 XLog.st(5).d("Message with stack trace info");
 ```
-<img src='https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png'/>
+![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png)
 
 ## 类似的库
 * [logger](https://github.com/orhanobut/logger)
@@ -229,7 +229,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 导出日志文件为 .zip（v1.4.0 开始支持）
 
 ## [版本](https://github.com/elvishew/xLog/releases)
-最新版本：1.3.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.3.0)
+最新版本：1.4.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.4.1)
 
 ## [问题](https://github.com/elvishew/xLog/issues)
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。
@@ -243,7 +243,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 
 ## 许可
 <pre>
-Copyright 2016 Elvis Hew
+Copyright 2018 Elvis Hew
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
