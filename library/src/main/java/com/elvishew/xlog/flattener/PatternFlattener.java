@@ -67,16 +67,16 @@ import java.util.regex.Pattern;
  *     <td>{d} {l}/{t}: {m}
  *     <td>2016-11-30 13:00:00.000 D/my_tag: Simple message
  *   <tr>
- *     <td>{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}
+ *     <td>{d yyyy-MM-dd HH:mm:ss.SSS} {l}/{t}: {m}
  *     <td>2016-11-30 13:00:00.000 D/my_tag: Simple message
  *   <tr>
- *     <td>{d yyyy/MM/dd hh:mm:ss} {l}|{t}: {m}
+ *     <td>{d yyyy/MM/dd HH:mm:ss} {l}|{t}: {m}
  *     <td>2016/11/30 13:00:00 D|my_tag: Simple message
  *   <tr>
- *     <td>{d yy/MM/dd hh:mm:ss} {l}|{t}: {m}
+ *     <td>{d yy/MM/dd HH:mm:ss} {l}|{t}: {m}
  *     <td>16/11/30 13:00:00 D|my_tag: Simple message
  *   <tr>
- *     <td>{d MM/dd hh:mm} {l}-{t}-{m}
+ *     <td>{d MM/dd HH:mm} {l}-{t}-{m}
  *     <td>11/30 13:00 D-my_tag-Simple message
  * </table>
  * </blockquote>
@@ -94,7 +94,7 @@ public class PatternFlattener implements Flattener {
   private static final String PARAMETER_TAG = "t";
   private static final String PARAMETER_MESSAGE = "m";
 
-  static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd hh:mm:ss.SSS";
+  static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
   private String pattern;
 
