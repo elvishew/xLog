@@ -27,12 +27,15 @@ The differences to other logger libraries:
 ```groovy
  implementation 'com.github.hardikpatel679:xLog:-SNAPSHOT'
 ```
+
+```groovy
 allprojects {
 		repositories {
 			...
 			maven { url 'https://jitpack.io' }
 		}
 	}
+```
 
 ## Preview
 * Log with thread information, stack trace information and border
