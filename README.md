@@ -25,8 +25,14 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.4.1'
+ implementation 'com.github.hardikpatel679:xLog:-SNAPSHOT'
 ```
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
 
 ## Preview
 * Log with thread information, stack trace information and border
