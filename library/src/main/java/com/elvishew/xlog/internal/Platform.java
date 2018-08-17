@@ -71,7 +71,9 @@ public class Platform {
 
     @Override
     public void warn(String msg) {
+      if(BuildConfig.DEBUG){
       android.util.Log.w("XLog", msg);
+      }
     }
   }
 }

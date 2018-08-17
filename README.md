@@ -1,7 +1,7 @@
 # XLog
-![](https://travis-ci.org/elvishew/xLog.svg?branch=master)
+[![](https://jitpack.io/v/hardikpatel679/xLog.svg)](https://jitpack.io/#hardikpatel679/xLog)
 
-[简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)
+
 
 Simple and pretty, powerful and flexible logger for android and java, can concurrently print the log to multiple target like Logcat, Console and File, or even Server(or anywhere) if you like.
 
@@ -25,7 +25,16 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.4.1'
+ implementation 'com.github.hardikpatel679:xLog:-SNAPSHOT'
+```
+
+```groovy
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
 ```
 
 ## Preview
