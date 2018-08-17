@@ -1,5 +1,5 @@
 # XLog
-![](https://travis-ci.org/elvishew/xLog.svg?branch=master)
+[![](https://jitpack.io/v/hardikpatel679/xLog.svg)](https://jitpack.io/#hardikpatel679/xLog)
 
 [简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)
 
