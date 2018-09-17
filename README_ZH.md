@@ -25,7 +25,7 @@ XLog 能干什么:
 
 ## 依赖
 ```groovy
-compile 'com.elvishew:xlog:1.4.1'
+compile 'com.elvishew:xlog:1.5.0'
 ```
 
 ## 预览
@@ -80,6 +80,7 @@ Printer filePrinter = new FilePrinter                      // 打印日志到文
     .Builder("/sdcard/xlog/")                              // 指定保存日志文件的路径
     .fileNameGenerator(new DateFileNameGenerator())        // 指定日志文件名生成器，默认为 ChangelessFileNameGenerator("log")
     .backupStrategy(new NeverBackupStrategy()              // 指定日志文件备份策略，默认为 FileSizeBackupStrategy(1024 * 1024)
+    .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // 指定日志文件清除策略，默认为 NeverCleanStrategy()
     .logFlattener(new MyFlattener())                       // 指定日志平铺器，默认为 DefaultFlattener
     .build();
 
@@ -229,7 +230,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 导出日志文件为 .zip（v1.4.0 开始支持）
 
 ## [版本](https://github.com/elvishew/xLog/releases)
-最新版本：1.4.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.4.1)
+最新版本：1.5.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.5.0)
 
 ## [问题](https://github.com/elvishew/xLog/issues)
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。
