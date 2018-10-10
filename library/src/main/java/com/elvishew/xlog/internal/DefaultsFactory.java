@@ -21,6 +21,7 @@ import android.os.Bundle;
 
 import com.elvishew.xlog.flattener.DefaultFlattener;
 import com.elvishew.xlog.flattener.Flattener;
+import com.elvishew.xlog.flattener.Flattener2;
 import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.border.DefaultBorderFormatter;
 import com.elvishew.xlog.formatter.message.json.DefaultJsonFormatter;
@@ -110,9 +111,16 @@ public class DefaultsFactory {
   }
 
   /**
-   * Create the default log flattener.
+   * Create the default {@link Flattener}.
    */
   public static Flattener createFlattener() {
+    return new DefaultFlattener();
+  }
+
+  /**
+   * Create the default {@link Flattener2}.
+   */
+  public static Flattener2 createFlattener2() {
     return new DefaultFlattener();
   }
 

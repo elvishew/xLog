@@ -83,7 +83,7 @@ import java.util.regex.Pattern;
  *
  * @since 1.3.0
  */
-public class PatternFlattener implements Flattener {
+public class PatternFlattener implements Flattener, Flattener2 {
 
   private static final String PARAM = "[^{}]*";
   private static final Pattern PARAM_REGEX = Pattern.compile("\\{(" + PARAM + ")\\}");
@@ -239,9 +239,14 @@ public class PatternFlattener implements Flattener {
 
   @Override
   public CharSequence flatten(int logLevel, String tag, String message) {
+    return flatten(System.currentTimeMillis(), logLevel, tag, message);
+  }
+
+  @Override
+  public CharSequence flatten(long timeMillis, int logLevel, String tag, String message) {
     String flattenedLog = pattern;
     for (ParameterFiller parameterFiller : parameterFillers) {
-      flattenedLog = parameterFiller.fill(flattenedLog, logLevel, tag, message);
+      flattenedLog = parameterFiller.fill(flattenedLog, timeMillis, logLevel, tag, message);
     }
     return flattenedLog;
   }
@@ -274,8 +279,8 @@ public class PatternFlattener implements Flattener {
     }
 
     @Override
-    protected String fill(String pattern, int logLevel, String tag, String message) {
-      return pattern.replace(wrappedParameter, threadLocalDateFormat.get().format(new Date()));
+    protected String fill(String pattern, long timeMillis, int logLevel, String tag, String message) {
+      return pattern.replace(wrappedParameter, threadLocalDateFormat.get().format(new Date(timeMillis)));
     }
   }
 
@@ -292,7 +297,7 @@ public class PatternFlattener implements Flattener {
     }
 
     @Override
-    protected String fill(String pattern, int logLevel, String tag, String message) {
+    protected String fill(String pattern, long timeMillis, int logLevel, String tag, String message) {
       if (useLongName) {
         return pattern.replace(wrappedParameter, LogLevel.getLevelName(logLevel));
       } else {
@@ -311,7 +316,7 @@ public class PatternFlattener implements Flattener {
     }
 
     @Override
-    protected String fill(String pattern, int logLevel, String tag, String message) {
+    protected String fill(String pattern, long timeMillis, int logLevel, String tag, String message) {
       return pattern.replace(wrappedParameter, tag);
     }
   }
@@ -326,7 +331,7 @@ public class PatternFlattener implements Flattener {
     }
 
     @Override
-    protected String fill(String pattern, int logLevel, String tag, String message) {
+    protected String fill(String pattern, long timeMillis, int logLevel, String tag, String message) {
       return pattern.replace(wrappedParameter, message);
     }
   }
@@ -355,12 +360,13 @@ public class PatternFlattener implements Flattener {
     /**
      * Fill the original pattern string with the value of parameter.
      *
-     * @param pattern  the original pattern
-     * @param logLevel the log level of flattening log
-     * @param tag      the tag of flattening log
-     * @param message  the message of the flattening log
+     * @param pattern    the original pattern
+     * @param timeMillis the time milliseconds of log
+     * @param logLevel   the log level of flattening log
+     * @param tag        the tag of flattening log
+     * @param message    the message of the flattening log
      * @return the filled pattern string
      */
-    protected abstract String fill(String pattern, int logLevel, String tag, String message);
+    protected abstract String fill(String pattern, long timeMillis, int logLevel, String tag, String message);
   }
 }

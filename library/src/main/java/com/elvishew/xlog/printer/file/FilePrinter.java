@@ -17,6 +17,7 @@
 package com.elvishew.xlog.printer.file;
 
 import com.elvishew.xlog.flattener.Flattener;
+import com.elvishew.xlog.flattener.Flattener2;
 import com.elvishew.xlog.internal.DefaultsFactory;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
@@ -63,9 +64,9 @@ public class FilePrinter implements Printer {
   private final CleanStrategy cleanStrategy;
 
   /**
-   * The log flattener when print a log.
+   * The flattener when print a log.
    */
-  private Flattener flattener;
+  private Flattener2 flattener;
 
   /**
    * Log writer.
@@ -101,20 +102,21 @@ public class FilePrinter implements Printer {
 
   @Override
   public void println(int logLevel, String tag, String msg) {
+    long timeMillis = System.currentTimeMillis();
     if (USE_WORKER) {
       if (!worker.isStarted()) {
         worker.start();
       }
-      worker.enqueue(new LogItem(logLevel, tag, msg));
+      worker.enqueue(new LogItem(timeMillis, logLevel, tag, msg));
     } else {
-      doPrintln(logLevel, tag, msg);
+      doPrintln(timeMillis, logLevel, tag, msg);
     }
   }
 
   /**
    * Do the real job of writing log to file.
    */
-  private void doPrintln(int logLevel, String tag, String msg) {
+  private void doPrintln(long timeMillis, int logLevel, String tag, String msg) {
     String lastFileName = writer.getLastFileName();
     if (lastFileName == null || fileNameGenerator.isFileNameChangeable()) {
       String newFileName = fileNameGenerator.generateFileName(logLevel, System.currentTimeMillis());
@@ -146,7 +148,7 @@ public class FilePrinter implements Printer {
         return;
       }
     }
-    String flattenedLog = flattener.flatten(logLevel, tag, msg).toString();
+    String flattenedLog = flattener.flatten(timeMillis, logLevel, tag, msg).toString();
     writer.appendLog(flattenedLog);
   }
 
@@ -189,9 +191,9 @@ public class FilePrinter implements Printer {
     CleanStrategy cleanStrategy;
 
     /**
-     * The log flattener when print a log.
+     * The flattener when print a log.
      */
-    Flattener flattener;
+    Flattener2 flattener;
 
     /**
      * Construct a builder.
@@ -236,12 +238,30 @@ public class FilePrinter implements Printer {
     }
 
     /**
-     * Set the log flattener when print a log.
+     * Set the flattener when print a log.
      *
-     * @param flattener the log flattener when print a log
+     * @param flattener the flattener when print a log
      * @return the builder
+     * @deprecated {@link Flattener} is deprecated, use {@link #flattener(Flattener2)} instead,
+     * since 1.6.0
      */
-    public Builder logFlattener(Flattener flattener) {
+    public Builder logFlattener(final Flattener flattener) {
+      return flattener(new Flattener2() {
+        @Override
+        public CharSequence flatten(long timeMillis, int logLevel, String tag, String message) {
+          return flattener.flatten(logLevel, tag, message);
+        }
+      });
+    }
+
+    /**
+     * Set the flattener when print a log.
+     *
+     * @param flattener the flattener when print a log
+     * @return the builder
+     * @since 1.6.0
+     */
+    public Builder flattener(Flattener2 flattener) {
       this.flattener = flattener;
       return this;
     }
@@ -267,18 +287,20 @@ public class FilePrinter implements Printer {
         cleanStrategy = DefaultsFactory.createCleanStrategy();
       }
       if (flattener == null) {
-        flattener = DefaultsFactory.createFlattener();
+        flattener = DefaultsFactory.createFlattener2();
       }
     }
   }
 
-  private class LogItem {
+  private static class LogItem {
 
+    long timeMillis;
     int level;
     String tag;
     String msg;
 
-    LogItem(int level, String tag, String msg) {
+    LogItem(long timeMillis, int level, String tag, String msg) {
+      this.timeMillis = timeMillis;
       this.level = level;
       this.tag = tag;
       this.msg = msg;
@@ -333,7 +355,7 @@ public class FilePrinter implements Printer {
       LogItem log;
       try {
         while ((log = logs.take()) != null) {
-          doPrintln(log.level, log.tag, log.msg);
+          doPrintln(log.timeMillis, log.level, log.tag, log.msg);
         }
       } catch (InterruptedException e) {
         e.printStackTrace();

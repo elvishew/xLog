@@ -76,7 +76,7 @@ public class XLogSampleApplication extends Application {
         .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
         // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
         // .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
-        .logFlattener(new ClassicFlattener())                  // Default: DefaultFlattener
+        .flattener(new ClassicFlattener())                     // Default: DefaultFlattener
         .build();
 
     XLog.init(                                                 // Initialize XLog

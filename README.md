@@ -81,7 +81,7 @@ Printer filePrinter = new FilePrinter                      // Printer that print
     .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
     .backupStrategy(new NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
     .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
-    .logFlattener(new MyFlattener())                       // Default: DefaultFlattener
+    .flattener(new MyFlattener())                          // Default: DefaultFlattener
     .build();
 
 XLog.init(                                                 // Initialize XLog

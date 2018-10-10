@@ -17,11 +17,12 @@
 package com.elvishew.xlog.flattener;
 
 /**
- * The log flattener used to flatten log elements(log level, tag and message) to a
- * single Charsequence.
+ * The flattener used to flatten log elements(log level, tag and message) to a single CharSequence.
  *
  * @since 1.3.0
+ * @deprecated use {@link Flattener2} instead, since 1.6.0
  */
+@Deprecated
 public interface Flattener {
 
   /**
