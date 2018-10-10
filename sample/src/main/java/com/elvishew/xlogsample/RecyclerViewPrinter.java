@@ -24,13 +24,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.elvishew.xlog.LogLevel;
+import com.elvishew.xlog.flattener.Flattener2;
+import com.elvishew.xlog.flattener.PatternFlattener;
 import com.elvishew.xlog.printer.Printer;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Display logs in a {@link android.support.v7.widget.RecyclerView}.
@@ -62,17 +61,17 @@ public class RecyclerViewPrinter implements Printer {
 
   private static class LogItem {
 
-    private static SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss.SSS", Locale.US);
+    static Flattener2 flattener = new PatternFlattener("{d HH:mm:ss.SSS} {l}/{t}: ");
 
-    long timestamp;
+    long timeMillis;
     int logLevel;
     String tag;
     String msg;
 
     private String label;
 
-    LogItem(long timestamp, int logLevel, String tag, String msg) {
-      this.timestamp = timestamp;
+    LogItem(long timeMillis, int logLevel, String tag, String msg) {
+      this.timeMillis = timeMillis;
       this.logLevel = logLevel;
       this.tag = tag;
       this.msg = msg;
@@ -84,12 +83,7 @@ public class RecyclerViewPrinter implements Printer {
     String getLabel() {
       // Lazily concat the label.
       if (label == null) {
-        label = timeFormat.format(new Date(timestamp))
-            + " "
-            + LogLevel.getShortLevelName(logLevel)
-            + "/"
-            + tag
-            + ": ";
+        label = flattener.flatten(timeMillis, logLevel, tag, msg).toString();
       }
       return label;
     }
