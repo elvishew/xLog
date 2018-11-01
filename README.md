@@ -25,7 +25,7 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.6.0'
+compile 'com.elvishew:xlog:1.6.1'
 ```
 
 ## Preview
@@ -232,7 +232,7 @@ In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace wit
 * [x] Export log files to a .zip (since 1.4.0)
 
 ## [Releases](https://github.com/elvishew/xLog/releases)
-Latest release: 1.6.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.6.0)
+Latest release: 1.6.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.6.1)
 
 ## [Issues](https://github.com/elvishew/xLog/issues)
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.

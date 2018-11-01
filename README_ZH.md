@@ -25,7 +25,7 @@ XLog 能干什么:
 
 ## 依赖
 ```groovy
-compile 'com.elvishew:xlog:1.6.0'
+compile 'com.elvishew:xlog:1.6.1'
 ```
 
 ## 预览
@@ -230,7 +230,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 * [x] 导出日志文件为 .zip（v1.4.0 开始支持）
 
 ## [版本](https://github.com/elvishew/xLog/releases)
-最新版本：1.6.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.6.0)
+最新版本：1.6.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.6.1)
 
 ## [问题](https://github.com/elvishew/xLog/issues)
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。
