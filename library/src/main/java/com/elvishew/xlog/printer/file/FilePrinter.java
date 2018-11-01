@@ -158,6 +158,9 @@ public class FilePrinter implements Printer {
   private void cleanLogFilesIfNecessary() {
     File logDir = new File(folderPath);
     File[] files = logDir.listFiles();
+    if (files == null) {
+      return;
+    }
     for (File file : files) {
       if (cleanStrategy.shouldClean(file)) {
           file.delete();
