@@ -80,8 +80,8 @@ public class AndroidPrinterTest {
     assertEquals(4, logContainer.size());
 
     int start = 0;
-    int end;
-    for (int i = 0; i < 4; i++) {
+    int end = 0;
+    for (int i = 0; end < length; i++) {
       end = AndroidPrinter.adjustEnd(msg, start, Math.min(start + messageChunkLength, length));
       String chunk = msg.substring(start, end);
       AssertUtil.assertHasLog(logContainer, i, chunk);

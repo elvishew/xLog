@@ -21,7 +21,12 @@ package com.elvishew.xlog.printer;
  */
 public class AndroidPrinter implements Printer {
 
-  static final int DEFAULT_MAX_CHUNK_SIZE = 4063;
+  /**
+   * Generally, android has a default length limit of 4096 for single log, but
+   * some device(like HUAWEI) has its own shorter limit, so we just use 2048
+   * and wish it could run well in all devices.
+   */
+  static final int DEFAULT_MAX_CHUNK_SIZE = 2048;
 
   private int maxChunkSize;
 
