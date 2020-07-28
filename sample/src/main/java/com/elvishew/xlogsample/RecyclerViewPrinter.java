@@ -16,12 +16,13 @@
 
 package com.elvishew.xlogsample;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.flattener.Flattener2;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Display logs in a {@link android.support.v7.widget.RecyclerView}.
+ * Display logs in a {@link androidx.recyclerview.widget.RecyclerView}.
  */
 public class RecyclerViewPrinter implements Printer {
 
