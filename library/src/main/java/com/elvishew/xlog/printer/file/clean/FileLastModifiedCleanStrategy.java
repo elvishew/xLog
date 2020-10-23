@@ -4,6 +4,8 @@ import java.io.File;
 
 /**
  * Limit the file life of a max time.
+ *
+ * @since 1.5.0
  */
 public class FileLastModifiedCleanStrategy implements CleanStrategy {
 

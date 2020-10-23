@@ -4,6 +4,8 @@ import java.io.File;
 
 /**
  * Decide whether the log file should be clean.
+ *
+ * @since 1.5.0
  */
 public interface CleanStrategy {
 

@@ -234,6 +234,7 @@ public class FilePrinter implements Printer {
      *
      * @param cleanStrategy the clean strategy for log file
      * @return the builder
+     * @since 1.5.0
      */
     public Builder cleanStrategy(CleanStrategy cleanStrategy) {
       this.cleanStrategy = cleanStrategy;
