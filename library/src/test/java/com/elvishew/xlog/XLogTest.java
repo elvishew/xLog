@@ -57,8 +57,7 @@ public class XLogTest {
   @Before
   public void setup() {
     XLogUtil.beforeTest();
-    XLog.init(ALL,
-        new LogConfiguration.Builder().tag(DEFAULT_TAG).build(),
+    XLog.init(new LogConfiguration.Builder().logLevel(ALL).tag(DEFAULT_TAG).build(),
         new ContainerPrinter(logsContainer));
   }
 
@@ -151,13 +150,13 @@ public class XLogTest {
 
   @Test
   public void testThread() {
-    XLog.t().t().i("Message with thread info");
+    XLog.enableThreadInfo().i("Message with thread info");
     boolean result = (logsContainer.size() == 1
         && logsContainer.get(0).msg.contains("Thread: "));
     assertTrue("No thread info found", result);
 
     logsContainer.clear();
-    XLog.t().nt().i("Message without thread info");
+    XLog.disableThreadInfo().i("Message without thread info");
     result = (logsContainer.size() == 1
         && !logsContainer.get(0).msg.contains("Thread: "));
     assertTrue("Thread info found", result);
@@ -165,19 +164,19 @@ public class XLogTest {
 
   @Test
   public void testStackTrace() {
-    XLog.st(1).i("Message with stack trace, depth 1");
+    XLog.enableStackTrace(1).i("Message with stack trace, depth 1");
     boolean result = (logsContainer.size() == 1
         && logsContainer.get(0).msg.contains("\t─ "));
     assertTrue("No stack trace found", result);
 
     logsContainer.clear();
-    XLog.st(2).i("Message with stack trace, depth 2");
+    XLog.enableStackTrace(2).i("Message with stack trace, depth 2");
     result = (logsContainer.size() == 1
         && logsContainer.get(0).msg.contains("\t├ "));
     assertTrue("No stack trace found", result);
 
     logsContainer.clear();
-    XLog.nst().i("Message without stack trace");
+    XLog.disableStackTrace().i("Message without stack trace");
     result = (logsContainer.size() == 1
         && !logsContainer.get(0).msg.contains("\t├ "));
     assertTrue("Stack trace found", result);
@@ -185,14 +184,14 @@ public class XLogTest {
 
   @Test
   public void testBorder() {
-    XLog.b().i("Message with a border");
+    XLog.enableBorder().i("Message with a border");
     boolean result = (logsContainer.size() == 1
         && logsContainer.get(0).msg.startsWith("╔═══")
         && logsContainer.get(0).msg.endsWith("════"));
     assertTrue("No bordered log found", result);
 
     logsContainer.clear();
-    XLog.nb().i("Message without a border");
+    XLog.disableBorder().i("Message without a border");
     result = (logsContainer.size() == 1
         && !logsContainer.get(0).msg.startsWith("╔═══")
         && !logsContainer.get(0).msg.endsWith("════"));
@@ -335,7 +334,7 @@ public class XLogTest {
             return formattedThread;
           }
         })
-        .t()
+        .enableThreadInfo()
         .i(MESSAGE);
     assertLog(INFO, DEFAULT_TAG, formattedThread + "\n" + MESSAGE);
   }
@@ -350,19 +349,19 @@ public class XLogTest {
             return formattedStackTrace;
           }
         })
-        .st(1)
+        .enableStackTrace(1)
         .i(MESSAGE);
     assertLog(INFO, DEFAULT_TAG, formattedStackTrace + "\n" + MESSAGE);
   }
 
   @Test
   public void testCustomBorderFormatter() {
-    XLog.t().threadFormatter(new ThreadFormatter() {
+    XLog.enableThreadInfo().threadFormatter(new ThreadFormatter() {
       @Override
       public String format(Thread data) {
         return "T1";
       }
-    }).b().borderFormatter(new BorderFormatter() {
+    }).enableBorder().borderFormatter(new BorderFormatter() {
       @Override
       public String format(String[] segments) {
         return addCustomBorder(segments);

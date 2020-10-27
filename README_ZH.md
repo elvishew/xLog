@@ -58,9 +58,9 @@ LogConfiguration config = new LogConfiguration.Builder()
     .logLevel(BuildConfig.DEBUG ? LogLevel.ALL             // 指定日志级别，低于该级别的日志将不会被打印，默认为 LogLevel.ALL
         : LogLevel.NONE)
     .tag("MY_TAG")                                         // 指定 TAG，默认为 "X-LOG"
-    .t()                                                   // 允许打印线程信息，默认禁止
-    .st(2)                                                 // 允许打印深度为2的调用栈信息，默认禁止
-    .b()                                                   // 允许打印日志边框，默认禁止
+    .enableThreadInfo()                                    // 允许打印线程信息，默认禁止
+    .enableStackTrace(2)                                   // 允许打印深度为2的调用栈信息，默认禁止
+    .enableBorder()                                        // 允许打印日志边框，默认禁止
     .jsonFormatter(new MyJsonFormatter())                  // 指定 JSON 格式化器，默认为 DefaultJsonFormatter
     .xmlFormatter(new MyXmlFormatter())                    // 指定 XML 格式化器，默认为 DefaultXmlFormatter
     .throwableFormatter(new MyThrowableFormatter())        // 指定可抛出异常格式化器，默认为 DefaultThrowableFormatter
@@ -120,22 +120,22 @@ partial.d("Simple message 2");
 ### 基于单条日志的用法
 进行基于单条日志的配置，然后就可以直接打印日志了，所有打印日志的相关方法都跟 [XLog] 类里的一模一样。
 ```java
-XLog.t()    // 允许打印线程信息
-    .st(3)  // 允许打印深度为3的调用栈信息
-    .b()    // 允许打印日志边框
-    ...     // 其他配置
+XLog.enableThreadInfo()    // 允许打印线程信息
+    .enableStackTrace(3)   // 允许打印深度为3的调用栈信息
+    .enableBorder()        // 允许打印日志边框
+    ...                    // 其他配置
     .d("Simple message 1");
 
 XLog.tag("TEMP-TAG")
-    .st(0)  // 允许打印不限深度的调用栈信息
-    ...     // 其他配置
+    .enableStackTrace(0)   // 允许打印不限深度的调用栈信息
+    ...                    // 其他配置
     .d("Simple message 2");
 
-XLog.nt()   // 禁止打印线程信息
-    .nst()  // 禁止打印调用栈信息
+XLog.disableThreadInfo()   // 禁止打印线程信息
+    .disableStackTrace()   // 禁止打印调用栈信息
     .d("Simple message 3");
 
-XLog.b().d("Simple message 4");
+XLog.enableBorder().d("Simple message 4");
 ```
 
 ## 比较
@@ -162,18 +162,18 @@ XLog.d("Message");
 XLog.d("Message with argument: age=%s", 18);
 XLog.json(jsonString);
 XLog.xml(xmlString);
-XLog.st(5).d("Message with stack trace info");
+XLog.enableStackTrace(5).d("Message with stack trace info");
 ```
 ![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png)
 
 ### 带边框的 XLog
 ```java
-XLog.init(LogLevel.ALL, new LogConfiguration.Builder().b().build());
+XLog.init(new LogConfiguration.Builder().logLevel(LogLevel.ALL).enableBorder().build());
 XLog.d("Message");
 XLog.d("Message with argument: age=%s", 18);
 XLog.json(jsonString);
 XLog.xml(xmlString);
-XLog.st(5).d("Message with stack trace info");
+XLog.enableStackTrace(5).d("Message with stack trace info");
 ```
 ![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png)
 

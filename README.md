@@ -58,9 +58,9 @@ LogConfiguration config = new LogConfiguration.Builder()
     .logLevel(BuildConfig.DEBUG ? LogLevel.ALL             // Specify log level, logs below this level won't be printed, default: LogLevel.ALL
         : LogLevel.NONE)
     .tag("MY_TAG")                                         // Specify TAG, default: "X-LOG"
-    .t()                                                   // Enable thread info, disabled by default
-    .st(2)                                                 // Enable stack trace info with depth 2, disabled by default
-    .b()                                                   // Enable border, disabled by default
+    .enableThreadInfo()                                    // Enable thread info, disabled by default
+    .enableStackTrace(2)                                   // Enable stack trace info with depth 2, disabled by default
+    .enableBorder()                                        // Enable border, disabled by default
     .jsonFormatter(new MyJsonFormatter())                  // Default: DefaultJsonFormatter
     .xmlFormatter(new MyXmlFormatter())                    // Default: DefaultXmlFormatter
     .throwableFormatter(new MyThrowableFormatter())        // Default: DefaultThrowableFormatter
@@ -121,22 +121,22 @@ partial.d("Simple message 2");
 ### Log-based usage
 Setup log-based configs and log immediately, the logging methods is completely the same as that ones in [XLog].
 ```java
-XLog.t()    // Enable thread into
-    .st(3)  // Enable stack trace info with depth 3
-    .b()    // Enable border
-    ...     // Other configs
+XLog.enableThreadInfo()    // Enable thread into
+    .enableStackTrace(3)   // Enable stack trace info with depth 3
+    .enableBorder()        // Enable border
+    ...                    // Other configs
     .d("Simple message 1");
 
 XLog.tag("TEMP-TAG")
-    .st(0)  // Enable stack trace info without limitation
-    ...     // Other configs
+    .enableStackTrace(0)   // Enable stack trace info without limitation
+    ...                    // Other configs
     .d("Simple message 2");
 
-XLog.nt()   // Disable thread info
-    .nst()  // Disable stack trace info
+XLog.disableThreadInfo()   // Disable thread info
+    .disableStackTrace()   // Disable stack trace info
     .d("Simple message 3");
 
-XLog.b().d("Simple message 4");
+XLog.enableBorder().d("Simple message 4");
 
 ```
 
@@ -164,18 +164,18 @@ XLog.d("Message");
 XLog.d("Message with argument: age=%s", 18);
 XLog.json(jsonString);
 XLog.xml(xmlString);
-XLog.st(5).d("Message with stack trace info");
+XLog.enableStackTrace(5).d("Message with stack trace info");
 ```
 ![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png)
 
 ### XLog with border
 ```java
-XLog.init(LogLevel.ALL, new LogConfiguration.Builder().b().build());
+XLog.init(new LogConfiguration.Builder().logLevel(LogLevel.ALL).enableBorder().build());
 XLog.d("Message");
 XLog.d("Message with argument: age=%s", 18);
 XLog.json(jsonString);
 XLog.xml(xmlString);
-XLog.st(5).d("Message with stack trace info");
+XLog.enableStackTrace(5).d("Message with stack trace info");
 ```
 ![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png)
 

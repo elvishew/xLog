@@ -249,6 +249,7 @@ public class FilePrinter implements Printer {
      * @deprecated {@link Flattener} is deprecated, use {@link #flattener(Flattener2)} instead,
      * since 1.6.0
      */
+    @Deprecated
     public Builder logFlattener(final Flattener flattener) {
       return flattener(new Flattener2() {
         @Override

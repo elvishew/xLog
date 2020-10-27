@@ -79,12 +79,13 @@ import com.elvishew.xlog.printer.PrinterSet;
  * <br>Call any of
  * <br>{@link #logLevel(int)}
  * <br>{@link #tag(String)},
- * <br>{@link #t()},
- * <br>{@link #nt()},
- * <br>{@link #st(int)},
- * <br>{@link #nst()},
- * <br>{@link #b()},
- * <br>{@link #nb()},
+ * <br>{@link #enableThreadInfo()},
+ * <br>{@link #disableThreadInfo()},
+ * <br>{@link #enableStackTrace(int)},
+ * <br>{@link #enableStackTrace(String, int)},
+ * <br>{@link #disableStackTrace()},
+ * <br>{@link #enableBorder()},
+ * <br>{@link #disableBorder()},
  * <br>{@link #jsonFormatter(JsonFormatter)},
  * <br>{@link #xmlFormatter(XmlFormatter)},
  * <br>{@link #threadFormatter(ThreadFormatter)},
@@ -282,18 +283,45 @@ public class XLog {
    * Start to customize a {@link Logger} and enable thread info.
    *
    * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @deprecated use {@link #enableThreadInfo()} instead, since 1.7.0
    */
+  @Deprecated
   public static Logger.Builder t() {
-    return new Logger.Builder().t();
+    return enableThreadInfo();
+  }
+
+  /**
+   * Start to customize a {@link Logger} and enable thread info, the thread info would be printed
+   * with the log message.
+   *
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @see ThreadFormatter
+   * @since 1.7.0
+   */
+  public static Logger.Builder enableThreadInfo() {
+    return new Logger.Builder().enableThreadInfo();
   }
 
   /**
    * Start to customize a {@link Logger} and disable thread info.
    *
    * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @deprecated use {@link #disableThreadInfo()} instead, since 1.7.0
    */
+  @Deprecated
   public static Logger.Builder nt() {
-    return new Logger.Builder().nt();
+    return disableThreadInfo();
+  }
+
+  /**
+   * Start to customize a {@link Logger} and disable thread info, the thread info won't be printed
+   * with the log message.
+   *
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @since 1.7.0
+   */
+  public static Logger.Builder disableThreadInfo() {
+    return new Logger.Builder().disableThreadInfo();
   }
 
   /**
@@ -301,9 +329,24 @@ public class XLog {
    *
    * @param depth the number of stack trace elements we should log, 0 if no limitation
    * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @deprecated use {@link #enableStackTrace(int)} instead, since 1.7.0
    */
+  @Deprecated
   public static Logger.Builder st(int depth) {
-    return new Logger.Builder().st(depth);
+    return enableStackTrace(depth);
+  }
+
+  /**
+   * Start to customize a {@link Logger} and enable stack trace, the stack trace would be printed
+   * with the log message.
+   *
+   * @param depth the number of stack trace elements we should log, 0 if no limitation
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @see StackTraceFormatter
+   * @since 1.7.0
+   */
+  public static Logger.Builder enableStackTrace(int depth) {
+    return new Logger.Builder().enableStackTrace(depth);
   }
 
   /**
@@ -317,36 +360,96 @@ public class XLog {
    * @param depth            the number of stack trace elements we should log, 0 if no limitation
    * @return the {@link Logger.Builder} to build the {@link Logger}
    * @since 1.4.0
+   * @deprecated use {@link #enableStackTrace(String, int)} instead, since 1.7.0
    */
+  @Deprecated
   public static Logger.Builder st(String stackTraceOrigin, int depth) {
-    return new Logger.Builder().st(stackTraceOrigin, depth);
+    return enableStackTrace(stackTraceOrigin, depth);
+  }
+
+  /**
+   * Start to customize a {@link Logger} and enable stack trace, the stack trace would be printed
+   * with the log message.
+   *
+   * @param stackTraceOrigin the origin of stack trace elements from which we should NOT log,
+   *                         it can be a package name like "com.elvishew.xlog", a class name
+   *                         like "com.yourdomain.logWrapper", or something else between
+   *                         package name and class name, like "com.yourdomain.".
+   *                         It is mostly used when you are using a logger wrapper
+   * @param depth            the number of stack trace elements we should log, 0 if no limitation
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @see StackTraceFormatter
+   * @since 1.7.0
+   */
+  public static Logger.Builder enableStackTrace(String stackTraceOrigin, int depth) {
+    return new Logger.Builder().enableStackTrace(stackTraceOrigin, depth);
   }
 
   /**
    * Start to customize a {@link Logger} and disable stack trace.
    *
    * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @deprecated use {@link #disableStackTrace()} instead, since 1.7.0
    */
+  @Deprecated
   public static Logger.Builder nst() {
-    return new Logger.Builder().nst();
+    return disableStackTrace();
+  }
+
+  /**
+   * Start to customize a {@link Logger} and disable stack trace, the stack trace won't be printed
+   * with the log message.
+   *
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @since 1.7.0
+   */
+  public static Logger.Builder disableStackTrace() {
+    return new Logger.Builder().disableStackTrace();
   }
 
   /**
    * Start to customize a {@link Logger} and enable border.
    *
    * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @deprecated use {@link #enableBorder()} instead, since 1.7.0
    */
+  @Deprecated
   public static Logger.Builder b() {
-    return new Logger.Builder().b();
+    return enableBorder();
+  }
+
+  /**
+   * Start to customize a {@link Logger} and enable border, the border would surround the entire log
+   * content, and separate the log message, thread info and stack trace.
+   *
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @see BorderFormatter
+   * @since 1.7.0
+   */
+  public static Logger.Builder enableBorder() {
+    return new Logger.Builder().enableBorder();
   }
 
   /**
    * Start to customize a {@link Logger} and disable border.
    *
    * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @deprecated use {@link #disableBorder()} instead, since 1.7.0
    */
+  @Deprecated
   public static Logger.Builder nb() {
-    return new Logger.Builder().nb();
+    return disableBorder();
+  }
+
+  /**
+   * Start to customize a {@link Logger} and disable border, the log content won't be surrounded
+   * by a border.
+   *
+   * @return the {@link Logger.Builder} to build the {@link Logger}
+   * @since 1.7.0
+   */
+  public static Logger.Builder disableBorder() {
+    return new Logger.Builder().disableBorder();
   }
 
   /**

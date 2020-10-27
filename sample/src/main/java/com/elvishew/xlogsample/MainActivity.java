@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
   public void onRequestPermissionsResult(int requestCode,
                                          @NonNull String permissions[],
                                          @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     switch (requestCode) {
       case PERMISSIONS_REQUEST_EXTERNAL_STORAGE: {
         // If request is cancelled, the result arrays are empty.
@@ -268,21 +269,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     if (threadInfo.isChecked()) {
-      builder.t();
+      builder.enableThreadInfo();
     } else {
-      builder.nt();
+      builder.disableThreadInfo();
     }
 
     if (stackTraceInfo.isChecked()) {
-      builder.st(STACK_TRACE_DEPTHS[stackTraceDepth.getSelectedItemPosition()]);
+      builder.enableStackTrace(STACK_TRACE_DEPTHS[stackTraceDepth.getSelectedItemPosition()]);
     } else {
-      builder.nst();
+      builder.disableStackTrace();
     }
 
     if (border.isChecked()) {
-      builder.b();
+      builder.enableBorder();
     } else {
-      builder.nb();
+      builder.disableBorder();
     }
 
     // Print the log to view, logcat and file.

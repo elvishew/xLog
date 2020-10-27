@@ -52,9 +52,9 @@ public class XLogSampleApplication extends Application {
         .logLevel(BuildConfig.DEBUG ? LogLevel.ALL             // Specify log level, logs below this level won't be printed, default: LogLevel.ALL
             : LogLevel.NONE)
         .tag(getString(R.string.global_tag))                   // Specify TAG, default: "X-LOG"
-        // .t()                                                // Enable thread info, disabled by default
-        // .st(2)                                              // Enable stack trace info with depth 2, disabled by default
-        // .b()                                                // Enable border, disabled by default
+        // .enableThreadInfo()                                 // Enable thread info, disabled by default
+        // .enableStackTrace(2)                                // Enable stack trace info with depth 2, disabled by default
+        // .enableBorder()                                     // Enable border, disabled by default
         // .jsonFormatter(new MyJsonFormatter())               // Default: DefaultJsonFormatter
         // .xmlFormatter(new MyXmlFormatter())                 // Default: DefaultXmlFormatter
         // .throwableFormatter(new MyThrowableFormatter())     // Default: DefaultThrowableFormatter
