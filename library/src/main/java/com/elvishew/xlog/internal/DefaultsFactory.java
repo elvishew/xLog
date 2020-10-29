@@ -16,9 +16,6 @@
 
 package com.elvishew.xlog.internal;
 
-import android.content.Intent;
-import android.os.Bundle;
-
 import com.elvishew.xlog.flattener.DefaultFlattener;
 import com.elvishew.xlog.flattener.Flattener;
 import com.elvishew.xlog.flattener.Flattener2;
@@ -26,8 +23,6 @@ import com.elvishew.xlog.formatter.border.BorderFormatter;
 import com.elvishew.xlog.formatter.border.DefaultBorderFormatter;
 import com.elvishew.xlog.formatter.message.json.DefaultJsonFormatter;
 import com.elvishew.xlog.formatter.message.json.JsonFormatter;
-import com.elvishew.xlog.formatter.message.object.BundleFormatter;
-import com.elvishew.xlog.formatter.message.object.IntentFormatter;
 import com.elvishew.xlog.formatter.message.object.ObjectFormatter;
 import com.elvishew.xlog.formatter.message.throwable.DefaultThrowableFormatter;
 import com.elvishew.xlog.formatter.message.throwable.ThrowableFormatter;
@@ -46,8 +41,6 @@ import com.elvishew.xlog.printer.file.clean.NeverCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -58,15 +51,6 @@ public class DefaultsFactory {
   private static final String DEFAULT_LOG_FILE_NAME = "log";
 
   private static final long DEFAULT_LOG_FILE_MAX_SIZE = 1024 * 1024; // 1M bytes;
-
-  private static final Map<Class<?>, ObjectFormatter<?>> BUILTIN_OBJECT_FORMATTERS;
-
-  static {
-    Map<Class<?>, ObjectFormatter<?>> objectFormatters = new HashMap<>();
-    objectFormatters.put(Bundle.class, new BundleFormatter());
-    objectFormatters.put(Intent.class, new IntentFormatter());
-    BUILTIN_OBJECT_FORMATTERS = Collections.unmodifiableMap(objectFormatters);
-  }
 
   /**
    * Create the default JSON formatter.
@@ -158,6 +142,6 @@ public class DefaultsFactory {
    * @return the builtin object formatters
    */
   public static Map<Class<?>, ObjectFormatter<?>> builtinObjectFormatters() {
-    return BUILTIN_OBJECT_FORMATTERS;
+    return Platform.get().builtinObjectFormatters();
   }
 }

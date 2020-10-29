@@ -17,11 +17,20 @@
 package com.elvishew.xlog.internal;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 
+import com.elvishew.xlog.formatter.message.object.BundleFormatter;
+import com.elvishew.xlog.formatter.message.object.IntentFormatter;
+import com.elvishew.xlog.formatter.message.object.ObjectFormatter;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.ConsolePrinter;
 import com.elvishew.xlog.printer.Printer;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Platform {
 
@@ -40,6 +49,10 @@ public class Platform {
     return new ConsolePrinter();
   }
 
+  Map<Class<?>, ObjectFormatter<?>> builtinObjectFormatters() {
+    return Collections.emptyMap();
+  }
+
   public void warn(String msg) {
     System.out.println(msg);
   }
@@ -56,6 +69,16 @@ public class Platform {
   }
 
   static class Android extends Platform {
+
+    private static final Map<Class<?>, ObjectFormatter<?>> BUILTIN_OBJECT_FORMATTERS;
+
+    static {
+      Map<Class<?>, ObjectFormatter<?>> objectFormatters = new HashMap<>();
+      objectFormatters.put(Bundle.class, new BundleFormatter());
+      objectFormatters.put(Intent.class, new IntentFormatter());
+      BUILTIN_OBJECT_FORMATTERS = Collections.unmodifiableMap(objectFormatters);
+    }
+
     @Override
     String lineSeparator() {
       if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
@@ -67,6 +90,11 @@ public class Platform {
     @Override
     Printer defaultPrinter() {
       return new AndroidPrinter();
+    }
+
+    @Override
+    Map<Class<?>, ObjectFormatter<?>> builtinObjectFormatters() {
+      return BUILTIN_OBJECT_FORMATTERS;
     }
 
     @Override
