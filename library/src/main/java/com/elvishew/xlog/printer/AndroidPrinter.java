@@ -26,7 +26,7 @@ public class AndroidPrinter implements Printer {
    * some device(like HUAWEI) has its own shorter limit, so we just use 2048
    * and wish it could run well in all devices.
    */
-  static final int DEFAULT_MAX_CHUNK_SIZE = 2048;
+  static final int DEFAULT_MAX_CHUNK_SIZE = 4000;
 
   private int maxChunkSize;
 
