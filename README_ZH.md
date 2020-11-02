@@ -25,7 +25,7 @@ XLog 能干什么:
 
 ## 依赖
 ```groovy
-compile 'com.elvishew:xlog:1.6.1'
+compile 'com.elvishew:xlog:1.7.0'
 ```
 
 ## 预览
@@ -220,17 +220,11 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 在弹出的对话框里，'Text to find' 区域填上 'android.util.Log'，'Replace with' 区域填个 'com.elvishew.xlog.XLog.Log'，然后点击 'Find'。
 
 ## 待开发
-* [x] 打印任意对象: XLog.d(Object) （v1.1.0 开始支持）
-* [x] 支持日志拦截器（类似于 [okhttp] 的 [Interceptor]，这里用来拦截日志）（v1.3.0 开始支持）
-* [x] 添加 tags 过滤器 (白名单过滤和黑名单过滤)（v1.3.0 开始支持）
-* [x] 添加 PatternLogFlattener（主要用在向文件打印日志时），如: 使用模式 "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}"，平铺后的日志将会是 "2016-10-30 13:00:00,000 W/my_tag: Simple message" (v1.3.0 开始支持)
-* [x] 打印日志到文件时，采用异步方式（v1.3.0 开始支持）
-* [x] Logger 粒度的日志级别控制，取代当前的全局控制（v1.3.0 开始支持）
-* [x] 为 Bundle 和 Intent 对象添加默认的格式化器（v1.4.0 开始支持）
-* [x] 导出日志文件为 .zip（v1.4.0 开始支持）
+* [ ] 第三方库的 log 截取
+* [ ] 内置一些 log 加密器，供 `FilePrinter` 使用
 
 ## [版本](https://github.com/elvishew/xLog/releases)
-最新版本：1.6.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.6.1)
+最新版本：1.7.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.7.0)
 
 ## [问题](https://github.com/elvishew/xLog/issues)
 如果你在使用过程中遇到任何问题或者有任何建议，请创建一个 Issue。

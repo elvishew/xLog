@@ -25,7 +25,7 @@ The differences to other logger libraries:
 
 ## Dependency
 ```groovy
-compile 'com.elvishew:xlog:1.6.1'
+compile 'com.elvishew:xlog:1.7.0'
 ```
 
 ## Preview
@@ -222,17 +222,11 @@ In the menu, click the 'Replace in Path...' option.
 In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
 ## TODO
-* [x] Print any object: XLog.d(Object) (since 1.1.0)
-* [x] Support log interceptors(similar to [okhttp]'s [Interceptor], here we use it for intercepting log) (since 1.3.0)
-* [x] Add tags filter (blacklist filter and whitelist filter) (since 1.3.0)
-* [x] Add PatternFlattener(mostly used when logging to file), e.g: use pattern "{d yyyy-MM-dd hh:mm:ss.SSS} {l}/{t}: {m}" and the flattened log would be "2016-10-30 13:00:00,000 W/my_tag: Simple message" (since 1.3.0)
-* [x] Log to file asynchronously (since 1.3.0)
-* [x] Logger-based log level control rather than current global one (since 1.3.0)
-* [x] Add builtin formatter for Bundle and Intent object (since 1.4.0)
-* [x] Export log files to a .zip (since 1.4.0)
+* [ ] Third-party libs log interception
+* [ ] Provide some encryption for `FilePrinter`
 
 ## [Releases](https://github.com/elvishew/xLog/releases)
-Latest release: 1.6.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.6.1)
+Latest release: 1.7.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.7.0)
 
 ## [Issues](https://github.com/elvishew/xLog/issues)
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
