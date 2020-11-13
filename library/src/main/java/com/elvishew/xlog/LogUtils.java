@@ -108,7 +108,7 @@ public class LogUtils {
    * @param folderPath  the specific folder path
    * @param zipFilePath the zip file path
    * @throws IOException if any error occurs
-   * @since 2.14.0
+   * @since 1.4.0
    */
   public static void compress(String folderPath, String zipFilePath) throws IOException {
     File folder = new File(folderPath);

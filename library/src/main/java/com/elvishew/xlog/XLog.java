@@ -57,7 +57,7 @@ import com.elvishew.xlog.printer.PrinterSet;
  * <p>
  * <b>2. Start to log.</b>
  * <br>{@link #v(String, Object...)}, {@link #v(String)} and {@link #v(String, Throwable)} are for
- * logging a {@link LogLevel#INFO} message.
+ * logging a {@link LogLevel#VERBOSE} message.
  * <br>{@link #d(String, Object...)}, {@link #d(String)} and {@link #d(String, Throwable)} are for
  * logging a {@link LogLevel#DEBUG} message.
  * <br>{@link #i(String, Object...)}, {@link #i(String)} and {@link #i(String, Throwable)} are for
