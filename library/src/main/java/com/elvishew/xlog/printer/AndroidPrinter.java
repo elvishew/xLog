@@ -28,6 +28,11 @@ public class AndroidPrinter implements Printer {
    */
   static final int DEFAULT_MAX_CHUNK_SIZE = 4000;
 
+  /**
+   * Whether the log should be separated by line separator automatically.
+   */
+  private boolean autoSeparate;
+
   private int maxChunkSize;
 
   /**
@@ -38,7 +43,20 @@ public class AndroidPrinter implements Printer {
    * maxChunkSize using {@link #AndroidPrinter(int)}.
    */
   public AndroidPrinter() {
-    this(DEFAULT_MAX_CHUNK_SIZE);
+    this(false, DEFAULT_MAX_CHUNK_SIZE);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param autoSeparate whether the message should be separated by line separator automatically.
+   *                     Imaging there is a message "line1\nline2\nline3", and each line has chars
+   *                     less than max-chunk-size, then the message would be separated to 3 lines
+   *                     automatically
+   * @since 1.7.1
+   */
+  public AndroidPrinter(boolean autoSeparate) {
+    this.autoSeparate = autoSeparate;
   }
 
   /**
@@ -52,18 +70,39 @@ public class AndroidPrinter implements Printer {
     this.maxChunkSize = maxChunkSize;
   }
 
+  /**
+   * Constructor.
+   *
+   * @param autoSeparate whether the message should be separated by line separator automatically.
+   *                     Imaging there is a message "line1\nline2\nline3", and each line has chars
+   *                     less than max-chunk-size, then the message would be separated to 3 lines
+   *                     automatically
+   * @param maxChunkSize the max size of each chunk. If the message is too long, it will be
+   *                     separated to several chunks automatically
+   * @since 1.7.1
+   */
+  public AndroidPrinter(boolean autoSeparate, int maxChunkSize) {
+    this.autoSeparate = autoSeparate;
+    this.maxChunkSize = maxChunkSize;
+  }
+
   @Override
   public void println(int logLevel, String tag, String msg) {
-    if (msg.length() <= maxChunkSize) {
-      printChunk(logLevel, tag, msg);
-      return;
-    }
-
     int msgLength = msg.length();
     int start = 0;
     int end;
     while (start < msgLength) {
-      end = adjustEnd(msg, start, Math.min(start + maxChunkSize, msgLength));
+      if (msg.charAt(start) == '\n') {
+        start++;
+        continue;
+      }
+      end = Math.min(start + maxChunkSize, msgLength);
+      if (autoSeparate) {
+        int newLine = msg.indexOf('\n', start);
+        end = newLine != -1 ? newLine : end;
+      } else {
+        end = adjustEnd(msg, start, end);
+      }
       printChunk(logLevel, tag, msg.substring(start, end));
 
       start = end;
@@ -86,7 +125,7 @@ public class AndroidPrinter implements Printer {
     int last = originEnd - 1;
     while (start < last) {
       if (msg.charAt(last) == '\n') {
-        return last + 1;
+        return last;
       }
       last--;
     }

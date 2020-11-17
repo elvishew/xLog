@@ -23,6 +23,6 @@ public class RandomUtil {
   private static Random sAsciiCharRandom = new Random();
 
   public static char randomAsciiChar() {
-    return (char) sAsciiCharRandom.nextInt(128);
+    return (char) (sAsciiCharRandom.nextInt(100) + 28/* Just don't random to a line separator*/);
   }
 }
