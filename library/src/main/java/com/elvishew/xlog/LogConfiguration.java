@@ -335,8 +335,20 @@ public class LogConfiguration {
      * Enable thread info.
      *
      * @return the builder
+     * @deprecated use {@link #enableThreadInfo()} instead, since 1.7.1
      */
     public Builder t() {
+      return enableThreadInfo();
+    }
+
+    /**
+     * Enable thread info, the thread info would be printed with the log message.
+     *
+     * @return the builder
+     * @see ThreadFormatter
+     * @since 1.7.1
+     */
+    public Builder enableThreadInfo() {
       this.withThread = true;
       return this;
     }
@@ -345,8 +357,19 @@ public class LogConfiguration {
      * Disable thread info.
      *
      * @return the builder
+     * @deprecated use {@link #disableThreadInfo()} instead, since 1.7.1
      */
     public Builder nt() {
+      return disableThreadInfo();
+    }
+
+    /**
+     * Disable thread info, the thread info won't be printed with the log message.
+     *
+     * @return the builder
+     * @since 1.7.1
+     */
+    public Builder disableThreadInfo() {
       this.withThread = false;
       return this;
     }
@@ -356,9 +379,23 @@ public class LogConfiguration {
      *
      * @param depth the number of stack trace elements we should log, 0 if no limitation
      * @return the builder
+     * @deprecated use {@link #enableStackTrace(int)} instead, since 1.7.1
      */
     public Builder st(int depth) {
-      st(null, depth);
+      enableStackTrace(depth);
+      return this;
+    }
+
+    /**
+     * Enable stack trace, the stack trace would be printed with the log message.
+     *
+     * @param depth the number of stack trace elements we should log, 0 if no limitation
+     * @return the builder
+     * @see StackTraceFormatter
+     * @since 1.7.1
+     */
+    public Builder enableStackTrace(int depth) {
+      enableStackTrace(null, depth);
       return this;
     }
 
@@ -373,8 +410,26 @@ public class LogConfiguration {
      * @param depth            the number of stack trace elements we should log, 0 if no limitation
      * @return the builder
      * @since 1.4.0
+     * @deprecated use {@link #enableStackTrace(String, int)} instead, since 1.7.1
      */
     public Builder st(String stackTraceOrigin, int depth) {
+      return enableStackTrace(stackTraceOrigin, depth);
+    }
+
+    /**
+     * Enable stack trace, the stack trace would be printed with the log message.
+     *
+     * @param stackTraceOrigin the origin of stack trace elements from which we should NOT log when
+     *                         logging with stack trace, it can be a package name like
+     *                         "com.elvishew.xlog", a class name like "com.yourdomain.logWrapper",
+     *                         or something else between package name and class name, like "com.yourdomain.".
+     *                         It is mostly used when you are using a logger wrapper
+     * @param depth            the number of stack trace elements we should log, 0 if no limitation
+     * @return the builder
+     * @see StackTraceFormatter
+     * @since 1.7.1
+     */
+    public Builder enableStackTrace(String stackTraceOrigin, int depth) {
       this.withStackTrace = true;
       this.stackTraceOrigin = stackTraceOrigin;
       this.stackTraceDepth = depth;
@@ -385,8 +440,20 @@ public class LogConfiguration {
      * Disable stack trace.
      *
      * @return the builder
+     * @deprecated use {@link #disableStackTrace()} instead, since 1.7.1
      */
     public Builder nst() {
+      return disableStackTrace();
+    }
+
+    /**
+     * Disable stack trace, the stack trace won't be printed with the log message.
+     *
+     * @return the builder
+     * @see StackTraceFormatter
+     * @since 1.7.1
+     */
+    public Builder disableStackTrace() {
       this.withStackTrace = false;
       this.stackTraceOrigin = null;
       this.stackTraceDepth = 0;
@@ -397,8 +464,21 @@ public class LogConfiguration {
      * Enable border.
      *
      * @return the builder
+     * @deprecated use {@link #enableBorder()} instead, since 1.7.1
      */
     public Builder b() {
+      return enableBorder();
+    }
+
+    /**
+     * Enable border, the border would surround the entire log content, and separate the log
+     * message, thread info and stack trace.
+     *
+     * @return the builder
+     * @see BorderFormatter
+     * @since 1.7.1
+     */
+    public Builder enableBorder() {
       this.withBorder = true;
       return this;
     }
@@ -407,8 +487,19 @@ public class LogConfiguration {
      * Disable border.
      *
      * @return the builder
+     * @deprecated use {@link #disableBorder()} instead, since 1.7.1
      */
     public Builder nb() {
+      return disableBorder();
+    }
+
+    /**
+     * Disable border, the log content won't be surrounded by a border.
+     *
+     * @return the builder
+     * @since 1.7.1
+     */
+    public Builder disableBorder() {
       this.withBorder = false;
       return this;
     }

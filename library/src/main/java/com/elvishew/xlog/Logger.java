@@ -88,23 +88,23 @@ public class Logger {
 
     if (builder.threadSet) {
       if (builder.withThread) {
-        logConfigBuilder.t();
+        logConfigBuilder.enableThreadInfo();
       } else {
-        logConfigBuilder.nt();
+        logConfigBuilder.disableThreadInfo();
       }
     }
     if (builder.stackTraceSet) {
       if (builder.withStackTrace) {
-        logConfigBuilder.st(builder.stackTraceOrigin, builder.stackTraceDepth);
+        logConfigBuilder.enableStackTrace(builder.stackTraceOrigin, builder.stackTraceDepth);
       } else {
-        logConfigBuilder.nst();
+        logConfigBuilder.disableStackTrace();
       }
     }
     if (builder.borderSet) {
       if (builder.withBorder) {
-        logConfigBuilder.b();
+        logConfigBuilder.enableBorder();
       } else {
-        logConfigBuilder.nb();
+        logConfigBuilder.disableBorder();
       }
     }
 
