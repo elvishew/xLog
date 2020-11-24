@@ -1,58 +1,95 @@
 # XLog
+
 ![](https://travis-ci.org/elvishew/xLog.svg?branch=master)
 
-[简体中文](https://github.com/elvishew/XLog/blob/master/README_ZH.md)
+Lightweight and pretty, powerful and flexible logger for android and java, can print the log to Logcat, Console and Files, or anywhere if you like.
 
-Simple and pretty, powerful and flexible logger for android and java, can concurrently print the log to multiple target like Logcat, Console and File, or even Server(or anywhere) if you like.
+## Logcat Output
 
-What XLog can do:
-* Global config(tag, formatters...) or log-based config
-* Support printing any object and customizable object formatter
-* Support printing array
-* Support printing long log (No 4K limitation)
-* XML and JSON formatted
-* Thread information (Thread name etc. Can be customized)
-* Stack trace information (Configurable call stack depth, with file name, method name, line number)
-* Support log interceptors
-* Save logs in file (Configurable file naming and backup strategy)
-* Good looking in Android Studio
-* Easy to use, powerful in customization
+![](https://github.com/elvishew/XLog/blob/master/images/logcat-output.png)
 
-The differences to other logger libraries:
-* Pretty source code and document
-* So flexible that you can easily customize or enhance it
-* Lightweight, no other dependencies
+## Quick Start
 
-## Dependency
+Dependency
+
 ```groovy
 implementation 'com.elvishew:xlog:1.7.1'
 ```
 
-## Preview
-* Log with thread information, stack trace information and border
-![](https://github.com/elvishew/XLog/blob/master/images/classic_log.png)
-* Formatted network API request
-![](https://github.com/elvishew/XLog/blob/master/images/restful_request.png)
-* Formatted network API response
-![](https://github.com/elvishew/XLog/blob/master/images/restful_response.png)
-* Log files
-![](https://github.com/elvishew/XLog/blob/master/images/log_files.png)
+Initialization
 
-## Architecture
-![](https://github.com/elvishew/XLog/blob/master/images/architecture.png)
-
-## Usage
-### Initialization
-#### Simple way
 ```java
 XLog.init(LogLevel.ALL);
 ```
-Or if you want to disable the log in release version
-```
-XLog.init(BuildConfig.DEBUG ? LogLevel.ALL : LogLevel.NONE);
+
+Logging
+
+```java
+XLog.d("hello xlog");
 ```
 
-#### Advance way
+## Logging
+
+Log simple message.
+
+```java
+XLog.d(message);
+```
+
+Log a message with throwable, usually use when exception is thrown.
+
+```java
+XLog.e(message, throwable);
+```
+
+Format string is also supported, so you don't have to append so many strings and variables by `+`.
+
+```java
+XLog.d("Hello %s, I am %d", "Elvis", 20);
+```
+
+Unformatted JSON and XML string will be formatted automatically.
+
+```java
+XLog.json(JSON_CONTENT);
+XLog.xml(XML_CONTENT);
+```
+
+All `Collection`s and `Map`s data are supported.
+
+```java
+XLog.d(array);
+XLog.d(list);
+XLog.d(map);
+```
+
+If needed, you can also dump `Intent` and `Bundle` object directly.
+
+```java
+XLog.d(intent);
+XLog.d(bundle);
+```
+
+In fact, you can dump any type of object if you want. You can specify an `ObjectFormatter` for specific type, otherwise `toString()` will be used when converting the object to a string.
+
+```java
+XLog.d(object);
+```
+
+Note: `v/d/i/w/e` are optional, `v` for `VERBOSE`, `d` for `DEBUG`, `i` for `INFO`, `w` for `WARNING` and `e` for `ERROR`.
+
+## Config
+
+`xLog` is very flexible, almost every component is configurable.
+
+When initialization, there are a simple way
+
+```java
+XLog.init(LogLevel.ALL);
+```
+
+and advance way.
+
 ```java
 LogConfiguration config = new LogConfiguration.Builder()
     .logLevel(BuildConfig.DEBUG ? LogLevel.ALL             // Specify log level, logs below this level won't be printed, default: LogLevel.ALL
@@ -71,13 +108,13 @@ LogConfiguration config = new LogConfiguration.Builder()
         new AnyClassObjectFormatter())                     // Use Object.toString() by default
     .addInterceptor(new BlacklistTagsFilterInterceptor(    // Add blacklist tags filter
         "blacklist1", "blacklist2", "blacklist3"))
-    .addInterceptor(new MyInterceptor())                   // Add a log interceptor
+    .addInterceptor(new MyInterceptor())                   // Add other log interceptor
     .build();
 
 Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
 Printer consolePrinter = new ConsolePrinter();             // Printer that print the log to console using System.out
-Printer filePrinter = new FilePrinter                      // Printer that print the log to the file system
-    .Builder("/sdcard/xlog/")                              // Specify the path to save log file
+Printer filePrinter = new FilePrinter                      // Printer that print(save) the log to file
+    .Builder("<path-to-logs-dir>")                         // Specify the directory path of log file(s)
     .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
     .backupStrategy(new NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
     .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
@@ -90,102 +127,267 @@ XLog.init(                                                 // Initialize XLog
     consolePrinter,
     filePrinter);
 ```
-For android, a best place to do the initialization is [Application.onCreate()](http://developer.android.com/reference/android/app/Application.html#onCreate()).
 
-### Global Usage
+After initialization, a global `Logger` with the global config is created, all logging via `XLog` will pass to this global `Logger`.
+
+Besides, you can create unlimmited number of `Logger` with different configs:
+
+* Base on global `Logger`, change tag to `"TAG-A"`.
+
 ```java
-XLog.d("Simple message")
-XLog.d("My name is %s", "Elvis");
-XLog.d("An exception caught", exception);
-XLog.d(object);
-XLog.d(array);
-XLog.json(unformattedJsonString);
-XLog.xml(unformattedXmlString);
-... // Other global usage
+Logger logger = XLog.tag("TAG-A")
+                    ... // other overrides
+                    .build();
+logger.d("Message with custom tag");
 ```
-### Partial usage
-Build a logger.
+
+* Base on global `Logger`, enable border and thread info.
+
 ```java
-Logger partial = XLog.tag("PARTIAL-LOG")
-    ... // Other configs
+Logger logger = XLog.enableBorder()
+                    .enableThread()
+                    ... // other overrides
+                    .build();
+logger.d("Message with thread info and border");
+```
+
+you can also log with one-time-use config:
+
+```java
+XLog.tag("TAG-A").d("Message with custom tag");
+XLog.enableBorder().enableThread().d("Message with thread info and border");
+```
+
+## Print to anywhere
+
+With one logging statement
+
+```java
+XLog.d("hello xlog");
+```
+you can print the `"hello xlog"` to
+
+* Logcat (with `AndroidPrinter`)
+
+* File (with `FilePrinter`)
+
+and anywhere you like.
+
+Just implement the `Printer` interface, and specify it during initialization
+
+```java
+XLog.init(config, printer1, printer2...printerN);
+```
+
+or when creating a custom `Logger`
+
+```java
+Logger logger = XLog.printer(printer1, printer2...printerN)
+                    .build();
+```
+
+or when one-time-use logging
+
+```java
+XLog.printer(printer1, printer2...printerN).d("Message with one-time-use printers");
+```
+
+## Save logs to file
+
+To save logs to file, you need to create a `FilePrinter`
+
+```java
+Printer filePrinter = new FilePrinter                      // Printer that print(save) the log to file
+    .Builder("<path-to-logs-dir>")                         // Specify the directory path of log file(s)
+    .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
+    .backupStrategy(new NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
+    .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
+    .flattener(new MyFlattener())                          // Default: DefaultFlattener
     .build();
 ```
-And use it partially, the logging methods is completely the same as that ones in [XLog].
+
+and add the `FilePrinter` to XLog when initializing
 
 ```java
-partial.d("Simple message 1");
-partial.d("Simple message 2");
-... // Other partial usage
+XLog.init(config, filePrinter);
 ```
 
-### Log-based usage
-Setup log-based configs and log immediately, the logging methods is completely the same as that ones in [XLog].
+or when creating an non-global `Logger`
+
 ```java
-XLog.enableThreadInfo()    // Enable thread into
-    .enableStackTrace(3)   // Enable stack trace info with depth 3
-    .enableBorder()        // Enable border
-    ...                    // Other configs
-    .d("Simple message 1");
-
-XLog.tag("TEMP-TAG")
-    .enableStackTrace(0)   // Enable stack trace info without limitation
-    ...                    // Other configs
-    .d("Simple message 2");
-
-XLog.disableThreadInfo()   // Disable thread info
-    .disableStackTrace()   // Disable stack trace info
-    .d("Simple message 3");
-
-XLog.enableBorder().d("Simple message 4");
-
+Logger logger = XLog.printer(filePrinter)
+                    ... // other overrides
+                    .build();
 ```
 
-## Comparison
-Let's imagine there are a JSON string and a XML string
+### Custom file name
+
+You can specify the file name directly, or categorize the logs to different files by some rules.
+
+* Use `ChangelessFileNameGenerator`, you can specify a changeless file name.
+
+```
+logs-dir
+└──log
+```
+
+* Use `LevelFileNameGenerator`, it will categorize logs by levels automatically.
+
+```
+logs-dir
+├──VERBOSE
+├──DEBUG
+├──INFO
+├──WARN
+└──ERROR
+```
+
+* Use `DateFileNameGenerator`, it will categorize logs by date automatically.
+
+```
+logs-dir
+├──2020-01-01
+├──2020-01-02
+├──2020-01-03
+└──2020-01-04
+```
+
+* Implement `FileNameGenerator` directly, make the file name generating rules by yourself.
+
+```
+logs-dir
+├──2020-01-01-<hash1>.log
+├──2020-01-01-<hash2>.log
+├──2020-01-03-<hash>.log
+└──2020-01-05-<hash>.log
+```
+
+By default, a `ChangelessFileNameGenerator` with log file name `log` is used.
+
+
+### Custom log format
+
+Log elements(date, time, level and message) should be flattened to a single string before being printed to the file, you need a `Flattener` to do that.
+
+We have defined a `PatternFlattener`, which may satisfy most of you. All you need to do is just passing a pattern with parameters to the flattener.
+
+Supported parameters:
+
+<table border=0 cellspacing=3 cellpadding=0 summary="Supported parameters">
+  <tr bgcolor="#ccccff">
+    <th align=left>Parameter
+    <th align=left>Represents
+  <tr>
+    <td>{d}
+    <td>Date in default date format {@value #DEFAULT_DATE_FORMAT}
+  <tr>
+    <td>{d format}
+    <td>Date in specific date format
+  <tr>
+    <td>{l}
+    <td>Short name of log level. e.g: V/D/I
+  <tr>
+    <td>{L}
+    <td>Long name of log level. e.g: VERBOSE/DEBUG/INFO
+  <tr>
+    <td>{t}
+    <td>Tag of log
+  <tr>
+    <td>{m}
+    <td>Message of log
+</table>
+
+Imagine there is a log, with {@link LogLevel#DEBUG} level, "my_tag" tag and "Simple message" message, the flattened log would be as below.
+
+<table border=0 cellspacing=3 cellpadding=0 summary="Examples of patterns and flattened logs">
+  <tr bgcolor="#ccccff">
+    <th align=left>Pattern
+    <th align=left>Flattened log
+  <tr>
+    <td>{d} {l}/{t}: {m}
+    <td>2016-11-30 13:00:00.000 D/my_tag: Simple message
+  <tr>
+    <td>{d yyyy-MM-dd HH:mm:ss.SSS} {l}/{t}: {m}
+    <td>2016-11-30 13:00:00.000 D/my_tag: Simple message
+  <tr>
+    <td>{d yyyy/MM/dd HH:mm:ss} {l}|{t}: {m}
+    <td>2016/11/30 13:00:00 D|my_tag: Simple message
+  <tr>
+    <td>{d yy/MM/dd HH:mm:ss} {l}|{t}: {m}
+    <td>16/11/30 13:00:00 D|my_tag: Simple message
+  <tr>
+    <td>{d MM/dd HH:mm} {l}-{t}-{m}
+    <td>11/30 13:00 D-my_tag-Simple message
+</table>
+
+If you don't even want to construct a pattern, `ClassicFlattener` is for you. It is a `PatternFlattener` with a default pattern `{d} {l}/{t}: {m}`.
+
+By default, `FilePrinter` use a `DefaultFlattener`, which just simply concat the timestamp and message together. You may don't like it, so please remember to specify your own `Flattener`, maybe a `ClassicFlattener`.
+
+### Auto backup
+
+Every single log file may grow to an unexpected size, a `BackupStrategy` allow you to start a new file at some point, and mark the old file name with `.bak` suffix. There will be at most one `.bak` file in the same time.
+
+```
+logs-dir
+├──log
+└──log.bak
+```
+
+Mostly, you just want to start a new file when the log file reach a specified max-size, so `FileSizeBackupStrategy` is presented for you.
+
+By default, `NeverBackupStrategy` is used, which will never start a new file.
+
+### Auto clean
+
+If you use a changeable `FileNameGenerator`, there would be more than one log files in the logs folder, and gets more and more as time goes on. To prevent running out of disk space, you need a `CleanStrategy`.
+
+Typically, you can use a `FileLastModifiedCleanStrategy`, which will delete log files that have not been modified for a period of time(e.g., a week) during initialization.
+
+By default, `NeverCleanStrategy` is used, which will never do any cleaning.
+
+## Intercept and filter log
+
+Before each log being printed, you have a chance to modify or filter out the log, by using an `Interceptor`.
+
+We have already predefined some `Interceptor` for you, e.g. `WhitelistTagsFilterInterceptor` only allows the logs of specifid tags to be printed, and `BlacklistTagsFilterInterceptor` is used to filter out(not print) logs of a specifid logs.
+
+You can specify multiple `Interceptor`s for a single `Logger`, these `Interceptor`s will be given the opportunity to modify or filter out logs in the order in which they were added. Once a log is filtered out by an `Interceptor`, subsequent `Interceptor`s will no longer get this log.
+
+## Format object
+
+When logging an object
+
 ```java
-String jsonString = "{\"name\": \"Elvis\", \"age\": 18}";
-String xmlString = "<team><member name="Elvis"/><member name="Leon"/></team>";
+XLog.d(object);
 ```
 
-### [Android Log]
-```java
-Log.d(TAG, "Message");
-Log.d(TAG, String.format("Message with argument: age=%s", 18));
-Log.d(TAG, jsonString);
-Log.d(TAG, xmlString);
-Log.d(TAG, "Message with stack trace info", new Throwable());
-```
-![](https://github.com/elvishew/XLog/blob/master/images/comparison-android-log.png)
+the `toString` of the object will be called by default.
 
-### XLog
-```java
-XLog.init(LogLevel.ALL);
-XLog.d("Message");
-XLog.d("Message with argument: age=%s", 18);
-XLog.json(jsonString);
-XLog.xml(xmlString);
-XLog.enableStackTrace(5).d("Message with stack trace info");
-```
-![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog.png)
+Sometimes, the `toString` implementation of the object is not quite what you want, so you need an `ObjectFormatter` to define how this type of object should be converted to a string when logging.
 
-### XLog with border
-```java
-XLog.init(new LogConfiguration.Builder().logLevel(LogLevel.ALL).enableBorder().build());
-XLog.d("Message");
-XLog.d("Message with argument: age=%s", 18);
-XLog.json(jsonString);
-XLog.xml(xmlString);
-XLog.enableStackTrace(5).d("Message with stack trace info");
-```
-![](https://github.com/elvishew/XLog/blob/master/images/comparison-xlog-with-border.png)
+On the android platform, we predefine `IntentFormatter` and `BundleFormatter` for `Intent` and `Bundle` class.
+
+You can implement and add your own `ObjectFormatter` for any class.
+
+Please note, `ObjectFormatter`s only work when logging an object.
 
 ## Similar libraries
+
 * [logger](https://github.com/orhanobut/logger)
 * [KLog](https://github.com/ZhaoKaiQiang/KLog)
 
+Compare with other logger libraries:
+
+* Well documented
+* So flexible that you can easily customize or enhance it
+
 ## Compatibility
-In order to be compatible with [Android Log], all the methods of [Android Log] are supported here.  
+
+In order to be compatible with [Android Log], all the methods of [Android Log] are supported here.
+
 See the Log class defined in [XLog].
+
 ```java
 Log.v(String, String);
 Log.v(String, String, Throwable);
@@ -203,33 +405,39 @@ Log.println(int, String, String);
 Log.isLoggable(String, int);
 Log.getStackTraceString(Throwable);
 ```
+
 ### Migration
+
 If you have a big project using the [Android Log], and it is a hard work to change all usage of [Android Log] to [XLog], then you can use the compatible API, simply replace all 'android.util.Log' to 'com.elvishew.xlog.XLog.Log'.  
 (**For a better performance, you should think about not using the compatible API.**)
-#### Linux/Cygwin:
+
+#### Linux/Cygwin
+
 ```shell
 grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "s/android.util.Log/com.elvishew.xlog.XLog.Log/g"
 ```
 
 #### Mac
+
 ```shell
 grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android.util.Log/com.elvishew.xlog.XLog.Log/g"
 ```
 
 #### Android Studio
-In 'Project' pane, switch to the 'Project Files' tab, then right-click on the your source directory.  
-In the menu, click the 'Replace in Path...' option.  
-In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
+
+1. In 'Project' pane, switch to the 'Project Files' tab, then right-click on the your source directory.
+2. In the menu, click the 'Replace in Path...' option.
+3. In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
 ## TODO
 * [ ] Third-party libs log interception
-* [ ] Provide some encryption for `FilePrinter`
 
 ## [Releases](https://github.com/elvishew/xLog/releases)
-Latest release: 1.7.0 [Change log](https://github.com/elvishew/xLog/releases/tag/1.7.0)
+Latest release: 1.7.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.7.1)
 
 ## [Issues](https://github.com/elvishew/xLog/issues)
-If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.
+If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.  
+Before creating an issue, please check if there is an existed one.
 
 ## Thanks
 Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give me many ideas of what a logger can do.
@@ -238,7 +446,7 @@ Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/
 
 ## License
 <pre>
-Copyright 2018 Elvis Hew
+Copyright 2020 Elvis Hew
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
