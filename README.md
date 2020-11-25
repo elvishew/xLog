@@ -297,7 +297,7 @@ Supported parameters:
     <td>Message of log
 </table>
 
-Imagine there is a log, with {@link LogLevel#DEBUG} level, "my_tag" tag and "Simple message" message, the flattened log would be as below.
+Imagine there is a log, with `DEBUG` level, `"my_tag"` tag and `"Simple message"` message, the flattened log would be as below.
 
 <table border=0 cellspacing=3 cellpadding=0 summary="Examples of patterns and flattened logs">
   <tr bgcolor="#ccccff">
@@ -430,21 +430,23 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 3. In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
 ## TODO
-* [ ] Third-party libs log interception
 
-## [Releases](https://github.com/elvishew/xLog/releases)
-Latest release: 1.7.1 [Change log](https://github.com/elvishew/xLog/releases/tag/1.7.1)
+* [ ] Third-party libs log interception
+* [ ] Support multiple backup files
 
 ## [Issues](https://github.com/elvishew/xLog/issues)
+
 If you meet any problem when using XLog, or have any suggestion, please feel free to create an issue.  
 Before creating an issue, please check if there is an existed one.
 
 ## Thanks
-Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give me many ideas of what a logger can do.
 
-Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/zserge/log), it give me the thought of making XLog compatible with [Android Log].
+Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give us many ideas of what a logger can do.
+
+Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/zserge/log), it give us the thought of making XLog compatible with [Android Log].
 
 ## License
+
 <pre>
 Copyright 2020 Elvis Hew
 
