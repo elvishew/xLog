@@ -56,7 +56,7 @@ public class AndroidPrinter implements Printer {
    * @since 1.7.1
    */
   public AndroidPrinter(boolean autoSeparate) {
-    this.autoSeparate = autoSeparate;
+    this(autoSeparate, DEFAULT_MAX_CHUNK_SIZE);
   }
 
   /**
@@ -67,7 +67,7 @@ public class AndroidPrinter implements Printer {
    * @since 1.4.1
    */
   public AndroidPrinter(int maxChunkSize) {
-    this.maxChunkSize = maxChunkSize;
+    this(false, maxChunkSize);
   }
 
   /**
