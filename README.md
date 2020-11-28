@@ -13,7 +13,7 @@ Lightweight and pretty, powerful and flexible logger for android and java, can p
 Dependency
 
 ```groovy
-implementation 'com.elvishew:xlog:1.7.1'
+implementation 'com.elvishew:xlog:1.7.2'
 ```
 
 Initialization
@@ -111,7 +111,7 @@ LogConfiguration config = new LogConfiguration.Builder()
     .addInterceptor(new MyInterceptor())                   // Add other log interceptor
     .build();
 
-Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
+Printer androidPrinter = new AndroidPrinter(true);         // Printer that print the log using android.util.Log
 Printer consolePrinter = new ConsolePrinter();             // Printer that print the log to console using System.out
 Printer filePrinter = new FilePrinter                      // Printer that print(save) the log to file
     .Builder("<path-to-logs-dir>")                         // Specify the directory path of log file(s)
@@ -345,6 +345,18 @@ If you use a changeable `FileNameGenerator`, there would be more than one log fi
 Typically, you can use a `FileLastModifiedCleanStrategy`, which will delete log files that have not been modified for a period of time(e.g., a week) during initialization.
 
 By default, `NeverCleanStrategy` is used, which will never do any cleaning.
+
+### Compress log files
+
+Just call
+
+```java
+LogUtil.compress("<path-to-logs-dir>", "<path-to-zip-file>");
+```
+
+a zip file will be created and the entire log folder will be compressed and written to it, so you can easily collect the user logs for issue-debug.
+
+Note: the origianl log files will not be deleted.
 
 ## Intercept and filter log
 
