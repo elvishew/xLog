@@ -136,6 +136,12 @@ public class FilePrinter implements Printer {
     }
 
     File lastFile = writer.getFile();
+    
+    // fix the issue #77
+    if (!lastFile.exists()) {
+      writer.open(lastFile.getName());
+    }
+
     if (backupStrategy.shouldBackup(lastFile)) {
       // Backup the log file, and create a new log file.
       writer.close();
@@ -479,6 +485,11 @@ public class FilePrinter implements Printer {
      * @param flattenedLog the flattened log
      */
     void appendLog(String flattenedLog) {
+      // fix the npe , detail see issue #93
+      if (!isOpened()) {
+        return;
+      }
+
       try {
         bufferedWriter.write(flattenedLog);
         bufferedWriter.newLine();
