@@ -350,6 +350,9 @@ public class FilePrinter implements Printer {
      */
     void start() {
       synchronized (this) {
+        if (started) {
+          return;
+        }
         new Thread(this).start();
         started = true;
       }
