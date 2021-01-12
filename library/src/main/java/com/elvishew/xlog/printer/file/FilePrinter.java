@@ -118,15 +118,14 @@ public class FilePrinter implements Printer {
    */
   private void doPrintln(long timeMillis, int logLevel, String tag, String msg) {
     String lastFileName = writer.getLastFileName();
-    if (lastFileName == null || fileNameGenerator.isFileNameChangeable()) {
+    boolean isWriterClosed = !writer.isOpened();
+    if (lastFileName == null || isWriterClosed || fileNameGenerator.isFileNameChangeable()) {
       String newFileName = fileNameGenerator.generateFileName(logLevel, System.currentTimeMillis());
       if (newFileName == null || newFileName.trim().length() == 0) {
         throw new IllegalArgumentException("File name should not be empty.");
       }
-      if (!newFileName.equals(lastFileName)) {
-        if (writer.isOpened()) {
-          writer.close();
-        }
+      if (!newFileName.equals(lastFileName) || isWriterClosed) {
+        writer.close();
         cleanLogFilesIfNecessary();
         if (!writer.open(newFileName)) {
           return;
@@ -397,7 +396,7 @@ public class FilePrinter implements Printer {
      * @return true if opened, false otherwise
      */
     boolean isOpened() {
-      return bufferedWriter != null;
+      return bufferedWriter != null && logFile.exists();
     }
 
     /**
@@ -437,8 +436,7 @@ public class FilePrinter implements Printer {
           logFile.createNewFile();
         } catch (IOException e) {
           e.printStackTrace();
-          lastFileName = null;
-          logFile = null;
+          close();
           return false;
         }
       }
@@ -448,8 +446,7 @@ public class FilePrinter implements Printer {
         bufferedWriter = new BufferedWriter(new FileWriter(logFile, true));
       } catch (Exception e) {
         e.printStackTrace();
-        lastFileName = null;
-        logFile = null;
+        close();
         return false;
       }
       return true;
@@ -466,13 +463,11 @@ public class FilePrinter implements Printer {
           bufferedWriter.close();
         } catch (IOException e) {
           e.printStackTrace();
-          return false;
-        } finally {
-          bufferedWriter = null;
-          lastFileName = null;
-          logFile = null;
         }
       }
+      bufferedWriter = null;
+      lastFileName = null;
+      logFile = null;
       return true;
     }
 
