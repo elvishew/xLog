@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2021 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,25 +21,32 @@ import java.io.File;
 /**
  * Limit the file size of a max length.
  *
- * @deprecated use {@link FileSizeBackupStrategy2} instead, since 1.9.0.
- * A {@link FileSizeBackupStrategy2} allows you to define the max number of backup files
+ * @since 1.9.0
  */
-@Deprecated
-public class FileSizeBackupStrategy implements BackupStrategy {
+public class FileSizeBackupStrategy2 extends AbstractBackupStrategy {
 
   private long maxSize;
+
+  private int maxBackupIndex;
 
   /**
    * Constructor.
    *
-   * @param maxSize the max size the file can reach
+   * @param maxSize        the max size the file can reach
+   * @param maxBackupIndex the max backup index, or {@link #NO_LIMIT}, see {@link #getMaxBackupIndex()}
    */
-  public FileSizeBackupStrategy(long maxSize) {
+  public FileSizeBackupStrategy2(long maxSize, int maxBackupIndex) {
     this.maxSize = maxSize;
+    this.maxBackupIndex = maxBackupIndex;
   }
 
   @Override
   public boolean shouldBackup(File file) {
     return file.length() > maxSize;
+  }
+
+  @Override
+  public int getMaxBackupIndex() {
+    return maxBackupIndex;
   }
 }

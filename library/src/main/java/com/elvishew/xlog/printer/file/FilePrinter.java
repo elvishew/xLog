@@ -19,8 +19,11 @@ package com.elvishew.xlog.printer.file;
 import com.elvishew.xlog.flattener.Flattener;
 import com.elvishew.xlog.flattener.Flattener2;
 import com.elvishew.xlog.internal.DefaultsFactory;
+import com.elvishew.xlog.internal.printer.file.backup.BackupUtil;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
+import com.elvishew.xlog.printer.file.backup.BackupStrategy2;
+import com.elvishew.xlog.internal.printer.file.backup.BackupStrategyWrapper;
 import com.elvishew.xlog.printer.file.clean.CleanStrategy;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
 
@@ -56,7 +59,7 @@ public class FilePrinter implements Printer {
   /**
    * The backup strategy for log file.
    */
-  private final BackupStrategy backupStrategy;
+  private final BackupStrategy2 backupStrategy;
 
   /**
    * The clean strategy for log file.
@@ -130,7 +133,6 @@ public class FilePrinter implements Printer {
         if (!writer.open(newFileName)) {
           return;
         }
-        lastFileName = newFileName;
       }
     }
 
@@ -138,11 +140,7 @@ public class FilePrinter implements Printer {
     if (backupStrategy.shouldBackup(lastFile)) {
       // Backup the log file, and create a new log file.
       writer.close();
-      File backupFile = new File(folderPath, lastFileName + ".bak");
-      if (backupFile.exists()) {
-        backupFile.delete();
-      }
-      lastFile.renameTo(backupFile);
+      BackupUtil.backup(lastFile, backupStrategy);
       if (!writer.open(lastFileName)) {
         return;
       }
@@ -185,7 +183,7 @@ public class FilePrinter implements Printer {
     /**
      * The backup strategy for log file.
      */
-    BackupStrategy backupStrategy;
+    BackupStrategy2 backupStrategy;
 
     /**
      * The clean strategy for log file.
@@ -224,7 +222,12 @@ public class FilePrinter implements Printer {
      * @return the builder
      */
     public Builder backupStrategy(BackupStrategy backupStrategy) {
-      this.backupStrategy = backupStrategy;
+      if (!(backupStrategy instanceof BackupStrategy2)) {
+        backupStrategy = new BackupStrategyWrapper(backupStrategy);
+      }
+      this.backupStrategy = (BackupStrategy2) backupStrategy;
+
+      BackupUtil.verifyBackupStrategy(this.backupStrategy);
       return this;
     }
 

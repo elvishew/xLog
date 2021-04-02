@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Elvis Hew
+ * Copyright 2021 Elvis Hew
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,18 @@
 
 package com.elvishew.xlog.printer.file.backup;
 
-import java.io.File;
-
 /**
- * Limit the file size of a max length.
+ * An abstract {@link BackupStrategy2}, simply append '.bak.n' to the end of normal file name when
+ * naming a backup with index n.
+ * <p>
+ * Developers can simply extend this class when defining their own {@link BackupStrategy2}.
  *
- * @deprecated use {@link FileSizeBackupStrategy2} instead, since 1.9.0.
- * A {@link FileSizeBackupStrategy2} allows you to define the max number of backup files
+ * @since 1.9.0
  */
-@Deprecated
-public class FileSizeBackupStrategy implements BackupStrategy {
-
-  private long maxSize;
-
-  /**
-   * Constructor.
-   *
-   * @param maxSize the max size the file can reach
-   */
-  public FileSizeBackupStrategy(long maxSize) {
-    this.maxSize = maxSize;
-  }
+public abstract class AbstractBackupStrategy implements BackupStrategy2 {
 
   @Override
-  public boolean shouldBackup(File file) {
-    return file.length() > maxSize;
+  public String getBackupFileName(String fileName, int backupIndex) {
+    return fileName + ".bak." + backupIndex;
   }
 }
