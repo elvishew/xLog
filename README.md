@@ -13,7 +13,7 @@ Lightweight and pretty, powerful and flexible logger for android and java, can p
 Dependency
 
 ```groovy
-implementation 'com.elvishew:xlog:1.8.0'
+implementation 'com.elvishew:xlog:1.9.0'
 ```
 
 Initialization
@@ -326,17 +326,23 @@ By default, `FilePrinter` use a `DefaultFlattener`, which just simply concat the
 
 ### Auto backup
 
-Every single log file may grow to an unexpected size, a `BackupStrategy` allow you to start a new file at some point, and mark the old file name with `.bak` suffix. There will be at most one `.bak` file in the same time.
+Every single log file may grow to an unexpected size, a `BackupStrategy2` allow you to start a new file at some point, and change the old file name with `.bak.n`(n is the backup index) suffix.
 
 ```
 logs-dir
 ├──log
-└──log.bak
+├──log.bak.1
+├──log.bak.2
+├──log.bak.3
+├──...
+└──log.bak.n
 ```
 
-Mostly, you just want to start a new file when the log file reach a specified max-size, so `FileSizeBackupStrategy` is presented for you.
+Mostly, you just want to start a new file when the log file reach a specified max-size, so `FileSizeBackupStrategy2` is presented for you.
 
-By default, `NeverBackupStrategy` is used, which will never start a new file.
+By default, `FileSizeBackupStrategy(1024*1024)` is used, which will auto backup the log file when it reach a size of 1M. Besides, there will only be one logging file and one backup file in the same time, that means you can save at most only 2M logs.
+
+So, if you want to save more logs, and more backup files, please use `FileSizeBackupStrategy2` instead, this allow you keeping multiple backup files in the same time.
 
 ### Auto clean
 
@@ -444,7 +450,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 ## TODO
 
 * [ ] Third-party libs log interception
-* [ ] Support multiple backup files
+* [*] Support multiple backup files
 
 ## [Issues](https://github.com/elvishew/xLog/issues)
 
@@ -460,7 +466,7 @@ Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/
 ## License
 
 <pre>
-Copyright 2020 Elvis Hew
+Copyright 2015-2021 Elvis Hew
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
