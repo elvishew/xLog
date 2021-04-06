@@ -133,6 +133,7 @@ public class FilePrinter implements Printer {
         if (!writer.open(newFileName)) {
           return;
         }
+        lastFileName = newFileName;
       }
     }
 

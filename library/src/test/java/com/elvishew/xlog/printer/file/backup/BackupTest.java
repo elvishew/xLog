@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 
 public class BackupTest {
 
-  String logPath = "/Users/elvishew/Test/XLog";
+  String logPath = "build/test/log";
 
   String logFileName = "log";
 
