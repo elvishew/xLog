@@ -220,6 +220,17 @@ Logger logger = XLog.printer(filePrinter)
                     .build();
 ```
 
+### Save third party logs
+
+You can config `LibCat` after initializing `XLog`.
+
+```java
+LibCat.config(true, filePrinter);
+```
+Then, the logs logged by third party modules/libraries(within same app) will be saved to file too.
+
+Go to [LibCat] for more details.
+
 ### Custom file name
 
 You can specify the file name directly, or categorize the logs to different files by some rules.
@@ -447,10 +458,7 @@ grep -rl "android.util.Log" <your-source-directory> | xargs sed -i "" "s/android
 2. In the menu, click the 'Replace in Path...' option.
 3. In the dialog, fill the 'Text to find' with 'android.util.Log', and 'Replace with' with 'com.elvishew.xlog.XLog.Log', and click 'Find'.
 
-## TODO
-
-* [ ] Third-party libs log interception
-* [*] Support multiple backup files
+Optionally, instead of replacing all 'android.util.Log', you can just use [LibCat] to intercept all logs logged by `android.util.Log` and redirect them to `XLog`'s `Printer`.
 
 ## [Issues](https://github.com/elvishew/xLog/issues)
 
@@ -482,7 +490,6 @@ limitations under the License.
 </pre>
 
 [Android Log]: http://developer.android.com/reference/android/util/Log.html
-[XLog]: https://github.com/elvishew/XLog/blob/master/library/src/main/java/com/elvishew/xlog/XLog.java
-[Logger]: https://github.com/elvishew/XLog/blob/master/library/src/main/java/com/elvishew/xlog/Logger.java
-[okhttp]: https://github.com/square/okhttp
-[Interceptor]: https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/Interceptor.java
+[XLog]: https://github.com/elvishew/XLog/blob/master/xlog/src/main/java/com/elvishew/xlog/XLog.java
+[Logger]: https://github.com/elvishew/XLog/blob/master/xlog/src/main/java/com/elvishew/xlog/Logger.java
+[LibCat]: https://github.com/elvishew/XLog/blob/master/xlog-libcat

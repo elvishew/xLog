@@ -18,12 +18,15 @@ package com.elvishew.xlogsample;
 
 import android.app.Application;
 import android.os.Environment;
+import android.util.Log;
 
+import com.elvishew.xlog.BuildConfig;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.XLog;
 import com.elvishew.xlog.flattener.ClassicFlattener;
 import com.elvishew.xlog.interceptor.BlacklistTagsFilterInterceptor;
+import com.elvishew.xlog.libcat.LibCat;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
@@ -72,7 +75,7 @@ public class XLogSampleApplication extends Application {
 
     Printer androidPrinter = new AndroidPrinter();             // Printer that print the log using android.util.Log
     Printer filePrinter = new FilePrinter                      // Printer that print the log to the file system
-        .Builder(new File(getFilesDir().getAbsolutePath(), "log").getPath())       // Specify the path to save log file
+        .Builder(new File(getExternalCacheDir().getAbsolutePath(), "log").getPath())       // Specify the path to save log file
         .fileNameGenerator(new DateFileNameGenerator())        // Default: ChangelessFileNameGenerator("log")
         // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
         // .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
@@ -86,5 +89,8 @@ public class XLogSampleApplication extends Application {
 
     // For future usage: partial usage in MainActivity.
     globalFilePrinter = filePrinter;
+
+    // Intercept all logs(including logs logged by third party modules/libraries) and print them to file.
+    LibCat.config(true, filePrinter);
   }
 }
