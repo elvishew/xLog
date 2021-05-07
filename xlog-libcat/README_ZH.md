@@ -1,16 +1,16 @@
 # LibCat
 
-[简体中文](https://github.com/elvishew/XLog/blob/master/xlog-libcat/README_ZH.md)
+[English](https://github.com/elvishew/XLog/blob/master/xlog-libcat/README.md)
 
-Intercept the logs directly logged by `android.util.Log` within whole app's code, and redirect the logs to specified `Printer`.
+拦截所有在 APP 代码里通过 `android.util.Log` 直接打印的日志，并把这些日志重定向到指定的 `Printer`。
 
-Mostly, `LibCat` is used to intercept the logs from third party modules/libraries, and save the logs to the log file, by specifying a `FilePrinter`.
+大多数情况下，`LibCat` 被用来拦截第三方模块/库的日志，并通过指定 `FilePrinter`，把这些日志保存到文件中。
 
-About `Printer`s, see more in [XLog].
+关于 `Printer`，请到 [XLog] 了解更多信息。
 
-## Quick Start
+## 快速开始
 
-Add in build.gradle
+在 build.gradle 添加
 
 ```groovy
 apply plugin: 'android-aspectjx'
@@ -33,11 +33,11 @@ buildscript {
 }
 
 aspectjx {
-    // add 'exclude' packages/classes that you don't want to intercept the logs from
+    // 添加 'exclude' 你不想拦截日志的包/类
     exclude 'androidx.appcompat'
     exclude 'android.support'
 
-    // or add 'include' packages/classes that you want to intercept the logs from
+    // 或者：添加 'include' 你要拦截日志的包/类
 }
 
 dependencies {
@@ -45,48 +45,48 @@ dependencies {
 }
 ```
 
-Config when initializing app
+在初始化 APP 时进行配置
 
 ```java
 LibCat.config(true, printer);
 ```
 
-Then, all future logs logged by `android.util.Log` will be redirected to `printer`.
+这样, 此后通过 `android.util.Log` 打印的所有日志将被重定向到 `printer`。
 
-## Examples
+## 示例
 
-* Logs in `logcat` and `printer`
+* 在 `logcat` 和 `printer` 中都有日志
 
 ```java
 LibCat.config(true, printer);
 ```
 
-* Logs in `logcat` only (exactly like the situation before using `LibCat`)
+* 只在 `logcat` 有日志 (和没有使用 `LibCat` 时一样的现象)
 
 ```java
 LibCat.config(true, null);
 ```
 
-* Logs in `printer` only
+* 只在 `printer` 有日志
 
 ```java
 LibCat.config(false, printer);
 ```
 
-* Logs disappear totally
+* 日志彻底消失
 
 ```java
 LibCat.config(false, null);
 ```
 
-## References
+## 参考
 
 [AspectJ]
 
 [AspectJX]
 
-## Attention
-During compiling app, [AspectJ] will remove all callings of `android.util.Log` and replace with `LibCat` logic. No source code will be changed, but only bytecode.
+## 注意
+在编译阶段，[AspectJ] 会移除所有对 `android.util.Log` 的调用，并替换成 `LibCat` 的相关逻辑。除了编译出的字节码外，所有源码不会被改变。
 
 ## License
 
@@ -109,4 +109,4 @@ limitations under the License.
 [AspectJ]: https://www.eclipse.org/aspectj/
 [AspectJX]: https://github.com/HujiangTechnology/gradle_plugin_android_aspectjx
 [Printer]: https://github.com/elvishew/XLog/blob/master/xlog/src/main/java/com/elvishew/xlog/printer/Printer.java
-[XLog]: https://github.com/elvishew/xLog/blob/master/README.md
+[XLog]: https://github.com/elvishew/xLog/blob/master/README_ZH.md

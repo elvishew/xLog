@@ -2,6 +2,8 @@
 
 ![](https://travis-ci.org/elvishew/xLog.svg?branch=master)
 
+[简体中文](https://github.com/elvishew/xLog/blob/master/README_ZH.md)
+
 Lightweight and pretty, powerful and flexible logger for android and java, can print the log to Logcat, Console and Files, or anywhere if you like.
 
 ## Logcat Output
@@ -173,13 +175,13 @@ you can print the `"hello xlog"` to
 
 and anywhere you like.
 
-Just implement the `Printer` interface, and specify it during initialization
+Just implement the `Printer` interface, and specify it when initializing
 
 ```java
 XLog.init(config, printer1, printer2...printerN);
 ```
 
-or when creating a custom `Logger`
+or when creating a non-global `Logger`
 
 ```java
 Logger logger = XLog.printer(printer1, printer2...printerN)
@@ -220,6 +222,12 @@ Logger logger = XLog.printer(filePrinter)
                     .build();
 ```
 
+or when one-time-use logging
+
+```java
+XLog.printer(filePrinter).d("Message with one-time-use printers");
+```
+
 ### Save third party logs
 
 You can config `LibCat` after initializing `XLog`.
@@ -227,6 +235,7 @@ You can config `LibCat` after initializing `XLog`.
 ```java
 LibCat.config(true, filePrinter);
 ```
+
 Then, the logs logged by third party modules/libraries(within same app) will be saved to file too.
 
 Go to [LibCat] for more details.
@@ -357,7 +366,7 @@ So, if you want to save more logs, and more backup files, please use `FileSizeBa
 
 ### Auto clean
 
-If you use a changeable `FileNameGenerator`, there would be more than one log files in the logs folder, and gets more and more as time goes on. To prevent running out of disk space, you need a `CleanStrategy`.
+If you use a changeable `FileNameGenerator`, there would be more than one log files in the logs folder, and gets more and more as time goes on. Besides, if you use a backup strategy not limiting the max backup index, that would also make numbers of log files out of control. To prevent running out of disk space, you need a `CleanStrategy`.
 
 Typically, you can use a `FileLastModifiedCleanStrategy`, which will delete log files that have not been modified for a period of time(e.g., a week) during initialization.
 
@@ -490,6 +499,6 @@ limitations under the License.
 </pre>
 
 [Android Log]: http://developer.android.com/reference/android/util/Log.html
-[XLog]: https://github.com/elvishew/XLog/blob/master/xlog/src/main/java/com/elvishew/xlog/XLog.java
-[Logger]: https://github.com/elvishew/XLog/blob/master/xlog/src/main/java/com/elvishew/xlog/Logger.java
-[LibCat]: https://github.com/elvishew/XLog/blob/master/xlog-libcat
+[XLog]: https://github.com/elvishew/xLog/blob/master/xlog/src/main/java/com/elvishew/xlog/XLog.java
+[Logger]: https://github.com/elvishew/xLog/blob/master/xlog/src/main/java/com/elvishew/xlog/Logger.java
+[LibCat]: https://github.com/elvishew/xLog/blob/master/xlog-libcat/README.md
