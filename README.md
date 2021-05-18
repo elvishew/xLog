@@ -346,7 +346,7 @@ By default, `FilePrinter` use a `DefaultFlattener`, which just simply concat the
 
 ### Auto backup
 
-Every single log file may grow to an unexpected size, a `BackupStrategy2` allow you to start a new file at some point, and change the old file name with `.bak.n`(n is the backup index) suffix.
+Every single log file may grow to an unexpected size, a `AbstractBackupStrategy2` allow you to start a new file at some point, and change the old file name with `.bak.n`(n is the backup index) suffix.
 
 ```
 logs-dir
@@ -357,6 +357,8 @@ logs-dir
 ├──...
 └──log.bak.n
 ```
+
+If you don't like the `.bak.n` suffix, you can use `BackupStrategy2` directly to specify the backup file name.
 
 Mostly, you just want to start a new file when the log file reach a specified max-size, so `FileSizeBackupStrategy2` is presented for you.
 

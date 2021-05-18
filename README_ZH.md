@@ -148,7 +148,7 @@ logger.d("定制了 TAG 的消息");
 ```java
 Logger logger = XLog.enableBorder()
                     .enableThread()
-                    ... // other overrides
+                    ... // 其他配置的覆盖
                     .build();
 logger.d("带有线程信息和日志边框的消息");
 ```
@@ -345,7 +345,7 @@ LibCat.config(true, filePrinter);
 
 ### 自动备份
 
-随着时间推移，日志文件可能会变得很大，大到我们不希望的程度。使用 `BackupStrategy2` 可以帮助我们在特定条件下创建一个全新的同名日志文件，并继续写入，而旧日志文件会被加上 `.bak.n`（n 是备份序号）的文件名后缀。以上过程即为“日志备份”
+随着时间推移，日志文件可能会变得很大，大到我们不希望的程度。使用 `AbstractBackupStrategy2` 可以帮助我们在特定条件下创建一个全新的同名日志文件，并继续写入，而旧日志文件会被加上 `.bak.n`（n 是备份序号）的文件名后缀。以上过程即为“日志备份”
 
 ```
 日志目录
@@ -356,6 +356,8 @@ LibCat.config(true, filePrinter);
 ├──...
 └──log.bak.n
 ```
+
+如果你不喜欢 `.bak.n` 后缀，你可以直接使用 `BackupStrategy2` 指定备份文件名。
 
 大部分时候，你只是想在日志文件达到一定大小时，触发备份。 `FileSizeBackupStrategy2` 刚好可以满足这个要求。
 
