@@ -23,7 +23,7 @@ public class AndroidPrinter implements Printer {
 
   /**
    * Generally, android has a default length limit of 4096 for single log, but
-   * some device(like HUAWEI) has its own shorter limit, so we just use 2048
+   * some device(like HUAWEI) has its own shorter limit, so we just use 4000
    * and wish it could run well in all devices.
    */
   static final int DEFAULT_MAX_CHUNK_SIZE = 4000;

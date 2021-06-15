@@ -19,6 +19,7 @@ package com.elvishew.xlog.printer.file;
 import com.elvishew.xlog.flattener.Flattener;
 import com.elvishew.xlog.flattener.Flattener2;
 import com.elvishew.xlog.internal.DefaultsFactory;
+import com.elvishew.xlog.internal.Platform;
 import com.elvishew.xlog.internal.printer.file.backup.BackupUtil;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.backup.BackupStrategy;
@@ -125,7 +126,8 @@ public class FilePrinter implements Printer {
     if (lastFileName == null || isWriterClosed || fileNameGenerator.isFileNameChangeable()) {
       String newFileName = fileNameGenerator.generateFileName(logLevel, System.currentTimeMillis());
       if (newFileName == null || newFileName.trim().length() == 0) {
-        throw new IllegalArgumentException("File name should not be empty.");
+        Platform.get().error("File name should not be empty, ignore log: " + msg);
+        return;
       }
       if (!newFileName.equals(lastFileName) || isWriterClosed) {
         writer.close();

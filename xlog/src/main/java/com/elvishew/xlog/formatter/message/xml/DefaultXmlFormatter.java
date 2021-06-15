@@ -16,6 +16,7 @@
 
 package com.elvishew.xlog.formatter.message.xml;
 
+import com.elvishew.xlog.internal.Platform;
 import com.elvishew.xlog.internal.SystemCompat;
 import com.elvishew.xlog.formatter.FormatException;
 
@@ -41,7 +42,8 @@ public class DefaultXmlFormatter implements XmlFormatter {
   public String format(String xml) {
     String formattedString;
     if (xml == null || xml.trim().length() == 0) {
-      throw new FormatException("XML empty.");
+      Platform.get().warn("XML empty.");
+      return "";
     }
     try {
       Source xmlInput = new StreamSource(new StringReader(xml));
@@ -54,7 +56,8 @@ public class DefaultXmlFormatter implements XmlFormatter {
       formattedString = xmlOutput.getWriter().toString().replaceFirst(">", ">"
           + SystemCompat.lineSeparator);
     } catch (Exception e) {
-      throw new FormatException("Parse XML error. XML string:" + xml, e);
+      Platform.get().warn(e.getMessage());
+      return xml;
     }
     return formattedString;
   }

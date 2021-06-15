@@ -25,6 +25,7 @@ import com.elvishew.xlog.formatter.stacktrace.StackTraceFormatter;
 import com.elvishew.xlog.formatter.thread.ThreadFormatter;
 import com.elvishew.xlog.interceptor.Interceptor;
 import com.elvishew.xlog.internal.DefaultsFactory;
+import com.elvishew.xlog.internal.Platform;
 import com.elvishew.xlog.internal.SystemCompat;
 import com.elvishew.xlog.internal.util.StackTraceUtil;
 import com.elvishew.xlog.printer.Printer;
@@ -577,10 +578,11 @@ public class Logger {
 
         // Check if the log still healthy.
         if (log.tag == null || log.msg == null) {
-          throw new IllegalStateException("Interceptor " + interceptor
+          Platform.get().error("Interceptor " + interceptor
               + " should not remove the tag or message of a log,"
               + " if you don't want to print this log,"
               + " just return a null when intercept.");
+          return;
         }
       }
 

@@ -17,6 +17,7 @@
 package com.elvishew.xlog.formatter.message.json;
 
 import com.elvishew.xlog.formatter.FormatException;
+import com.elvishew.xlog.internal.Platform;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,7 +33,8 @@ public class DefaultJsonFormatter implements JsonFormatter {
   public String format(String json) {
     String formattedString = null;
     if (json == null || json.trim().length() == 0) {
-      throw new FormatException("JSON empty.");
+      Platform.get().warn("JSON empty.");
+      return "";
     }
     try {
       if (json.startsWith("{")) {
@@ -42,10 +44,12 @@ public class DefaultJsonFormatter implements JsonFormatter {
         JSONArray jsonArray = new JSONArray(json);
         formattedString = jsonArray.toString(JSON_INDENT);
       } else {
-        throw new FormatException("JSON should start with { or [, but found " + json);
+        Platform.get().warn("JSON should start with { or [");
+        return json;
       }
     } catch (Exception e) {
-      throw new FormatException("Parse JSON error. JSON string:" + json, e);
+      Platform.get().warn(e.getMessage());
+      return json;
     }
     return formattedString;
   }

@@ -57,6 +57,10 @@ public class Platform {
     System.out.println(msg);
   }
 
+  public void error(String msg) {
+    System.out.println(msg);
+  }
+
   private static Platform findPlatform() {
     try {
       Class.forName("android.os.Build");
@@ -100,6 +104,11 @@ public class Platform {
     @Override
     public void warn(String msg) {
       android.util.Log.w("XLog", msg);
+    }
+
+    @Override
+    public void error(String msg) {
+      android.util.Log.e("XLog", msg);
     }
   }
 }
