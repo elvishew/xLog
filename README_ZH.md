@@ -15,7 +15,7 @@
 依赖
 
 ```groovy
-implementation 'com.elvishew:xlog:1.9.0'
+implementation 'com.elvishew:xlog:1.10.0'
 ```
 
 初始化
