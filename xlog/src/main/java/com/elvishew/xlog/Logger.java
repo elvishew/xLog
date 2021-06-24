@@ -530,7 +530,7 @@ public class Logger {
     if (logLevel < logConfiguration.logLevel) {
       return;
     }
-    printlnInternal(logLevel, msg);
+    printlnInternal(logLevel, msg != null ? msg : "");
   }
 
   /**

@@ -17,10 +17,7 @@
 package com.elvishew.xlogsample;
 
 import android.app.Application;
-import android.os.Environment;
-import android.util.Log;
 
-import com.elvishew.xlog.BuildConfig;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.XLog;
