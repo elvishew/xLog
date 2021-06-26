@@ -293,52 +293,24 @@ We have defined a `PatternFlattener`, which may satisfy most of you. All you nee
 
 Supported parameters:
 
-<table border=0 cellspacing=3 cellpadding=0 summary="Supported parameters">
-  <tr bgcolor="#ccccff">
-    <th align=left>Parameter
-    <th align=left>Represents
-  <tr>
-    <td>{d}
-    <td>Date in default date format {@value #DEFAULT_DATE_FORMAT}
-  <tr>
-    <td>{d format}
-    <td>Date in specific date format
-  <tr>
-    <td>{l}
-    <td>Short name of log level. e.g: V/D/I
-  <tr>
-    <td>{L}
-    <td>Long name of log level. e.g: VERBOSE/DEBUG/INFO
-  <tr>
-    <td>{t}
-    <td>Tag of log
-  <tr>
-    <td>{m}
-    <td>Message of log
-</table>
+|Parameter|Represents|
+|:---:|---|
+|{d}|Date in default date format "yyyy-MM-dd HH:mm:ss.SSS"|
+|{d format}|Date in specific date format|
+|{l}|Short name of log level. e.g: V/D/I|
+|{L}|Long name of log level. e.g: VERBOSE/DEBUG/INFO|
+|{t}|Tag of log|
+|{m}|Message of log|
 
 Imagine there is a log, with `DEBUG` level, `"my_tag"` tag and `"Simple message"` message, the flattened log would be as below.
 
-<table border=0 cellspacing=3 cellpadding=0 summary="Examples of patterns and flattened logs">
-  <tr bgcolor="#ccccff">
-    <th align=left>Pattern
-    <th align=left>Flattened log
-  <tr>
-    <td>{d} {l}/{t}: {m}
-    <td>2016-11-30 13:00:00.000 D/my_tag: Simple message
-  <tr>
-    <td>{d yyyy-MM-dd HH:mm:ss.SSS} {l}/{t}: {m}
-    <td>2016-11-30 13:00:00.000 D/my_tag: Simple message
-  <tr>
-    <td>{d yyyy/MM/dd HH:mm:ss} {l}|{t}: {m}
-    <td>2016/11/30 13:00:00 D|my_tag: Simple message
-  <tr>
-    <td>{d yy/MM/dd HH:mm:ss} {l}|{t}: {m}
-    <td>16/11/30 13:00:00 D|my_tag: Simple message
-  <tr>
-    <td>{d MM/dd HH:mm} {l}-{t}-{m}
-    <td>11/30 13:00 D-my_tag-Simple message
-</table>
+|Pattern|Flattened log|
+|:---:|---|
+|{d} {l}/{t}: {m}|2016-11-30 13:00:00.000 D/my_tag: Simple message|
+|{d yyyy-MM-dd HH:mm:ss.SSS} {l}/{t}: {m}|2016-11-30 13:00:00.000 D/my_tag: Simple message|
+|{d yyyy/MM/dd HH:mm:ss} {l}\|{t}: {m}|2016/11/30 13:00:00 D\|my_tag: Simple message|
+|{d yy/MM/dd HH:mm:ss} {l}\|{t}: {m}|16/11/30 13:00:00 D\|my_tag: Simple message|
+|{d MM/dd HH:mm} {l}-{t}-{m}|11/30 13:00 D-my_tag-Simple message|
 
 If you don't even want to construct a pattern, `ClassicFlattener` is for you. It is a `PatternFlattener` with a default pattern `{d} {l}/{t}: {m}`.
 

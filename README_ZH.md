@@ -292,52 +292,24 @@ LibCat.config(true, filePrinter);
 
 支持的参数：
 
-<table border=0 cellspacing=3 cellpadding=0 summary="Supported parameters">
-  <tr bgcolor="#ccccff">
-    <th align=left>参数
-    <th align=left>含义
-  <tr>
-    <td>{d}
-    <td>日期时间。使用默认的日期时间格式 "yyyy-MM-dd HH:mm:ss.SSS"
-  <tr>
-    <td>{d format}
-    <td>日期时间。使用自定义的日期时间格式
-  <tr>
-    <td>{l}
-    <td>日志级别的缩写。例如：V/D/I
-  <tr>
-    <td>{L}
-    <td>日志级别的全称。例如：VERBOSE/DEBUG/INFO
-  <tr>
-    <td>{t}
-    <td>日志的 TAG
-  <tr>
-    <td>{m}
-    <td>日志的消息
-</table>
+|参数|含义|
+|:---:|---|
+|{d}|日期时间。使用默认的日期时间格式 "yyyy-MM-dd HH:mm:ss.SSS"|
+|{d format}|日期时间。使用自定义的日期时间格式|
+|{l}|日志级别的缩写。例如：V/D/I|
+|{L}|日志级别的全称。例如：VERBOSE/DEBUG/INFO|
+|{t}|日志的 TAG|
+|{m}|日志的消息|
 
 想象有这么一个日志，级别为 `DEBUG`，TAG 为 `"my_tag"`，消息为 `"简单消息"`，使用不同的 `pattern`，平铺后的日志为：
 
-<table border=0 cellspacing=3 cellpadding=0 summary="Examples of patterns and flattened logs">
-  <tr bgcolor="#ccccff">
-    <th align=left>Pattern
-    <th align=left>Flattened log
-  <tr>
-    <td>{d} {l}/{t}: {m}
-    <td>2016-11-30 13:00:00.000 D/my_tag: 简单消息
-  <tr>
-    <td>{d yyyy-MM-dd HH:mm:ss.SSS} {l}/{t}: {m}
-    <td>2016-11-30 13:00:00.000 D/my_tag: 简单消息
-  <tr>
-    <td>{d yyyy/MM/dd HH:mm:ss} {l}|{t}: {m}
-    <td>2016/11/30 13:00:00 D|my_tag: 简单消息
-  <tr>
-    <td>{d yy/MM/dd HH:mm:ss} {l}|{t}: {m}
-    <td>16/11/30 13:00:00 D|my_tag: 简单消息
-  <tr>
-    <td>{d MM/dd HH:mm} {l}-{t}-{m}
-    <td>11/30 13:00 D-my_tag-简单消息
-</table>
+|Pattern|平铺后的日志|
+|:---:|---|
+|{d} {l}/{t}: {m}|2016-11-30 13:00:00.000 D/my_tag: 简单消息|
+|{d yyyy-MM-dd HH:mm:ss.SSS} {l}/{t}: {m}|2016-11-30 13:00:00.000 D/my_tag: 简单消息|
+|{d yyyy/MM/dd HH:mm:ss} {l}\|{t}: {m}|2016/11/30 13:00:00 D\|my_tag: 简单消息|
+|{d yy/MM/dd HH:mm:ss} {l}\|{t}: {m}|16/11/30 13:00:00 D\|my_tag: 简单消息|
+|{d MM/dd HH:mm} {l}-{t}-{m}|11/30 13:00 D-my_tag-简单消息|
 
 如果你不想自己指定所谓的 `pattern`，可以使用 `ClassicFlattener`。它实际上是一个使用 `{d} {l}/{t}: {m}` `pattern` 的 `PatternFlattener`。
 
