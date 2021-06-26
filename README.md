@@ -15,7 +15,7 @@ Lightweight and pretty, powerful and flexible logger for android and java, can p
 Dependency
 
 ```groovy
-implementation 'com.elvishew:xlog:1.10.0'
+implementation 'com.elvishew:xlog:1.10.1'
 ```
 
 Initialization
