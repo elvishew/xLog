@@ -36,6 +36,7 @@ aspectjx {
     // 添加 'exclude' 你不想拦截日志的包/类
     exclude 'androidx.appcompat'
     exclude 'android.support'
+    exclude 'kotlin'
 
     // 或者：添加 'include' 你要拦截日志的包/类
 }

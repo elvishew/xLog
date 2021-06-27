@@ -362,7 +362,7 @@ Note: the origianl log files will not be deleted.
 
 Before each log being printed, you have a chance to modify or filter out the log, by using an `Interceptor`.
 
-We have already predefined some `Interceptor` for you, e.g. `WhitelistTagsFilterInterceptor` only allows the logs of specifid tags to be printed, and `BlacklistTagsFilterInterceptor` is used to filter out(not print) logs of a specifid logs.
+We have already predefined some `Interceptor` for you, e.g. `WhitelistTagsFilterInterceptor` only allows the logs of specified tags to be printed, and `BlacklistTagsFilterInterceptor` is used to filter out(not print) logs of a specified tags.
 
 You can specify multiple `Interceptor`s for a single `Logger`, these `Interceptor`s will be given the opportunity to modify or filter out logs in the order in which they were added. Once a log is filtered out by an `Interceptor`, subsequent `Interceptor`s will no longer get this log.
 

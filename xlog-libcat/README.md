@@ -36,6 +36,7 @@ aspectjx {
     // add 'exclude' packages/classes that you don't want to intercept the logs from
     exclude 'androidx.appcompat'
     exclude 'android.support'
+    exclude 'kotlin'
 
     // or add 'include' packages/classes that you want to intercept the logs from
 }
