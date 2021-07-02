@@ -33,10 +33,13 @@ buildscript {
 }
 
 aspectjx {
+    // if you use kotlin in your project make sure to exclude `kotlin`,
+    // otherwise a build error `zip file is empty` will be thrown
+    exclude 'kotlin'
+
     // add 'exclude' packages/classes that you don't want to intercept the logs from
     exclude 'androidx.appcompat'
     exclude 'android.support'
-    exclude 'kotlin'
 
     // or add 'include' packages/classes that you want to intercept the logs from
 }

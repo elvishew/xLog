@@ -362,7 +362,7 @@ Note: the origianl log files will not be deleted.
 
 Before each log being printed, you have a chance to modify or filter out the log, by using an `Interceptor`.
 
-We have already predefined some `Interceptor` for you, e.g. `WhitelistTagsFilterInterceptor` only allows the logs of specified tags to be printed, and `BlacklistTagsFilterInterceptor` is used to filter out(not print) logs of a specified tags.
+We have already predefined some `Interceptor` for you, e.g. `WhitelistTagsFilterInterceptor` only allows the logs of specified tags to be printed, and `BlacklistTagsFilterInterceptor` is used to filter out(not print) logs of specified tags.
 
 You can specify multiple `Interceptor`s for a single `Logger`, these `Interceptor`s will be given the opportunity to modify or filter out logs in the order in which they were added. Once a log is filtered out by an `Interceptor`, subsequent `Interceptor`s will no longer get this log.
 
@@ -452,7 +452,7 @@ Before creating an issue, please check if there is an existed one.
 
 Thanks to [Orhan Obut](https://github.com/orhanobut)'s [logger](https://github.com/orhanobut/logger), it give us many ideas of what a logger can do.
 
-Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/zserge/log), it give us the thought of making XLog compatible with [Android Log].
+Thanks to [Serge Zaitsev](https://github.com/zserge)'s [log](https://github.com/zserge/log), it give us the thought of making `xLog` compatible with [Android Log].
 
 ## License
 

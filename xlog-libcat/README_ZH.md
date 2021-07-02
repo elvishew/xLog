@@ -33,10 +33,12 @@ buildscript {
 }
 
 aspectjx {
+    // 如果你的项目中使用了 kotlin，确保 exclude `kotlin`，不然编译会报 zip file is empty
+    exclude 'kotlin'
+
     // 添加 'exclude' 你不想拦截日志的包/类
     exclude 'androidx.appcompat'
     exclude 'android.support'
-    exclude 'kotlin'
 
     // 或者：添加 'include' 你要拦截日志的包/类
 }
