@@ -40,6 +40,6 @@ android {
 }
 
 dependencies {
-    api 'com.elvishew:xlog:1.9.0'
+    api 'com.elvishew:xlog:1.11.0'
     api 'org.aspectj:aspectjrt:1.9.5'
 }
