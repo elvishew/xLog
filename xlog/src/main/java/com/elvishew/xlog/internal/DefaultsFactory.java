@@ -41,6 +41,8 @@ import com.elvishew.xlog.printer.file.clean.CleanStrategy;
 import com.elvishew.xlog.printer.file.clean.NeverCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.ChangelessFileNameGenerator;
 import com.elvishew.xlog.printer.file.naming.FileNameGenerator;
+import com.elvishew.xlog.printer.file.writer.SimpleWriter;
+import com.elvishew.xlog.printer.file.writer.Writer;
 
 import java.util.Map;
 
@@ -135,6 +137,13 @@ public class DefaultsFactory {
    */
   public static CleanStrategy createCleanStrategy() {
     return new NeverCleanStrategy();
+  }
+
+  /**
+   * Create the default writer for {@link FilePrinter}.
+   */
+  public static Writer createWriter() {
+    return new SimpleWriter();
   }
 
   /**
