@@ -104,7 +104,7 @@ public class SimpleWriter extends Writer {
    * <p>
    * Called in worker thread.
    *
-   * @param file the newly create log file
+   * @param file the newly created log file
    */
   public void onNewFileCreated(File file) {
   }

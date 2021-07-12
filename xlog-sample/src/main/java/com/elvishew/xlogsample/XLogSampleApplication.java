@@ -17,6 +17,7 @@
 package com.elvishew.xlogsample;
 
 import android.app.Application;
+import android.os.Build;
 
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.LogLevel;
@@ -28,6 +29,7 @@ import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.Printer;
 import com.elvishew.xlog.printer.file.FilePrinter;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
+import com.elvishew.xlog.printer.file.writer.SimpleWriter;
 
 import java.io.File;
 
@@ -77,6 +79,21 @@ public class XLogSampleApplication extends Application {
         // .backupStrategy(new MyBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
         // .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
         .flattener(new ClassicFlattener())                     // Default: DefaultFlattener
+        .writer(new SimpleWriter() {                           // Default: SimpleWriter
+          @Override
+          public void onNewFileCreated(File file) {
+            super.onNewFileCreated(file);
+            final String header = "\n>>>>>>>>>>>>>>>> File Header >>>>>>>>>>>>>>>>" +
+                    "\nDevice Manufacturer: " + Build.MANUFACTURER +
+                    "\nDevice Model       : " + Build.MODEL +
+                    "\nAndroid Version    : " + Build.VERSION.RELEASE +
+                    "\nAndroid SDK        : " + Build.VERSION.SDK_INT +
+                    "\nApp VersionName    : " + BuildConfig.VERSION_NAME +
+                    "\nApp VersionCode    : " + BuildConfig.VERSION_CODE +
+                    "\n<<<<<<<<<<<<<<<< File Header <<<<<<<<<<<<<<<<\n\n";
+            appendLog(header);
+          }
+        })
         .build();
 
     XLog.init(                                                 // Initialize XLog

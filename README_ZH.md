@@ -121,6 +121,7 @@ Printer filePrinter = new FilePrinter                      // 打印日志到文
     .backupStrategy(new NeverBackupStrategy())             // 指定日志文件备份策略，默认为 FileSizeBackupStrategy(1024 * 1024)
     .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // 指定日志文件清除策略，默认为 NeverCleanStrategy()
     .flattener(new MyFlattener())                          // 指定日志平铺器，默认为 DefaultFlattener
+    .writer(new MyWriter())                                // 指定日志写入器，默认为 SimpleWriter
     .build();
 
 XLog.init(                                                 // 初始化 XLog

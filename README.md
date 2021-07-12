@@ -121,6 +121,7 @@ Printer filePrinter = new FilePrinter                      // Printer that print
     .backupStrategy(new NeverBackupStrategy())             // Default: FileSizeBackupStrategy(1024 * 1024)
     .cleanStrategy(new FileLastModifiedCleanStrategy(MAX_TIME))     // Default: NeverCleanStrategy()
     .flattener(new MyFlattener())                          // Default: DefaultFlattener
+    .writer(new MyWriter())                                // Default: SimpleWriter
     .build();
 
 XLog.init(                                                 // Initialize XLog
