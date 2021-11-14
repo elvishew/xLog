@@ -99,7 +99,7 @@ public class AndroidPrinter implements Printer {
       end = Math.min(start + maxChunkSize, msgLength);
       if (autoSeparate) {
         int newLine = msg.indexOf('\n', start);
-        end = newLine != -1 ? newLine : end;
+        end = newLine != -1 ? Math.min(end,newLine) : end;
       } else {
         end = adjustEnd(msg, start, end);
       }
